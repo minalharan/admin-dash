@@ -112,5 +112,4 @@ const routes = [
   { path: "/users/:id", exact: true, name: "User Details", component: User },
   { path: "/gtItem/:id", exact: true, name: "Update", component: Update }
 ];
-
 export default routes;

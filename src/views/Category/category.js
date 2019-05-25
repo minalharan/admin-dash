@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Row, Table, Form } from 'reactstrap';
+import React, { Component } from "react";
+import { Card, CardBody, CardHeader, Col, Row, Table, Form } from "reactstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button, Image } from 'react-bootstrap';
+import { Button, Image } from "react-bootstrap";
 import Swal from "sweetalert2";
 const BASE_URL = "http://192.168.2.107:8080/";
 
 class Category extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -20,30 +19,36 @@ class Category extends Component {
     };
   }
   componentDidMount = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login1");
+    }
+
     //  const { user } = this.state;
-    const response = await axios.get("http://192.168.2.107:8080/getCategory/" + this.props.match.params.id)//console.log(res.data.result);
+    const response = await axios.get(
+      "http://192.168.2.107:8080/getCategory/" + this.props.match.params.id
+    ); //console.log(res.data.result);
     // console.log("result  :-", this.props.match.params.id);
     // const result = res.data.result1[0];
     // this.setState({ user: result });
     // console.log("users :-", result)
     this.setState({
       category: response.data.result1[0].category,
-      status: response.data.result1[0].status,
+      status: response.data.result1[0].status
     });
     if (!response) {
       console.log("error");
     }
-  }
+  };
 
   onSubmit = async e => {
     e.preventDefault();
 
-    const { category,  status } = this.state;
+    const { category, status } = this.state;
 
     const data = {
-       status,
-      category,
-      
+      status,
+      category
     };
     // const body = new FormData();
     // for (const i in data) {
@@ -54,7 +59,8 @@ class Category extends Component {
     // }
 
     const result = await axios.post(
-      "http://192.168.2.107:8080/editCategory/" + this.props.match.params.id, data
+      "http://192.168.2.107:8080/editCategory/" + this.props.match.params.id,
+      data
     );
     if (result) {
       Swal.fire({
@@ -74,22 +80,22 @@ class Category extends Component {
       [name]: value
     });
   };
-//   onChangefile = e => {
-//     let reader = new FileReader();
-//     let file = e.target.files[0];
-//     this.setState({
-//       file: e.target.files[0] ? e.target.files[0] : null,
-//       imageUpdated: true
-//     });
-//     reader.onloadend = () => {
-//       this.setState({
-//         file: file,
-//         imagePreviewUrl: reader.result
-//       });
-//     };
+  //   onChangefile = e => {
+  //     let reader = new FileReader();
+  //     let file = e.target.files[0];
+  //     this.setState({
+  //       file: e.target.files[0] ? e.target.files[0] : null,
+  //       imageUpdated: true
+  //     });
+  //     reader.onloadend = () => {
+  //       this.setState({
+  //         file: file,
+  //         imagePreviewUrl: reader.result
+  //       });
+  //     };
 
-//     reader.readAsDataURL(file);
-//   };
+  //     reader.readAsDataURL(file);
+  //   };
   handleClose = e => {
     this.setState({ show: false });
   };
@@ -116,19 +122,23 @@ class Category extends Component {
     // }
     // const { user } = this.state;
     if (this.state.disabled === true) {
-
       return (
-
         <div className="animated fadeIn">
           <Row>
             <Col lg={6}>
               <Card>
                 <CardHeader>
-                  <strong><i className="icon-info pr-1"></i>Category id: {this.props.match.params.id}</strong>
+                  <strong>
+                    <i className="icon-info pr-1" />Category id:{" "}
+                    {this.props.match.params.id}
+                  </strong>
                   <Link onClick={this.isEnable} align="right">
-                    <i class="fas fa-user-edit top" style={{ paddingLeft: 110 }} />
+                    <i
+                      class="fas fa-user-edit top"
+                      style={{ paddingLeft: 110 }}
+                    />
                     Edit
-</Link>
+                  </Link>
                 </CardHeader>
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
@@ -139,7 +149,15 @@ class Category extends Component {
                         </tr> */}
                         <tr>
                           <th scope="row">Name</th>
-                          <th scope="row"><input type="text" name="category" value={this.state.category} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
+                          <th scope="row">
+                            <input
+                              type="text"
+                              name="category"
+                              value={this.state.category}
+                              disabled={this.state.disabled}
+                              onChange={this.onInputChange}
+                            />
+                          </th>
                         </tr>
                         {/* <tr>
                           <th scope="row">Email</th>
@@ -156,63 +174,79 @@ class Category extends Component {
                         <tr>
                           <th scope="row">Status</th>
                           <th scope="row">
-                            <select name="status" value={this.state.status} disabled={this.state.disabled} onChange={this.onInputChange}>
+                            <select
+                              name="status"
+                              value={this.state.status}
+                              disabled={this.state.disabled}
+                              onChange={this.onInputChange}
+                            >
                               <option value="Active">Active</option>
                               <option value="Inactive">Inactive</option>
                               <option value="Pending">Pending</option>
                               <option value="Banned">Banned</option>
-                            </select></th>
-                    </tr>
-                          {/* <tr>
+                            </select>
+                          </th>
+                        </tr>
+                        {/* <tr>
                             <th scope="row">File</th>
                             <th scope="row"><input type="file" name="file" disabled={this.state.disabled} onChange={this.onChangefile} /></th>
                           </tr> */}
-                          <tr>
-                            <th scope="row" colSpan="2">
-                              <Button
-                                variant="primary"
-                                type="submit"
-                                align="center"
-                                disabled={this.state.disabled}
-                                style={{ width: "100px", padding: "5px" }}
-                              >
-                                <i class="fas fa-save top" />
-                                Save
-</Button></th>
-                          </tr>
-                  </tbody>
-                </Table>
-                </Form>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </div>
-
-          )
-          }
-          if(this.state.disabled===false)
-    {
+                        <tr>
+                          <th scope="row" colSpan="2">
+                            <Button
+                              variant="primary"
+                              type="submit"
+                              align="center"
+                              disabled={this.state.disabled}
+                              style={{ width: "100px", padding: "5px" }}
+                            >
+                              <i class="fas fa-save top" />
+                              Save
+                            </Button>
+                          </th>
+                        </tr>
+                      </tbody>
+                    </Table>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      );
+    }
+    if (this.state.disabled === false) {
       return (
         <div className="animated fadeIn">
-            <Row>
-              <Col lg={6}>
-                <Card>
-                  <CardHeader>
-                    <strong><i className="icon-info pr-1"></i>Category id: {this.props.match.params.id}</strong>
-                  </CardHeader>
-                  <CardBody>
-                    <Form onSubmit={this.onSubmit}>
-                      <Table responsive striped hover>
-                        <tbody>
-                          {/* <tr align="center">
+          <Row>
+            <Col lg={6}>
+              <Card>
+                <CardHeader>
+                  <strong>
+                    <i className="icon-info pr-1" />Category id:{" "}
+                    {this.props.match.params.id}
+                  </strong>
+                </CardHeader>
+                <CardBody>
+                  <Form onSubmit={this.onSubmit}>
+                    <Table responsive striped hover>
+                      <tbody>
+                        {/* <tr align="center">
                             <th scope="row" colSpan="2">{$imagePreview}</th>
                           </tr> */}
-                          <tr>
-                            <th scope="row">Name</th>
-                            <th scope="row"><input type="text" name="category" value={this.state.category} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
-                          </tr>
-                          {/* <tr>
+                        <tr>
+                          <th scope="row">Name</th>
+                          <th scope="row">
+                            <input
+                              type="text"
+                              name="category"
+                              value={this.state.category}
+                              disabled={this.state.disabled}
+                              onChange={this.onInputChange}
+                            />
+                          </th>
+                        </tr>
+                        {/* <tr>
                             <th scope="row">Email</th>
                             <th scope="row"><input type="text" name="email" value={this.state.email} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
                           </tr>
@@ -224,45 +258,51 @@ class Category extends Component {
                             <th scope="row">Gender</th>
                             <th scope="row"><input type="text" name="gender" value={this.state.gender} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
                           </tr> */}
-                          <tr>
-                            <th scope="row">Status</th>
-                            <th scope="row">
-                            <select name="status" value={this.state.status} disabled={this.state.disabled} onChange={this.onInputChange}>
+                        <tr>
+                          <th scope="row">Status</th>
+                          <th scope="row">
+                            <select
+                              name="status"
+                              value={this.state.status}
+                              disabled={this.state.disabled}
+                              onChange={this.onInputChange}
+                            >
                               <option value="Active">Active</option>
                               <option value="Inactive">Inactive</option>
                               <option value="Pending">Pending</option>
                               <option value="Banned">Banned</option>
-                            </select></th>
-                          </tr>
-                          {/* <tr>
+                            </select>
+                          </th>
+                        </tr>
+                        {/* <tr>
                             <th scope="row">File</th>
                             <th scope="row"><input type="file" name="file" disabled={this.state.disabled} onChange={this.onChangefile} /></th>
                           </tr> */}
-                          <tr>
-                            <th scope="row" colSpan="2">
-                              <Button
-                                variant="primary"
-                                type="submit"
-                                align="center"
-                                disabled={this.state.disabled}
-                                style={{ width: "100px", padding: "5px" }}
-                              >
-                                <i class="fas fa-save top" />
-                                Save
-</Button></th>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </Form>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </div>
-
-          )
-        }
-      }
+                        <tr>
+                          <th scope="row" colSpan="2">
+                            <Button
+                              variant="primary"
+                              type="submit"
+                              align="center"
+                              disabled={this.state.disabled}
+                              style={{ width: "100px", padding: "5px" }}
+                            >
+                              <i class="fas fa-save top" />
+                              Save
+                            </Button>
+                          </th>
+                        </tr>
+                      </tbody>
+                    </Table>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      );
     }
-    
-    export default Category;
+  }
+}
+
+export default Category;

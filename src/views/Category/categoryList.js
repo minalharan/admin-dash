@@ -157,6 +157,11 @@ class CategoryList extends Component {
     };
   }
   componentDidMount = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login1");
+    }
+
     this.getData();
   };
 

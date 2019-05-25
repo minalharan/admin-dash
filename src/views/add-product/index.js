@@ -208,6 +208,34 @@ class AddProduct extends Component {
                   <p className="text-danger">{priceError}</p>
                 ) : null}
               </FormGroup>
+              <FormLabel>
+<i class="fas fa-list-alt top" />
+Category
+<span className="required">*</span>
+</FormLabel>
+<FormGroup margin="normal">
+<FormControl
+as="select"
+name="category"
+value={this.state.category}
+onChange={this.onChangeCategory}
+>
+<option value="">Select Category</option>
+{categoryValue && categoryValue.length
+? categoryValue.map(Category => {
+return (
+<option key={Category.cid}>
+{Category.category}
+</option>
+);
+})
+: null}
+)
+</FormControl>
+{categoryError ? (
+<p className="text-danger">{categoryError}</p>
+) : null}
+</FormGroup>
               <FormGroup>
                 <FormLabel>
                   <i class="far fa-file-image top" />

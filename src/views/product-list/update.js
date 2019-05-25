@@ -139,19 +139,23 @@ class Update extends Component {
             <FormGroup align="center">
               <div className="imgPreview">{$imagePreview}</div>
             </FormGroup>
-            <FormGroup>
-              <FormLabel>
-                <i class="fab fa-product-hunt top" />
-                Name
-              </FormLabel>
-              <FormControl
-                type="text"
-                placeholder="product Title"
-                name="name"
-                value={this.state.name}
-                onChange={this.onInputChange}
-              />
-            </FormGroup>
+            <div className="input-group">
+              <FormGroup>
+                <FormLabel>
+                  <i class="fab fa-product-hunt top" />
+                  Name
+                </FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="product Title"
+                  name="name"
+                  value={this.state.name}
+                  onChange={this.onInputChange}
+                  className="a"
+                />
+              </FormGroup>
+            </div>
+            <div className="input-group">
             <FormGroup>
               <FormLabel>
                 <i class="fas fa-tag top" />

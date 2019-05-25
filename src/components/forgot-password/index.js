@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-<<<<<<< HEAD
 import Axios from "axios";
-=======
-import axios from "axios";
->>>>>>> 84dd0e6ffa22dc6bbdbd21f17beb1a540859def1
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import Validator, { ValidationTypes } from "js-object-validation";

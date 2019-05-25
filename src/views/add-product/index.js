@@ -10,13 +10,18 @@ import {
 } from "react-bootstrap";
 import Validator, { ValidationTypes } from "js-object-validation";
 import { toast } from "react-toastify";
+import Dropzone from "react-dropzone";
 import { MDBBtn } from "mdbreact";
+
 //import ToggleDisplay from "react-toggle-display";
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.107:8080";
 
 class AddProduct extends Component {
   constructor(props) {
     super(props);
+    this.onDrop = files => {
+      this.setState({ files });
+    };
     this.state = {
       name: "",
       price: "",
@@ -25,20 +30,48 @@ class AddProduct extends Component {
       category: "",
       imageUpdated: false,
       imagePreviewUrl: "",
-      thumbnail: ""
+      thumbnail: "",
+      otherImg: [],
+      categoryValue: [],
+      files: []
     };
   }
 
-  componentDidMount = async () => {};
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login1");
+    }
+    axios.get("http://192.168.2.107:8080/getCategory").then(res => {
+      const result = res.data;
+      console.log(res);
+      const option = [];
+      if (result.result1 && result.result1.length) {
+        console.log("in if");
+      }
+      console.log(option);
+      this.setState({
+        option,
+        categoryValue: result.result1
+      });
+    });
+  }
+
+  onChangeCategory = e => {
+    this.setState({
+      category: e.target.value
+    });
+  };
 
   onSubmit = async e => {
     e.preventDefault();
     try {
-      const { name, price, thumbnail } = this.state;
+      const { name, price, thumbnail, category, otherImg } = this.state;
 
       const obj = {
         name,
-        price
+        price,
+        category
       };
       const validations = {
         name: {
@@ -49,6 +82,9 @@ class AddProduct extends Component {
           [ValidationTypes.NUMERIC]: true
         },
         thumbnail: {
+          [ValidationTypes.REQUIRED]: true
+        },
+        category: {
           [ValidationTypes.REQUIRED]: true
         }
       };
@@ -64,6 +100,9 @@ class AddProduct extends Component {
         thumbnail: {
           [ValidationTypes.REQUIRED]:
             "Please Enter the Selling price of product."
+        },
+        category: {
+          [ValidationTypes.REQUIRED]: "please choose category."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
@@ -78,14 +117,25 @@ class AddProduct extends Component {
       const data = {
         name,
         price,
-        thumbnail
+        thumbnail,
+        category
       };
+      const files = Array.from(e.target.files);
+      this.setState({ uploading: true });
+
       const body = new FormData();
       for (const i in data) {
         if (data.hasOwnProperty(i)) {
           const element = data[i];
           body.append(i, element);
         }
+      }
+
+      const formData = new FormData();
+      for (const i in otherImg) {
+        files.forEach((file, i) => {
+          formData.append(i, file);
+        });
       }
       const response = await axios.post(
         " http://192.168.2.107:8080/addProduct",
@@ -136,12 +186,13 @@ class AddProduct extends Component {
     });
   };
   render() {
-    const { errors, category } = this.state;
+    const { errors, category, categoryValue } = this.state;
     console.log(errors);
     const {
       name: nameError,
       price: priceError,
-      thumbnail: thumbnailError
+      thumbnail: thumbnailError,
+      category: categoryError
     } = errors;
     let { imagePreviewUrl, thumbnail } = this.state;
     let $imagePreview = (
@@ -157,14 +208,13 @@ class AddProduct extends Component {
         <img src={imagePreviewUrl} width="150px" height="150px" />
       );
     }
+    const files = this.state.files.map(file => (
+      <li key={file.name}>
+        {file.name} - {file.size} bytes
+      </li>
+    ));
     return (
       <>
-        <link
-          rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
-          crossorigin="anonymous"
-        />
         <Row className="login_formSignin__27WMl">
           <Container>
             <h3 align="center">Add Product</h3>
@@ -179,7 +229,6 @@ class AddProduct extends Component {
             <form onSubmit={this.onSubmit} noValidate>
               <FormGroup>
                 <FormLabel>
-                  <i class="fab fa-product-hunt top" />
                   Name <span className="required">*</span>
                 </FormLabel>
                 <FormControl
@@ -209,33 +258,33 @@ class AddProduct extends Component {
                 ) : null}
               </FormGroup>
               <FormLabel>
-<i class="fas fa-list-alt top" />
-Category
-<span className="required">*</span>
-</FormLabel>
-<FormGroup margin="normal">
-<FormControl
-as="select"
-name="category"
-value={this.state.category}
-onChange={this.onChangeCategory}
->
-<option value="">Select Category</option>
-{categoryValue && categoryValue.length
-? categoryValue.map(Category => {
-return (
-<option key={Category.cid}>
-{Category.category}
-</option>
-);
-})
-: null}
-)
-</FormControl>
-{categoryError ? (
-<p className="text-danger">{categoryError}</p>
-) : null}
-</FormGroup>
+                <i class="fas fa-list-alt top" />
+                Category
+                <span className="required">*</span>
+              </FormLabel>
+              <FormGroup margin="normal">
+                <FormControl
+                  as="select"
+                  name="category"
+                  value={this.state.category}
+                  onChange={this.onChangeCategory}
+                >
+                  <option value="">Select Category</option>
+                  {categoryValue && categoryValue.length
+                    ? categoryValue.map(Category => {
+                        return (
+                          <option value={Category._id}>
+                            {Category.category}
+                          </option>
+                        );
+                      })
+                    : null}
+                  )
+                </FormControl>
+                {categoryError ? (
+                  <p className="text-danger">{categoryError}</p>
+                ) : null}
+              </FormGroup>
               <FormGroup>
                 <FormLabel>
                   <i class="far fa-file-image top" />
@@ -252,6 +301,44 @@ return (
                   <p className="text-danger">{thumbnailError}</p>
                 ) : null}
               </FormGroup>
+              {/* <FormGroup>
+                <FormLabel>
+                  <i class="far fa-file-image top" />
+                  Image <span className="required">*</span>
+                </FormLabel>
+                <FormControl
+                  type="file"
+                  placeholder="product Image"
+                  name="otherImg"
+                  onChange={this.onChangefile}
+                  className="auth-box c"
+                />
+              </FormGroup> */}
+              <Dropzone onDrop={this.onDrop}>
+                {({ getRootProps, getInputProps }) => (
+                  <section className="container">
+                    <div {...getRootProps({ className: "dropzone" })}>
+                      <FormLabel>
+                        <i class="far fa-file-image top" />
+                        Image <span className="required">*</span>
+                      </FormLabel>
+                      <input {...getInputProps()} />
+                      <FormControl
+                        type="file"
+                        placeholder="product Image"
+                        name="otherImg"
+                        onChange={this.onChangefile}
+                        className="auth-box c"
+                      />
+                    </div>
+                    <aside>
+                      <h4>Files</h4>
+                      <ul>{files}</ul>
+                    </aside>
+                  </section>
+                )}
+              </Dropzone>
+
               <FormGroup align="center">
                 <div className="imgPreview">{$imagePreview}</div>
               </FormGroup>

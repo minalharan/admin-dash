@@ -33,7 +33,7 @@ class ResetPassword extends Component {
   componentDidMount = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.2.112:8080/reset/" + this.props.match.params.token1
+        "http://192.168.2.107:8080/reset/" + this.props.match.params.token1
       );
       if (response) {
         this.setState({
@@ -100,7 +100,7 @@ class ResetPassword extends Component {
       }
 
       const result = await axios.put(
-        "http://192.168.2.112:8080/updatePasswordViaEmail",
+        "http://192.168.2.107:8080/updatePasswordViaEmail",
         {
           email: this.state.email,
           password: this.state.password,

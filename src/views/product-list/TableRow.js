@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Badge } from "reactstrap";
 import { MDBBtn } from "mdbreact";
-import TableRow3 from "./view.js";
 import Update from "./update.js";
 import Swal from "sweetalert2";
 import { Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -18,19 +18,23 @@ class TableRow extends Component {
       isOpen: false
     };
   }
+  getBadge = status => {
+    return status === "Active"
+      ? "success"
+      : status === "Inactive"
+      ? "secondary"
+      : status === "Pending"
+      ? "warning"
+      : status === "Banned"
+      ? "danger"
+      : "primary";
+  };
 
   componentDidMount = async () => {
-    // const token = localStorage.getItem("token");
-    // if (!token) {
-    //   this.props.history.push("/login");
-    // }
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         "http://192.168.2.107:8080/getItem/" + this.props.obj._id
       );
-      // console.log(response);
-      //   console.log("response");
-      //console.log(response.data.result);
       const result1 = response.data.result;
 
       this.setState({
@@ -70,12 +74,12 @@ class TableRow extends Component {
   render() {
     // console.log(this.props);
     const { value } = this.state;
-    // console.log("value");
+    console.log("value");
     // console.log(value);
-
+    console.log(this.props.index);
     return (
       <tr>
-        <td>{}</td>
+        <td>{this.props.index + this.props.skip + 1}</td>
         <td>
           <img
             src={BASE_URL + this.props.obj.thumbnail}
@@ -100,8 +104,17 @@ class TableRow extends Component {
             </dialog>
           )}
         </td>
-        <td className="c">{this.props.obj.name}</td>
+        <td>{this.props.obj.name}</td>
         <td>${this.props.obj.price.toFixed(2)}</td>
+        <td>{this.props.obj.quantity}</td>
+        <td>
+          {" "}
+          <Badge color={this.getBadge(this.props.obj.status)}>
+            {this.props.obj.status}
+          </Badge>
+        </td>
+        <td>{this.props.obj.createTime}</td>
+        <td>{this.props.obj.updateTime}</td>
 
         <td>
           <Link to={"/gtitem/" + this.props.obj._id}>
@@ -110,9 +123,9 @@ class TableRow extends Component {
               placement="bottom"
               overlay={<Tooltip id="tooltip-top">Edit</Tooltip>}
             >
-              <MDBBtn rounded size="lg" color="outline-warning">
+              <Button variant="outline-warning">
                 <i class="fas fa-pencil-alt top" />
-              </MDBBtn>
+              </Button>
             </OverlayTrigger>
           </Link>{" "}
           &nbsp; &nbsp;
@@ -121,10 +134,8 @@ class TableRow extends Component {
             placement="left"
             overlay={<Tooltip id="tooltip-top">Delete</Tooltip>}
           >
-            <MDBBtn
-              rounded
-              size="lg"
-              color="outline-danger"
+            <Button
+              variant="outline-danger"
               onClick={e =>
                 Swal.fire({
                   title: "Are you sure?",
@@ -150,40 +161,9 @@ class TableRow extends Component {
               // }
             >
               <i class="fas fa-trash top" />
-            </MDBBtn>
+            </Button>
           </OverlayTrigger>
           &nbsp; &nbsp;
-          <OverlayTrigger
-            key="top"
-            placement="top"
-            overlay={<Tooltip id="tooltip-top">View</Tooltip>}
-          >
-            <MDBBtn
-              rounded
-              size="lg"
-              color="outline-info"
-              onClick={this.handleShow}
-            >
-              <i class="fas fa-eye top" />
-            </MDBBtn>
-          </OverlayTrigger>
-          <Modal
-            show={this.state.show}
-            onHide={this.handleClose}
-            className="animate"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>View</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div>{<TableRow3 obj={value} key={value._id} />}</div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={this.handleClose}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </td>
       </tr>
     );

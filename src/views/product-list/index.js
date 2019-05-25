@@ -1,10 +1,20 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Table, Button, OverlayTrigger, Tooltip, Row } from "react-bootstrap";
+import {
+  Button,
+  OverlayTrigger,
+  Tooltip,
+  FormGroup,
+  FormControl,
+  Form,
+  Pagination
+} from "react-bootstrap";
 import { toast } from "react-toastify";
 import TableRow from "./TableRow.js";
 import { Link } from "react-router-dom";
 import { MDBBtn, MDBIcon, Input } from "mdbreact";
+
+import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from "reactstrap";
 import { async } from "q";
 //import "./productlist.css";
 
@@ -17,24 +27,64 @@ class ProductList extends Component {
       price: "",
       thumbnail: "",
       otherImg: "",
-      namep: ""
+      name: "",
+      sort: "",
+      categoryValue: [],
+      option: "",
+      category: "",
+      currentPage: 1,
+      totalPageRec: 0,
+      pageLimit: 5,
+      skip: 0,
+      quantity: "",
+      status: ""
     };
   }
-  componentDidMount = async () => {
-    // const token = localStorage.getItem("token");
-    // if (!token) {
-    //   this.props.history.push("/login");
-    // }
 
+  componentDidMount = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login1");
+    }
+    axios.get("http://192.168.2.107:8080/getCategory").then(res => {
+      const result = res.data;
+      console.log(res);
+      const option = [];
+      if (result.result1 && result.result1.length) {
+        console.log("in if");
+      }
+      console.log(option);
+      this.setState({
+        option,
+        categoryValue: result.result1
+      });
+    });
     this.getData();
   };
   getData = async () => {
     try {
-      const res = await axios.get("http://192.168.2.107:8080/getProduct");
+      const { currentPage, pageLimit } = this.state;
+      const skip = (currentPage - 1) * pageLimit;
+      const limit = pageLimit;
+      const obj = { skip, limit };
+      const response = await axios.post(
+        "http://192.168.2.107:8080/showproduct1"
+      );
+      var count = response.data.result;
+      if (count % 2 != 0) {
+        count = count + 1;
+      }
+      this.setState({
+        totalPageRec: count
+      });
+      const res = await axios.post(
+        "http://192.168.2.107:8080/showproduct",
+        obj
+      );
       console.log(res.data.result);
       console.log("result");
       const result = res.data.result;
-      this.setState({ product: result });
+      this.setState({ product: result, skip });
       console.log(result);
       if (!result) {
         console.log("error");
@@ -46,6 +96,62 @@ class ProductList extends Component {
       );
     }
   };
+  onSubmit = async e => {
+    e.preventDefault();
+    this.setState({ product: "" });
+    const { name, sort, category, status } = this.state;
+
+    const data = { name, sort, category, status };
+
+    const response = await axios.post(
+      "http://192.168.2.107:8080/searchProductByPrice",
+      data
+    );
+    if (response) {
+      this.setState({ name: "" });
+      const result = response.data.result;
+      this.setState({ product: result });
+    }
+  };
+
+  handlePageChange = (page, e) => {
+    this.setState({
+      currentPage: page
+    });
+  };
+
+  getPaginator = () => {
+    const { currentPage, totalPageRec, pageLimit } = this.state;
+    let active = currentPage;
+    let items = [];
+    let totalPages = Math.floor(totalPageRec / pageLimit);
+    for (let number = 1; number <= totalPages; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          active={number === active}
+          onClick={() => this.onPageChange(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+
+    const paginationBasic = (
+      <div>
+        <Pagination size="sm">{items}</Pagination>
+      </div>
+    );
+
+    return paginationBasic;
+  };
+
+  onPageChange = async pageNumber => {
+    console.log("Page number :-", pageNumber);
+    this.setState({ currentPage: pageNumber }, this.getData);
+    // console.log("pagination data: ", res);
+  };
+
   onDelete = async productId => {
     const result = await axios.delete(
       "http://192.168.2.107:8080/deleteItem/" + productId
@@ -55,17 +161,6 @@ class ProductList extends Component {
     }
     this.getData();
   };
-  onSearch = async () => {
-    const { namep } = this.state;
-    const data = { namep };
-    const result = await axios.post(
-      "http://192.168.2.107:8080/searchProduct",
-      data
-    );
-    console.log("result");
-
-    console.log(result);
-  };
   onInputChange = e => {
     const { target } = e;
     const { value, name } = target;
@@ -73,151 +168,229 @@ class ProductList extends Component {
       [name]: value
     });
   };
-  render() {
-    const { product, namep } = this.state;
-    return (
-      <div className="f" style={{ padding: "0" }}>
-        <link
-          rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
-          crossorigin="anonymous"
-        />
-        <form onSubmit={this.onSearch}>
-          <Input
-            placeholder="Search for..."
-            value={this.state.namep}
-            name="namep"
-            onChange={this.onInputChange}
-            type="text"
-          />
-          <Button value="search" type="submit" />
-        </form>
+  onsearchCatagory = async e => {
+    e.preventDefault();
+    this.setState({ product: "" });
+    const { category } = this.state;
 
+    const data = { category };
+    const response = await axios.post(
+      "http://192.168.2.107:8080/searchProductByCat",
+      data
+    );
+    if (response) {
+      const result = response.data.result;
+      this.setState({ product: result });
+    }
+  };
+  onSearch = async e => {
+    e.preventDefault();
+    this.setState({ user: "" });
+    const { sort } = this.state;
+
+    const data = { sort };
+
+    const response = await axios.post(
+      "http://192.168.2.107:8080/searchProductByPrice",
+      data
+    );
+    if (response) {
+      const result = response.data.result;
+      this.setState({ product: result });
+    }
+  };
+  render() {
+    const { product, name, sort, categoryValue, skip } = this.state;
+    return (
+      <>
         {product.length ? (
           <>
-            {/* <Row style={{ margin: "0 auto" }}> */}
-            <h2 align="left" className="M">
-              {" "}
-              Product List
-            </h2>
+            <div className="animated fadeIn">
+              <Row>
+                <Col xl={12}>
+                  <Card>
+                    <CardHeader>
+                      <FormGroup inline>
+                        <Form onSubmit={this.onSubmit} inline>
+                          <i className="fa fa-align-justify" />
+                          &nbsp;&nbsp;
+                          <Link onClick={this.getData}> Product List </Link>
+                          &nbsp;&nbsp;
+                          <FormControl
+                            type="text"
+                            name="name"
+                            placeholder="search by name"
+                            value={name}
+                            onChange={this.onInputChange}
+                            className="mr-sm-2"
+                          />
+                          &nbsp;&nbsp;
+                          <FormControl
+                            as="select"
+                            name="sort"
+                            value={sort}
+                            onChange={this.onInputChange}
+                            className="mr-sm-2"
+                          >
+                            <option value={null} onClick={this.getData}>
+                              ---Filter---
+                            </option>
+                            <option value="assending">Price Low to High</option>
+                            <option value="desending">Price High to Low</option>
+                          </FormControl>
+                          <FormControl
+                            as="select"
+                            name="category"
+                            value={this.state.categoryValue._id}
+                            onChange={this.onInputChange}
+                            className="mr-sm-2"
+                          >
+                            <option value="">Select Category</option>
+                            {categoryValue && categoryValue.length
+                              ? categoryValue.map(Category => {
+                                  return (
+                                    <option value={Category._id}>
+                                      {Category.category}
+                                    </option>
+                                  );
+                                })
+                              : null}
+                            )
+                          </FormControl>
+                          <FormControl
+                            as="select"
+                            name="status"
+                            value={this.state.status}
+                            onChange={this.onInputChange}
+                            className="mr-sm-2"
+                          >
+                            <option value={null}>Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Banned">Banned</option>
+                          </FormControl>
+                          <Button
+                            variant="outline-primary"
+                            type="submit"
+                            // style={{ width: "100px", padding: "5px" }}
+                          >
+                            <i class="fas fa-search" />
+                            Search
+                          </Button>
+                          &nbsp;&nbsp; &nbsp;&nbsp;
+                          <i
+                            class="fas fa-sync-alt"
+                            variant="primary"
+                            onClick={this.getData}
+                          />
+                        </Form>
+                      </FormGroup>
+                    </CardHeader>
+                    <CardBody>
+                      <Table
+                        striped
+                        // bordered
+                        hover
+                        variant="dark"
+                        className="table animate"
+                      >
+                        <thead>
+                          <tr>
+                            <th text-align="center">S.No.</th>
+                            <th text-align="center">Image</th>
+                            <th text-align="center">Name</th>
+                            <th text-align="center">Price</th>
+                            <th text-align="center">Quantity</th>
+                            <th text-align="center">Status</th>
+                            <th text-align="center">Created At</th>
+                            <th text-align="center">Updated At</th>
+                            {/* <th>Selling Price</th> */}
 
-            <div>
-              {" "}
-              <Link to={"/add-product"}>
-                <OverlayTrigger
-                  key="top"
-                  placement="top"
-                  overlay={<Tooltip id="tooltip-top">Add new product.</Tooltip>}
-                >
-                  <MDBBtn
-                    rounded
-                    size="lg"
-                    color="info"
-                    style={{
-                      float: "right"
-                      //   top: "10px",
-                      //   // bottom: "20px",
-                      //   padding: "4px",
-                      //   left: "900px"
-                    }}
-                  >
-                    <i class="fas fa-plus top" />
-                    Add Product
-                  </MDBBtn>
-                </OverlayTrigger>
-              </Link>
+                            <th colSpan="3">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {product && product.length
+                            ? product.map((product, index) => {
+                                return (
+                                  <TableRow
+                                    obj={product}
+                                    key={product._id}
+                                    index={index}
+                                    skip={skip}
+                                    onDelete={this.onDelete}
+                                  />
+                                );
+                              })
+                            : null}
+                        </tbody>
+                      </Table>
+                    </CardBody>
+                    <CardHeader>{this.getPaginator()}</CardHeader>
+                  </Card>
+                </Col>
+              </Row>
             </div>
-            <Table
-              striped
-              bordered
-              hover
-              variant="dark"
-              className="table animate css-serial"
-            >
-              <thead>
-                <tr>
-                  <th>S.No.</th>
-                  <th>Image</th>
-                  <th text-align="center">name</th>
-                  <th>Price</th>
-                  {/* <th>Selling Price</th> */}
-
-                  <th colSpan="3">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {product && product.length
-                  ? product.map(product => {
-                      return (
-                        <TableRow
-                          obj={product}
-                          key={product._id}
-                          onDelete={this.onDelete}
-                        />
-                      );
-                    })
-                  : null}
-              </tbody>
-            </Table>
-            {/* </Row> */}
           </>
         ) : (
           <>
-            <form onSubmit={this.onSearch}>
-              <Input
-                placeholder="Search for..."
-                value={this.state.query}
-                name="query"
-                onChange={this.onInputChange}
-                type="text"
-              />
-              <Button value="search" type="submit" />
-            </form>
-            <h2 align="center" className="M">
-              {" "}
-              Product List
-            </h2>
+            <div className="animated fadeIn">
+              <Row>
+                <Col xl={12}>
+                  <Card>
+                    <CardHeader>
+                      <Link onClick={this.getData}> Product List </Link>
+                    </CardHeader>
+                    <CardBody>
+                      <Table
+                        striped
+                        bordered
+                        hover
+                        variant="dark"
+                        className="animate css-serial"
+                      >
+                        <thead>
+                          <tr>
+                            <th text-align="center">S.No.</th>
+                            <th text-align="center">Image</th>
+                            <th text-align="center">Name</th>
+                            <th text-align="center">Price</th>
+                            <th text-align="center">Quantity</th>
+                            <th text-align="center">Status</th>
+                            <th text-align="center">Created At</th>
+                            <th text-align="center">Updated At</th>
+                            {/* <th text-align="center">Selling Price</th> */}
 
-            <Table
-              striped
-              bordered
-              hover
-              variant="dark"
-              className="animate css-serial"
-            >
-              <thead>
-                <tr>
-                  <th text-align="center">S.No.</th>
-                  <th text-align="center">Image</th>
-                  <th text-align="center">name</th>
-                  <th text-align="center">Price</th>
-                  {/* <th text-align="center">Selling Price</th> */}
-
-                  <th
-                    // text-align="center"
-                    colSpan="3"
-                  >
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {product && product.length
-                  ? product.map(product => {
-                      return (
-                        <TableRow
-                          obj={product}
-                          key={product._id}
-                          onDelete={this.onDelete}
-                        />
-                      );
-                    })
-                  : null}
-              </tbody>
-            </Table>
+                            <th
+                              // text-align="center"
+                              colSpan="3"
+                            >
+                              Action
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {product && product.length
+                            ? product.map(product => {
+                                return (
+                                  <TableRow
+                                    obj={product}
+                                    key={product._id}
+                                    onDelete={this.onDelete}
+                                  />
+                                );
+                              })
+                            : null}
+                        </tbody>
+                      </Table>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
             <div style={{ margin: "0 auto" }}>
-              <MDBIcon icon="ban" className="icons bans e" align="center" />
+              <MDBIcon icon="ban" className="icons bans" />
               <h5 text align="center" padding-left="40px">
                 Currently there are no Product details added.
               </h5>
@@ -248,7 +421,7 @@ class ProductList extends Component {
             </div>
           </>
         )}
-      </div>
+      </>
     );
   }
 }

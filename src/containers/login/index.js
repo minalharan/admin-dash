@@ -15,16 +15,7 @@ class Login extends Component {
       errors: {}
     };
   }
-  componentDidMount = async () => {
-    //this.autoLogin();
-  };
-
-  // autoLogin = () => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     this.props.history.push("/product-list");
-  //   }
-  // };
+  componentDidMount = async () => {};
 
   onLogin = async e => {
     e.preventDefault();
@@ -64,7 +55,7 @@ class Login extends Component {
         return;
       }
 
-      const response = await Axios.post("http://192.168.2.112:8080/login", obj);
+      const response = await Axios.post("http://192.168.2.107:8080/login", obj);
 
       console.log(response);
       localStorage.setItem("token", response.data.token);

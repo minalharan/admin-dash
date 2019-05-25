@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import axios from "axios";
+//import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Validator, { ValidationTypes } from "js-object-validation";
 import { toast } from "react-toastify";
+import { InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 
 import {
   Button,
@@ -66,7 +67,12 @@ class ResetComponent extends Component {
                 <h1 className="left">Forgot Password</h1>
               </div>
               <div className="input-group">
-                <FormGroup>
+                <InputGroup className="mb-4">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="icon-lock" />
+                    </InputGroupText>
+                  </InputGroupAddon>
                   <FormControl
                     required="true"
                     type="password"
@@ -78,10 +84,15 @@ class ResetComponent extends Component {
                   {passwordError ? (
                     <p className=" text-danger">{passwordError}</p>
                   ) : null}
-                </FormGroup>
+                </InputGroup>
               </div>
               <div className="input-group">
-                <FormGroup>
+                <InputGroup className="mb-4">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="icon-lock" />
+                    </InputGroupText>
+                  </InputGroupAddon>
                   <FormControl
                     required="true"
                     type="password"
@@ -93,7 +104,7 @@ class ResetComponent extends Component {
                   {cpasswordError ? (
                     <p className=" text-danger">{cpasswordError}</p>
                   ) : null}
-                </FormGroup>
+                </InputGroup>
               </div>
               <FormGroup>
                 <Button

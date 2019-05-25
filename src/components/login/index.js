@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import Axios from "axios";
+//import Axios from "axios";
 import { withRouter, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Validator, { ValidationTypes } from "js-object-validation";
+import { InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+
 import {
   FormGroup,
   FormLabel,
@@ -17,6 +19,12 @@ class LoginComponent extends Component {
   constructor(props) {
     super(props);
   }
+  // componentDidMount() {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     this.props.history.push("/product-list");
+  //   }
+  // }
   render() {
     const { isLoading, errors } = this.props;
     const { email: emailError, password: passwordError } = this.props.errors;
@@ -35,7 +43,12 @@ class LoginComponent extends Component {
                 </div>
                 <div className="login_subhead__e1IaE">Admin Login</div>
                 <div className="input-group">
-                  <FormGroup>
+                  <InputGroup className="mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="icon-user" />
+                      </InputGroupText>
+                    </InputGroupAddon>
                     <FormControl
                       type="email"
                       name="email"
@@ -47,10 +60,15 @@ class LoginComponent extends Component {
                     {emailError ? (
                       <p className="text-danger">{emailError}</p>
                     ) : null}
-                  </FormGroup>
+                  </InputGroup>
                 </div>
                 <div className="input-group">
-                  <FormGroup>
+                  <InputGroup className="mb-4">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="icon-lock" />
+                      </InputGroupText>
+                    </InputGroupAddon>
                     <FormControl
                       required="true"
                       type="password"
@@ -59,11 +77,12 @@ class LoginComponent extends Component {
                       // className="form-control email"
                       onChange={this.props.onInputChange}
                       className="a"
-                    />
-                    {passwordError ? (
-                      <p className="text-danger">{passwordError}</p>
-                    ) : null}
-                  </FormGroup>
+                    >
+                      {passwordError ? (
+                        <p className="text-danger">{passwordError}</p>
+                      ) : null}
+                    </FormControl>
+                  </InputGroup>
                 </div>
                 <Button
                   variant="primary"

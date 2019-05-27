@@ -27,10 +27,10 @@ class DefaultLayout extends Component {
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
   );
 
-  signOut(e) {
-    e.preventDefault();
-    this.props.history.push("/login1");
-  }
+  // signOut(e) {
+  //   e.preventDefault();
+  //   this.props.history.push("/login1");
+  // }
 
   render() {
     return (

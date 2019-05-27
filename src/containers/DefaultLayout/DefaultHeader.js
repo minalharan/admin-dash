@@ -61,7 +61,7 @@ class DefaultHeader extends Component {
     return (
       <React.Fragment>
         <AppNavbarBrand
-          full={{ width: 89, height: 25, alt: "Admin Panel Logo" }}
+          full={{ width: 89, height: 25, alt: "Admin Panel" }}
           minimized={{
             width: 30,
             height: 30,
@@ -76,7 +76,7 @@ class DefaultHeader extends Component {
                 src={BASE_URL + this.state.file}
                 className="img-avatar"
                 width="30"
-                alt="admin@bootstrapmaster.com"
+                alt="admin"
               />
             </DropdownToggle>
             <DropdownMenu right style={{ right: "auto" }}>
@@ -90,27 +90,11 @@ class DefaultHeader extends Component {
                   <i className="fa fa-user" /> Change Password
                 </DropdownItem>
               </Link>
-              <DropdownItem
-                onClick={e =>
-                  Swal.fire({
-                    title: "Are you sure you want to logout ?",
-                    text: "You won't be able to revert this!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes !"
-                  }).then(result => {
-                    if (result.value) {
-                      Swal.fire("You are logged out !.", "success") &&
-                        localStorage.clear();
-                    }
-                    this.props.history.push("/login");
-                  })
-                }
-              >
-                <i className="fa fa-lock" /> Logout
-              </DropdownItem>
+              <Link to={"/logout"}>
+                <DropdownItem>
+                  <i className="fa fa-lock" /> Logout
+                </DropdownItem>
+              </Link>
             </DropdownMenu>
           </AppHeaderDropdown>
         </Nav>

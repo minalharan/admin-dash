@@ -15,8 +15,12 @@ class Login extends Component {
       errors: {}
     };
   }
-  componentDidMount = async () => {};
-
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.props.history.push("/product-list");
+    }
+  }
   onLogin = async e => {
     e.preventDefault();
     console.log("login button pressed");
@@ -55,7 +59,10 @@ class Login extends Component {
         return;
       }
 
-      const response = await Axios.post("http://192.168.2.107:8080/login", obj);
+      const response = await Axios.post(
+        "http://192.168.2.107:8080/adminLogin",
+        obj
+      );
 
       console.log(response);
       localStorage.setItem("token", response.data.token);

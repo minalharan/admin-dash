@@ -19,12 +19,7 @@ class LoginComponent extends Component {
   constructor(props) {
     super(props);
   }
-  // componentDidMount() {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     this.props.history.push("/product-list");
-  //   }
-  // }
+
   render() {
     const { isLoading, errors } = this.props;
     const { email: emailError, password: passwordError } = this.props.errors;

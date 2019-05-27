@@ -23,6 +23,10 @@ class User extends Component {
     };
   }
   componentDidMount = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login1");
+    }
     //  const { user } = this.state;
     const response = await axios.get(
       "http://192.168.2.107:8080/getuser/" + this.props.match.params.id

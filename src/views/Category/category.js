@@ -19,10 +19,10 @@ class Category extends Component {
     };
   }
   componentDidMount = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      this.props.history.push("/login1");
-    }
+    // const token = localStorage.getItem("token");
+    // if (!token) {
+    //   this.props.history.push("/login1");
+    // }
 
     //  const { user } = this.state;
     const response = await axios.get(
@@ -68,7 +68,7 @@ class Category extends Component {
         title: "Success",
         text: "Changes save!"
       });
-      this.props.history.push("/cat-list");
+      this.props.history.push("/category-list");
       console.log(result);
     }
   };
@@ -129,8 +129,8 @@ class Category extends Component {
               <Card>
                 <CardHeader>
                   <strong>
-                    <i className="icon-info pr-1" />Category id:{" "}
-                    {this.props.match.params.id}
+                    <i className="icon-info pr-1" />
+                    Category id: {this.props.match.params.id}
                   </strong>
                   <Link onClick={this.isEnable} align="right">
                     <i
@@ -223,8 +223,8 @@ class Category extends Component {
               <Card>
                 <CardHeader>
                   <strong>
-                    <i className="icon-info pr-1" />Category id:{" "}
-                    {this.props.match.params.id}
+                    <i className="icon-info pr-1" />
+                    Category id: {this.props.match.params.id}
                   </strong>
                 </CardHeader>
                 <CardBody>

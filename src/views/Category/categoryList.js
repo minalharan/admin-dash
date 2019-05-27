@@ -268,6 +268,13 @@ class CategoryList extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
+          <Link to={"/add-category"}>
+            <Button className="header">
+              {" "}
+              <i class="fa fa-plus top" aria-hidden="true" />
+              Add Category
+            </Button>
+          </Link>
           <Col xl={12}>
             <Card>
               <CardHeader>
@@ -283,7 +290,7 @@ class CategoryList extends Component {
                       placeholder="Search by name"
                       value={category}
                       onChange={this.onInputChange}
-                      className="mr-sm-2"
+                      className="mr-sm-2 filter"
                     />
                     &nbsp;
                     <FormControl
@@ -291,7 +298,7 @@ class CategoryList extends Component {
                       name="order"
                       value={order}
                       onChange={this.onInputChange}
-                      className="mr-sm-2"
+                      className="mr-sm-2 filter"
                     >
                       <option value={null}>---Name---</option>
                       <option value="assending">Order By Name A to Z</option>
@@ -303,7 +310,7 @@ class CategoryList extends Component {
                       name="status"
                       value={status}
                       onChange={this.onInputChange}
-                      className="mr-sm-2"
+                      className="mr-sm-2 filter"
                     >
                       <option value={null}>---Status---</option>
                       <option value="Active">Active</option>
@@ -315,6 +322,7 @@ class CategoryList extends Component {
                     <Button
                       variant="outline-primary"
                       type="submit"
+                      className="filter"
                       // style={{ width: "100px", padding: "5px" }}
                     >
                       <i class="fas fa-search" />
@@ -324,6 +332,7 @@ class CategoryList extends Component {
                     <i
                       class="fa fa-refresh"
                       aria-hidden="true"
+                      className="filter"
                       onClick={this.getData}
                     />
                   </Form>

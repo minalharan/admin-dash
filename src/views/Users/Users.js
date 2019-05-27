@@ -15,9 +15,12 @@ const BASE_URL = "http://192.168.2.107:8080/";
 //import usersData from './UsersData'
 
 class UserRow extends Component {
-  //const user = props.user
-  //const userLink = `/users/${user._id}`
-
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login1");
+    }
+  }
   getBadge = status => {
     return status === "Active"
       ? "success"
@@ -254,20 +257,25 @@ class Users extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
+          <Link to={"/add-user"}>
+            <Button className="header">
+              {" "}
+              <i class="fa fa-plus top" aria-hidden="true" />
+              Add New User
+            </Button>
+          </Link>
           <Col xl={12}>
             <Card>
               <CardHeader>
                 <FormGroup inline>
                   <Form onSubmit={this.onSubmit} inline>
-                    <i className="fa fa-align-justify" />&nbsp;&nbsp;
-                    <Link onClick={this.getData}> Users List </Link>&nbsp;&nbsp;
                     <FormControl
                       type="text"
                       name="name"
                       placeholder="search by name"
                       value={name}
                       onChange={this.onInputChange}
-                      className="mr-sm-2"
+                      className="mr-sm-2 filter"
                     />
                     &nbsp;
                     <FormControl
@@ -275,7 +283,7 @@ class Users extends Component {
                       name="order"
                       value={order}
                       onChange={this.onInputChange}
-                      className="mr-sm-2"
+                      className="mr-sm-2 filter"
                     >
                       <option value={null}>---Name---</option>
                       <option value="assending">Order By Name A to Z</option>
@@ -287,7 +295,7 @@ class Users extends Component {
                       name="status"
                       value={status}
                       onChange={this.onInputChange}
-                      className="mr-sm-2"
+                      className="mr-sm-2 filter"
                     >
                       <option value={null}>---Status---</option>
                       <option value="Active">Active</option>
@@ -299,54 +307,57 @@ class Users extends Component {
                     <Button
                       variant="outline-primary"
                       type="submit"
+                      className="filter"
                       // style={{ width: "100px", padding: "5px" }}
                     >
                       <i class="fas fa-search" />
                       Search
                     </Button>
-                    &nbsp;&nbsp;
-                    <i
-                      class="fa fa-refresh"
-                      aria-hidden="true"
-                      onClick={this.getData}
-                    />
+                    &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                    <Button variant="outline-primary">
+                      <i
+                        class="fas fa-sync-alt"
+                        variant="primary"
+                        onClick={this.getData}
+                      />
+                    </Button>
                   </Form>
                 </FormGroup>
               </CardHeader>
-              <CardBody>
-                <Table responsive hover>
-                  <thead>
-                    <tr>
-                      <th scope="col">S.No.</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Mobile</th>
-                      <th scope="col">Gender</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">create Time</th>
-                      <th scope="col">Last Login</th>
-                      <th scope="col" colSpan="2">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {user && user.length
-                      ? user.map((user, index) => (
-                          <UserRow
-                            obj={user}
-                            key={user._id}
-                            user={user}
-                            index={index}
-                            skip={this.state.skip}
-                            onDelete={this.onDelete}
-                          />
-                        ))
-                      : null}
-                  </tbody>
-                </Table>
-              </CardBody>
+              {/* <CardBody> */}
+              <Table responsive hover>
+                <thead>
+                  <tr>
+                    <th scope="col">S.No.</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">create Time</th>
+                    <th scope="col">Last Login</th>
+                    <th scope="col" colSpan="2">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {user && user.length
+                    ? user.map((user, index) => (
+                        <UserRow
+                          obj={user}
+                          key={user._id}
+                          user={user}
+                          index={index}
+                          skip={this.state.skip}
+                          onDelete={this.onDelete}
+                        />
+                      ))
+                    : null}
+                </tbody>
+              </Table>
+              {/* </CardBody> */}
               <CardHeader>
                 <div style={{ marginLeft: "40%", marginTop: "3%" }}>
                   {this.getPaginator()}

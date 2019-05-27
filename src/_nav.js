@@ -1,35 +1,27 @@
 export default {
   items: [
-    // {
-    //   name: "Dashboard",
-    //   url: "/dashboard",
-    //   icon: "icon-speedometer",
-    //   badge: {
-    //     variant: "info"
-    //   }
-    // },
     {
-      name: "ProductList",
+      name: "Product List",
       url: "/product-list",
       icon: "icon-list"
     },
     {
-      name: "User",
+      name: "Users",
       url: "/users",
       icon: "icon-user"
     },
     {
-      name: "Add-Product",
+      name: "Add Product",
       url: "/add-product",
       icon: "icon-plus"
     },
     {
-      name: "Add-Category",
+      name: "Add Category",
       url: "/add-category",
       icon: "icon-plus"
     },
     {
-      name: "UserRow",
+      name: "Category List",
       url: "/category-list",
       icon: "icon-list"
     }

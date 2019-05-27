@@ -207,22 +207,25 @@ class ProductList extends Component {
           <>
             <div className="animated fadeIn">
               <Row>
+                <Link to={"/add-product"}>
+                  <Button className="header">
+                    {" "}
+                    <i class="fa fa-plus top" aria-hidden="true" />
+                    Add Product
+                  </Button>
+                </Link>
                 <Col xl={12}>
                   <Card>
                     <CardHeader>
                       <FormGroup inline>
                         <Form onSubmit={this.onSubmit} inline>
-                          <i className="fa fa-align-justify" />
-                          &nbsp;&nbsp;
-                          <Link onClick={this.getData}> Product List </Link>
-                          &nbsp;&nbsp;
                           <FormControl
                             type="text"
                             name="name"
                             placeholder="search by name"
                             value={name}
                             onChange={this.onInputChange}
-                            className="mr-sm-2"
+                            className="mr-sm-2 filter"
                           />
                           &nbsp;&nbsp;
                           <FormControl
@@ -230,7 +233,7 @@ class ProductList extends Component {
                             name="sort"
                             value={sort}
                             onChange={this.onInputChange}
-                            className="mr-sm-2"
+                            className="mr-sm-2 filter"
                           >
                             <option value={null} onClick={this.getData}>
                               ---Filter---
@@ -243,7 +246,7 @@ class ProductList extends Component {
                             name="category"
                             value={this.state.categoryValue._id}
                             onChange={this.onInputChange}
-                            className="mr-sm-2"
+                            className="mr-sm-2 filter"
                           >
                             <option value="">Select Category</option>
                             {categoryValue && categoryValue.length
@@ -262,7 +265,7 @@ class ProductList extends Component {
                             name="status"
                             value={this.state.status}
                             onChange={this.onInputChange}
-                            className="mr-sm-2"
+                            className="mr-sm-2 filter"
                           >
                             <option value={null}>Status</option>
                             <option value="Active">Active</option>
@@ -273,60 +276,62 @@ class ProductList extends Component {
                           <Button
                             variant="outline-primary"
                             type="submit"
+                            className="filter"
                             // style={{ width: "100px", padding: "5px" }}
                           >
                             <i class="fas fa-search" />
                             Search
                           </Button>
                           &nbsp;&nbsp; &nbsp;&nbsp;
-                          <i
-                            class="fas fa-sync-alt"
-                            variant="primary"
-                            onClick={this.getData}
-                          />
+                          <Button variant="outline-primary">
+                            <i
+                              class="fas fa-sync-alt"
+                              variant="primary"
+                              onClick={this.getData}
+                            />
+                          </Button>
                         </Form>
                       </FormGroup>
                     </CardHeader>
-                    <CardBody>
-                      <Table
-                        striped
-                        // bordered
-                        hover
-                        variant="dark"
-                        className="table animate"
-                      >
-                        <thead>
-                          <tr>
-                            <th text-align="center">S.No.</th>
-                            <th text-align="center">Image</th>
-                            <th text-align="center">Name</th>
-                            <th text-align="center">Price</th>
-                            <th text-align="center">Quantity</th>
-                            <th text-align="center">Status</th>
-                            <th text-align="center">Created At</th>
-                            <th text-align="center">Updated At</th>
-                            {/* <th>Selling Price</th> */}
+                    {/* <CardBody> */}
+                    <Table
+                      striped
+                      // bordered
+                      hover
+                      variant="dark"
+                    >
+                      <thead>
+                        <tr>
+                          <th text-align="center">S.No.</th>
+                          <th text-align="center">Image</th>
+                          <th text-align="center">Name</th>
+                          <th text-align="center">Price</th>
+                          <th text-align="center">Quantity</th>
+                          <th text-align="center">Status</th>
+                          <th text-align="center">Created At</th>
+                          <th text-align="center">Updated At</th>
+                          {/* <th>Selling Price</th> */}
 
-                            <th colSpan="3">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {product && product.length
-                            ? product.map((product, index) => {
-                                return (
-                                  <TableRow
-                                    obj={product}
-                                    key={product._id}
-                                    index={index}
-                                    skip={skip}
-                                    onDelete={this.onDelete}
-                                  />
-                                );
-                              })
-                            : null}
-                        </tbody>
-                      </Table>
-                    </CardBody>
+                          <th colSpan="3">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {product && product.length
+                          ? product.map((product, index) => {
+                              return (
+                                <TableRow
+                                  obj={product}
+                                  key={product._id}
+                                  index={index}
+                                  skip={skip}
+                                  onDelete={this.onDelete}
+                                />
+                              );
+                            })
+                          : null}
+                      </tbody>
+                    </Table>
+                    {/* </CardBody> */}
                     <CardHeader>{this.getPaginator()}</CardHeader>
                   </Card>
                 </Col>

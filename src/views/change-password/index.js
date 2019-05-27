@@ -14,7 +14,7 @@ import {
   Row,
   Col
 } from "react-bootstrap";
-const BASE_URL = "http://192.168.2.112:8080";
+const BASE_URL = "http://192.168.2.107:8080";
 class ChangePassword extends Component {
   constructor() {
     super();
@@ -38,16 +38,15 @@ class ChangePassword extends Component {
       const obj = { oldPassword, newPassword, cpassword };
       const validations = {
         oldPassword: {
-          [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.EMAIL]: true
+          [ValidationTypes.REQUIRED]: true
         },
         newPassword: {
           [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.MINLENGTH]: 4
+          [ValidationTypes.MINLENGTH]: 6
         },
         cpassword: {
           [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.EQUAL]: "password"
+          [ValidationTypes.EQUAL]: "newPassword"
         }
       };
       const messages = {
@@ -56,7 +55,7 @@ class ChangePassword extends Component {
         },
         newPassword: {
           [ValidationTypes.REQUIRED]: "Please enter new password.",
-          [ValidationTypes.MINLENGTH]: "Please enter at least 4 characters."
+          [ValidationTypes.MINLENGTH]: "Please enter at least 6 characters."
         },
         cpassword: {
           [ValidationTypes.REQUIRED]: "Please enter confirm password.",
@@ -74,7 +73,7 @@ class ChangePassword extends Component {
       const data = { cpassword, Cid, newPassword, oldPassword };
 
       const response = await axios.post(
-        "http://192.168.2.112:8080/checkPassword",
+        "http://192.168.2.107:8080/changePassword",
         data
       );
       console.log(response);
@@ -136,7 +135,7 @@ class ChangePassword extends Component {
           className="login_formSignin__27WMl"
         >
           <div>
-            <h1 className="center" paddingLeft="30px">
+            <h1 className="center" className="h">
               Change Password
             </h1>
           </div>

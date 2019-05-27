@@ -108,7 +108,7 @@ class ProductList extends Component {
       data
     );
     if (response) {
-      this.setState({ name: "" });
+      this.setState({ name: "", status: "", sort: "", category: "" });
       const result = response.data.result;
       this.setState({ product: result });
     }
@@ -203,229 +203,136 @@ class ProductList extends Component {
     const { product, name, sort, categoryValue, skip } = this.state;
     return (
       <>
-        {product.length ? (
-          <>
-            <div className="animated fadeIn">
-              <Row>
-                <Link to={"/add-product"}>
-                  <Button className="header">
-                    {" "}
-                    <i class="fa fa-plus top" aria-hidden="true" />
-                    Add Product
-                  </Button>
-                </Link>
-                <Col xl={12}>
-                  <Card>
-                    <CardHeader>
-                      <FormGroup inline>
-                        <Form onSubmit={this.onSubmit} inline>
-                          <FormControl
-                            type="text"
-                            name="name"
-                            placeholder="search by name"
-                            value={name}
-                            onChange={this.onInputChange}
-                            className="mr-sm-2 filter"
-                          />
-                          &nbsp;&nbsp;
-                          <FormControl
-                            as="select"
-                            name="sort"
-                            value={sort}
-                            onChange={this.onInputChange}
-                            className="mr-sm-2 filter"
-                          >
-                            <option value={null} onClick={this.getData}>
-                              ---Filter---
-                            </option>
-                            <option value="assending">Price Low to High</option>
-                            <option value="desending">Price High to Low</option>
-                          </FormControl>
-                          <FormControl
-                            as="select"
-                            name="category"
-                            value={this.state.categoryValue._id}
-                            onChange={this.onInputChange}
-                            className="mr-sm-2 filter"
-                          >
-                            <option value="">Select Category</option>
-                            {categoryValue && categoryValue.length
-                              ? categoryValue.map(Category => {
-                                  return (
-                                    <option value={Category._id}>
-                                      {Category.category}
-                                    </option>
-                                  );
-                                })
-                              : null}
-                            )
-                          </FormControl>
-                          <FormControl
-                            as="select"
-                            name="status"
-                            value={this.state.status}
-                            onChange={this.onInputChange}
-                            className="mr-sm-2 filter"
-                          >
-                            <option value={null}>Status</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Banned">Banned</option>
-                          </FormControl>
-                          <Button
-                            variant="outline-primary"
-                            type="submit"
-                            className="filter"
-                            // style={{ width: "100px", padding: "5px" }}
-                          >
-                            <i class="fas fa-search" />
-                            Search
-                          </Button>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <Button variant="outline-primary">
-                            <i
-                              class="fas fa-sync-alt"
-                              variant="primary"
-                              onClick={this.getData}
-                            />
-                          </Button>
-                        </Form>
-                      </FormGroup>
-                    </CardHeader>
-                    {/* <CardBody> */}
-                    <Table
-                      striped
-                      // bordered
-                      hover
-                      variant="dark"
-                    >
-                      <thead>
-                        <tr>
-                          <th text-align="center">S.No.</th>
-                          <th text-align="center">Image</th>
-                          <th text-align="center">Name</th>
-                          <th text-align="center">Price</th>
-                          <th text-align="center">Quantity</th>
-                          <th text-align="center">Status</th>
-                          <th text-align="center">Created At</th>
-                          <th text-align="center">Updated At</th>
-                          {/* <th>Selling Price</th> */}
-
-                          <th colSpan="3">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {product && product.length
-                          ? product.map((product, index) => {
+        <div className="animated fadeIn">
+          <Row>
+            <Link to={"/add-product"}>
+              <Button className="header">
+                {" "}
+                <i class="fa fa-plus top" aria-hidden="true" />
+                Add Product
+              </Button>
+            </Link>
+            <Col xl={12}>
+              <Card>
+                <CardHeader>
+                  <FormGroup inline>
+                    <Form onSubmit={this.onSubmit} inline>
+                      <FormControl
+                        type="text"
+                        name="name"
+                        placeholder="search by name"
+                        value={name}
+                        onChange={this.onInputChange}
+                        className="mr-sm-2 filter"
+                      />
+                      &nbsp;&nbsp;
+                      <FormControl
+                        as="select"
+                        name="sort"
+                        value={sort}
+                        onChange={this.onInputChange}
+                        className="mr-sm-2 filter"
+                      >
+                        <option value={null}>---Filter---</option>
+                        <option value="assending">Price Low to High</option>
+                        <option value="desending">Price High to Low</option>
+                      </FormControl>
+                      <FormControl
+                        as="select"
+                        name="category"
+                        value={this.state.categoryValue._id}
+                        onChange={this.onInputChange}
+                        className="mr-sm-2 filter"
+                      >
+                        <option value="">Select Category</option>
+                        {categoryValue && categoryValue.length
+                          ? categoryValue.map(Category => {
                               return (
-                                <TableRow
-                                  obj={product}
-                                  key={product._id}
-                                  index={index}
-                                  skip={skip}
-                                  onDelete={this.onDelete}
-                                />
+                                <option value={Category._id}>
+                                  {Category.category}
+                                </option>
                               );
                             })
                           : null}
-                      </tbody>
-                    </Table>
-                    {/* </CardBody> */}
-                    <CardHeader>{this.getPaginator()}</CardHeader>
-                  </Card>
-                </Col>
-              </Row>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="animated fadeIn">
-              <Row>
-                <Col xl={12}>
-                  <Card>
-                    <CardHeader>
-                      <Link onClick={this.getData}> Product List </Link>
-                    </CardHeader>
-                    <CardBody>
-                      <Table
-                        striped
-                        bordered
-                        hover
-                        variant="dark"
-                        className="animate css-serial"
+                        )
+                      </FormControl>
+                      <FormControl
+                        as="select"
+                        name="status"
+                        value={this.state.status}
+                        onChange={this.onInputChange}
+                        className="mr-sm-2 filter"
                       >
-                        <thead>
-                          <tr>
-                            <th text-align="center">S.No.</th>
-                            <th text-align="center">Image</th>
-                            <th text-align="center">Name</th>
-                            <th text-align="center">Price</th>
-                            <th text-align="center">Quantity</th>
-                            <th text-align="center">Status</th>
-                            <th text-align="center">Created At</th>
-                            <th text-align="center">Updated At</th>
-                            {/* <th text-align="center">Selling Price</th> */}
-
-                            <th
-                              // text-align="center"
-                              colSpan="3"
-                            >
-                              Action
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {product && product.length
-                            ? product.map(product => {
-                                return (
-                                  <TableRow
-                                    obj={product}
-                                    key={product._id}
-                                    onDelete={this.onDelete}
-                                  />
-                                );
-                              })
-                            : null}
-                        </tbody>
-                      </Table>
-                    </CardBody>
-                  </Card>
-                </Col>
-              </Row>
-            </div>
-            <div style={{ margin: "0 auto" }}>
-              <MDBIcon icon="ban" className="icons bans" />
-              <h5 text align="center" padding-left="40px">
-                Currently there are no Product details added.
-              </h5>
-              <p text align="center" padding-left="40px">
-                {" "}
-                Please click below button to add new.!
-              </p>
-              <Link to={"/add-product"}>
-                {" "}
-                <div>
-                  <OverlayTrigger
-                    key="top"
-                    placement="bottom"
-                    overlay={
-                      <Tooltip id="tooltip-top">Add new product.</Tooltip>
-                    }
-                  >
-                    <Link to={"/add-product"}>
-                      <Button className="flax-center">
-                        {" "}
-                        <i class="fas fa-plus top" />
-                        Add New
+                        <option value={null}>Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Banned">Banned</option>
+                      </FormControl>
+                      <Button
+                        variant="outline-primary"
+                        type="submit"
+                        className="filter"
+                        // style={{ width: "100px", padding: "5px" }}
+                      >
+                        <i class="fas fa-search" />
+                        Search
                       </Button>
-                    </Link>
-                  </OverlayTrigger>
-                </div>
-              </Link>
-            </div>
-          </>
-        )}
+                      &nbsp;&nbsp; &nbsp;&nbsp;
+                      <Button variant="outline-primary">
+                        <i
+                          class="fas fa-sync-alt"
+                          variant="primary"
+                          onClick={this.getData}
+                        />
+                      </Button>
+                    </Form>
+                  </FormGroup>
+                </CardHeader>
+                {/* <CardBody> */}
+                <Table
+                  striped
+                  // bordered
+                  hover
+                  variant="dark"
+                >
+                  <thead>
+                    <tr>
+                      <th text-align="center">S.No.</th>
+                      <th text-align="center">Image</th>
+                      <th text-align="center">Name</th>
+                      <th text-align="center">Price</th>
+                      <th text-align="center">Quantity</th>
+                      <th text-align="center">Status</th>
+                      <th text-align="center">Created At</th>
+                      <th text-align="center">Updated At</th>
+                      {/* <th>Selling Price</th> */}
+
+                      <th colSpan="3">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {product && product.length
+                      ? product.map((product, index) => {
+                          return (
+                            <TableRow
+                              obj={product}
+                              key={product._id}
+                              index={index}
+                              skip={skip}
+                              onDelete={this.onDelete}
+                            />
+                          );
+                        })
+                      : null}
+                  </tbody>
+                </Table>
+                {/* </CardBody> */}
+                <CardHeader>{this.getPaginator()}</CardHeader>
+              </Card>
+            </Col>
+          </Row>
+        </div>
       </>
     );
   }

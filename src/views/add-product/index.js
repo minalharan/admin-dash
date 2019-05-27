@@ -8,6 +8,15 @@ import {
   Container,
   Row
 } from "react-bootstrap";
+import {
+  Label,
+  Col,
+  Form,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
+} from "reactstrap";
 import Validator, { ValidationTypes } from "js-object-validation";
 import { toast } from "react-toastify";
 import Dropzone from "react-dropzone";
@@ -215,9 +224,11 @@ class AddProduct extends Component {
     ));
     return (
       <>
-        <Row className="login_formSignin__27WMl">
+        <Row className="auth-box0">
           <Container>
-            <h3 align="center">Add Product</h3>
+            <h1>Add Product</h1>
+
+            <p className="text-muted">Add your product </p>
             {/* <FormGroup>
               <FormLabel>Category</FormLabel>
               <FormControl
@@ -226,43 +237,50 @@ class AddProduct extends Component {
                 className="bg auth-box c"
               />
             </FormGroup> */}
-            <form onSubmit={this.onSubmit} noValidate>
-              <FormGroup>
-                <FormLabel>
-                  Name <span className="required">*</span>
-                </FormLabel>
-                <FormControl
+            <form
+              onSubmit={this.onSubmit}
+              className="login_formSignin__27WMl"
+              noValidate
+            >
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-key left key" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
                   type="text"
-                  placeholder="product name"
                   name="name"
-                  value={this.state.name}
-                  onChange={this.onInputChange}
+                  placeholder="Product name"
+                  autoComplete="name"
+                  onChange={this.props.onInputChange}
                 />
-                {nameError ? <p className="text-danger">{nameError}</p> : null}
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>
-                  <i class="fas fa-tag top" />
-                  Price <span className="required">*</span>
-                </FormLabel>
-                <FormControl
-                  type="number"
-                  placeholder="product Price"
+                {nameError ? <p style={{ color: "red" }}>{nameError}</p> : null}
+              </InputGroup>
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i class="fas fa-tag" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  type="text"
                   name="price"
+                  placeholder="Product price"
+                  autoComplete="price"
                   value={this.state.price}
-                  onChange={this.onInputChange}
+                  onChange={this.props.onInputChange}
                 />
-
                 {priceError ? (
-                  <p className="text-danger">{priceError}</p>
+                  <p style={{ color: "red" }}>{priceError}</p>
                 ) : null}
-              </FormGroup>
-              <FormLabel>
-                <i class="fas fa-list-alt top" />
-                Category
-                <span className="required">*</span>
-              </FormLabel>
-              <FormGroup margin="normal">
+              </InputGroup>
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i class="fas fa-list" />
+                  </InputGroupText>
+                </InputGroupAddon>
                 <FormControl
                   as="select"
                   name="category"
@@ -284,13 +302,14 @@ class AddProduct extends Component {
                 {categoryError ? (
                   <p className="text-danger">{categoryError}</p>
                 ) : null}
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>
-                  <i class="far fa-file-image top" />
-                  Image <span className="required">*</span>
-                </FormLabel>
-                <FormControl
+              </InputGroup>
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i class="fas fa-image" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
                   type="file"
                   placeholder="product Image"
                   name="thumbnail"
@@ -300,7 +319,7 @@ class AddProduct extends Component {
                 {thumbnailError ? (
                   <p className="text-danger">{thumbnailError}</p>
                 ) : null}
-              </FormGroup>
+              </InputGroup>
               {/* <FormGroup>
                 <FormLabel>
                   <i class="far fa-file-image top" />
@@ -318,18 +337,21 @@ class AddProduct extends Component {
                 {({ getRootProps, getInputProps }) => (
                   <section className="container">
                     <div {...getRootProps({ className: "dropzone" })}>
-                      <FormLabel>
-                        <i class="far fa-file-image top" />
-                        Image <span className="required">*</span>
-                      </FormLabel>
-                      <input {...getInputProps()} />
-                      <FormControl
-                        type="file"
-                        placeholder="product Image"
-                        name="otherImg"
-                        onChange={this.onChangefile}
-                        className="auth-box c"
-                      />
+                      <InputGroup className="mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i class="far fa-images" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <input {...getInputProps()} />
+                        <FormControl
+                          type="file"
+                          placeholder="product Image"
+                          name="otherImg"
+                          onChange={this.onChangefile}
+                          className="auth-box c"
+                        />
+                      </InputGroup>
                     </div>
                     <aside>
                       <h4>Files</h4>

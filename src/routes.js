@@ -11,6 +11,7 @@ import AdminProfile from "./views/admin-profile/index";
 import ChangePassword from "./views/change-password/index";
 import Category from "./views/Category/category";
 import UserRow from "./views/Category/categoryList";
+import Signup from "./containers/sign-up/index";
 
 const routes = [
   { path: "/category-list", name: "UserRow", component: UserRow },
@@ -18,6 +19,8 @@ const routes = [
   { path: "/add-product", name: "AddProduct", component: AddProduct },
 
   { path: "/product-list", exact: true, name: "Product", component: Product },
+
+  { path: "/add-user", exact: true, name: "Signup", component: Signup },
   {
     path: "/add-category",
     exact: true,

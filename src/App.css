@@ -46,6 +46,13 @@
   margin-right: 400px;
   padding-right: 0px;
 }
+.auth-box0 {
+  background: #fff;
+  border: 1px solid rgb(7, 7, 10);
+  border-radius: 5px;
+  margin-left: 300px;
+  margin-right: 300px;
+}
 
 .bg {
   background-color: #d1caca;
@@ -196,14 +203,14 @@
   padding-top: 5px;
   padding-bottom: 5px;
 }
-.login_loginContainer__2JMrT {
+.login_loginContainer__2JMrT1 {
   display: flex;
   -ms-flex-align: center;
   padding-top: 40px;
   padding-bottom: 40px;
   background-color: #f5f5f5;
   height: 100vh;
-  background: url(http://192.168.2.119:3001/static/media/Login_Bg.9c4b2b39.jpg);
+  /* background: url(http://192.168.2.119:3001/static/media/Login_Bg.9c4b2b39.jpg); */
   background-repeat: no-repeat;
   background-size: cover;
   /* margin: auto; */
@@ -579,4 +586,10 @@
 }
 .filter {
   margin-left: 10px;
+}
+.key {
+  padding-left: 0px;
+}
+.preview {
+  margin-left: 100px;
 }

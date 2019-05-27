@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  HashRouter,
-  Route,
-  Switch,
-  Router,
-  BrowserRouter
-} from "react-router-dom";
-// import { renderRoutes } from 'react-router-config';
+import { Route, Switch, BrowserRouter } from "react-router-dom";
 import "./App.scss";
 import "./App.css";
 import DefaultLayout from "./containers/DefaultLayout";
@@ -21,33 +14,18 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <React.Suspense fallback={loading()}>
-          <Switch>
-            <Route
-              exact
-              path="/login1"
-              name="Login Page1"
-              render={props => <Login1 {...props} />}
-            />
-            <Route
-              exact
-              path="/forgot-password"
-              name="ForgotPassword"
-              render={props => <ForgotPassword {...props} />}
-            />
-            <Route
-              exact
-              path="/reset/:token1"
-              name="ResetPassword"
-              render={props => <ResetPassword {...props} />}
-            />
-            <Route
-              path="/"
-              name="Home"
-              render={props => <DefaultLayout {...props} />}
-            />
-          </Switch>
-        </React.Suspense>
+        {/* <React.Suspense fallback={loading()}> */}
+        <Switch>
+          <Route exact path="/login" component={Login1} />
+          <Route exact path="/forgot-password" component={ForgotPassword} />
+          <Route exact path="/reset/:token1" component={ResetPassword} />
+          <Route
+            path="/"
+            name="Home"
+            render={props => <DefaultLayout {...props} />}
+          />
+        </Switch>
+        {/* </React.Suspense> */}
       </BrowserRouter>
     );
   }

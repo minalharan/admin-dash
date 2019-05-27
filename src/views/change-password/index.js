@@ -30,7 +30,12 @@ class ChangePassword extends Component {
       errors: {}
     };
   }
-
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login");
+    }
+  }
   onSubmit = async e => {
     e.preventDefault();
     try {
@@ -51,14 +56,14 @@ class ChangePassword extends Component {
       };
       const messages = {
         oldPassword: {
-          [ValidationTypes.REQUIRED]: "Please enter old password."
+          [ValidationTypes.REQUIRED]: "Please enter an old password."
         },
         newPassword: {
-          [ValidationTypes.REQUIRED]: "Please enter new password.",
+          [ValidationTypes.REQUIRED]: "Please enter a new password.",
           [ValidationTypes.MINLENGTH]: "Please enter at least 6 characters."
         },
         cpassword: {
-          [ValidationTypes.REQUIRED]: "Please enter confirm password.",
+          [ValidationTypes.REQUIRED]: "Please enter a confirm password.",
           [ValidationTypes.EQUAL]: "Password and confirm password didn't match."
         }
       };
@@ -93,11 +98,6 @@ class ChangePassword extends Component {
       this.props.history.push("/product-list");
     } catch (error) {
       console.log(error.response.data);
-      Swal.fire({
-        type: "error",
-        title: "Oops...",
-        text: "Password didn't match !"
-      });
       this.setState({
         updated: false,
         isLoading: false,
@@ -144,7 +144,7 @@ class ChangePassword extends Component {
               <FormControl
                 required="true"
                 type="password"
-                placeholder="Enter old password.."
+                placeholder="Enter old password"
                 name="oldPassword"
                 onChange={this.onInputChange}
                 className="a"
@@ -159,7 +159,7 @@ class ChangePassword extends Component {
               <FormControl
                 required="true"
                 type="password"
-                placeholder="Enter new password.."
+                placeholder="Enter new password"
                 name="newPassword"
                 onChange={this.onInputChange}
                 className="a"

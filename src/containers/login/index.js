@@ -12,7 +12,8 @@ class Login extends Component {
       email: "",
       password: "",
       isLoading: false,
-      errors: {}
+      errors: {},
+      error: ""
     };
   }
   componentDidMount() {
@@ -42,11 +43,11 @@ class Login extends Component {
       };
       const messages = {
         email: {
-          [ValidationTypes.EMAIL]: "Please enter valid email",
-          [ValidationTypes.REQUIRED]: "Please Enter email"
+          [ValidationTypes.EMAIL]: "Please enter a valid email address",
+          [ValidationTypes.REQUIRED]: "Please enter an email address"
         },
         password: {
-          [ValidationTypes.REQUIRED]: "Please Enter password"
+          [ValidationTypes.REQUIRED]: " Please  enter  a  password....."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);

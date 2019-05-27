@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Validator, { ValidationTypes } from "js-object-validation";
-import { InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+import { InputGroup, InputGroupAddon, InputGroupText, Input } from "reactstrap";
 
 import {
   FormGroup,
@@ -44,7 +44,7 @@ class LoginComponent extends Component {
                         <i className="icon-user" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <FormControl
+                    <Input
                       type="email"
                       name="email"
                       placeholder="Enter email"
@@ -57,28 +57,27 @@ class LoginComponent extends Component {
                     ) : null}
                   </InputGroup>
                 </div>
-                <div className="input-group">
-                  <InputGroup className="mb-4">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="icon-lock" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <FormControl
-                      required="true"
-                      type="password"
-                      placeholder="Enter Password"
-                      name="password"
-                      // className="form-control email"
-                      onChange={this.props.onInputChange}
-                      className="a"
-                    >
-                      {passwordError ? (
-                        <p className="text-danger">{passwordError}</p>
-                      ) : null}
-                    </FormControl>
-                  </InputGroup>
-                </div>
+                {/* <div className="input-group"> */}
+                <InputGroup className="mb-4">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="icon-lock" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    required="true"
+                    type="password"
+                    placeholder="Enter Password"
+                    name="password"
+                    // className="form-control email"
+                    onChange={this.props.onInputChange}
+                    className="a"
+                  />
+                  {passwordError ? (
+                    <p className="text-danger">{passwordError}</p>
+                  ) : null}
+                </InputGroup>
+                {/* </div> */}
                 <Button
                   variant="primary"
                   type="submit"

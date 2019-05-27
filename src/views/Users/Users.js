@@ -18,7 +18,7 @@ class UserRow extends Component {
   componentDidMount() {
     const token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push("/login1");
+      this.props.history.push("/login");
     }
   }
   getBadge = status => {
@@ -145,8 +145,10 @@ class Users extends Component {
     const obj = { skip, limit };
     const res = await axios.post("http://192.168.2.107:8080/showUser1");
     var count = res.data.result;
-    if (count % 2 != 0) {
-      count = count + 1;
+    if (count % pageLimit != 0) {
+      const a = count % pageLimit;
+      const b = pageLimit - a;
+      count = count + b;
     }
     this.setState({ totalPageRec: count });
     const response = await axios.post("http://192.168.2.107:8080/getuser", obj);

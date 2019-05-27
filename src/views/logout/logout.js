@@ -4,13 +4,13 @@ class Logout extends Component {
   componentDidMount = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push("/login1");
+      this.props.history.push("/login");
       console.log("in it");
     }
   };
   render() {
     return (
-      <Link to={"/login1"} onClick={localStorage.clear()}>
+      <Link to={"/login"} onClick={localStorage.clear()}>
         LOGOUT
       </Link>
     );

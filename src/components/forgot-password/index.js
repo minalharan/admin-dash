@@ -28,7 +28,6 @@ class ForgotComponent extends Component {
           <h2 align="center">Forgot Password</h2>
           <br />
           <ToastContainer />
-          <div className="login_subhead__e1IaE">Forgot Password ?</div>
           <div>
             <div className="mb-100 input-group">
               <InputGroup className="mb-3">
@@ -59,11 +58,9 @@ class ForgotComponent extends Component {
           </div>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           &nbsp; &nbsp;
-          <div className="b">
-            <Link to={"/login"} align="center">
-              <p> Sign in</p>
-            </Link>
-          </div>
+          <Link to={"/login"} align="center">
+            <Button className="btn btn-dark btn-block">Cancel</Button>
+          </Link>
         </form>
       </div>
     );

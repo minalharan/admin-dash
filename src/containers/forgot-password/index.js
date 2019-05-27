@@ -28,12 +28,12 @@ class ForgotPassword extends Component {
       errors: {}
     };
   }
-  // componentDidMount() {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     this.props.history.push("/product-list");
-  //   }
-  // }
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.props.history.push("/product-list");
+    }
+  }
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value,
@@ -60,8 +60,8 @@ class ForgotPassword extends Component {
       };
       const messages = {
         email: {
-          [ValidationTypes.REQUIRED]: "Please enter email.",
-          [ValidationTypes.EMAIL]: "Please enter valid email."
+          [ValidationTypes.REQUIRED]: "Please enter an email address",
+          [ValidationTypes.EMAIL]: "Please enter a valid email."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
@@ -86,11 +86,7 @@ class ForgotPassword extends Component {
     } catch (error) {
       console.log(error.response.data);
       this.setState({ isLoading: false });
-      Swal.fire({
-        type: "error",
-        title: "Oops...",
-        text: "Something went wrong!"
-      });
+
       toast.error(
         `${(error.response &&
           error.response.data &&

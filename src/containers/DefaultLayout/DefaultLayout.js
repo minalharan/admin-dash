@@ -29,7 +29,7 @@ class DefaultLayout extends Component {
 
   // signOut(e) {
   //   e.preventDefault();
-  //   this.props.history.push("/login1");
+  //   this.props.history.push("/login");
   // }
 
   render() {
@@ -70,7 +70,7 @@ class DefaultLayout extends Component {
                       />
                     ) : null;
                   })}
-                  <Redirect from="/" to="/login1" />
+                  <Redirect from="/" to="/login" />
                 </Switch>
               </Suspense>
             </Container>

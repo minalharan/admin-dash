@@ -15,11 +15,11 @@ export default {
       url: "/add-product",
       icon: "icon-plus"
     },
-    {
-      name: "Add Category",
-      url: "/add-category",
-      icon: "icon-plus"
-    },
+    // {
+    //   name: "Add Category",
+    //   url: "/add-category",
+    //   icon: "icon-plus"
+    // },
     {
       name: "Category List",
       url: "/category-list",

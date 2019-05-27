@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from "reactstrap";
 import {
   Image,
@@ -7,8 +7,14 @@ import {
   FormControl,
   FormGroup,
   Form,
-  Pagination
+  Pagination,
+  Modal,
+  Container,
+  FormLabel,
+  ModalFooter
 } from "react-bootstrap";
+import { toast } from "react-toastify";
+import Validator, { ValidationTypes } from "js-object-validation";
 import Swal from "sweetalert2";
 import axios from "axios";
 const BASE_URL = "http://192.168.2.107:8080/";
@@ -62,22 +68,6 @@ class UserRow extends Component {
       console.log("error");
     }
   };
-
-  //   onCount = async (e) => {
-  //      e.preventDefault();
-  //     try {
-  //       const{Cid}=this.state
-  //       const data = {Cid};
-
-  //       const response = await axios.post(
-  //         "http://192.168.2.107:8080/showproductCount/",data
-  //       );
-  //       return response.data.result;
-  // //this.props.history.push("/cat-list");
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
 
   render() {
     return (
@@ -133,7 +123,7 @@ class UserRow extends Component {
                 })
               }
             >
-              <i class="fas fa-trash-alt" />
+              <i className="fas fa-trash-alt" />
             </Button>
           </td>
         </tr>
@@ -153,7 +143,11 @@ class CategoryList extends Component {
       currentPage: 1,
       totalPageRec: 0,
       pageLimit: 1,
-      skip: 0
+      skip: 0,
+      show: false,
+      value: "",
+      isOpen: false,
+      errors: {}
     };
   }
   componentDidMount = async () => {
@@ -164,6 +158,55 @@ class CategoryList extends Component {
 
     this.getData();
   };
+  onSubmit1 = async e => {
+    e.preventDefault();
+    try {
+      const { category } = this.state;
+
+      const obj = {
+        category
+      };
+      const validations = {
+        category: {
+          [ValidationTypes.REQUIRED]: true
+        }
+      };
+      const messages = {
+        category: {
+          [ValidationTypes.REQUIRED]: "Please enter the name of category."
+        }
+      };
+      const { isValid, errors } = Validator(obj, validations, messages);
+      console.log(errors);
+      console.log(isValid);
+      if (!isValid) {
+        this.setState({
+          errors
+        });
+        return;
+      }
+      //const { category } = this.state;
+      const data = { category };
+      const response = await axios.post(
+        "http:///192.168.2.107:8080/category",
+        data
+      );
+      console.log("response");
+      console.log(response);
+      // this.setState({ category: "" });
+      toast.success("Category added !");
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        `${(error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+          "Unknown error"}`
+      );
+    }
+  };
 
   getData = async () => {
     const { currentPage, pageLimit } = this.state;
@@ -172,8 +215,10 @@ class CategoryList extends Component {
     const obj = { skip, limit };
     const res = await axios.post("http://192.168.2.107:8080/showCat1");
     var count = res.data.result;
-    if (count % 2 != 0) {
-      count = count + 1;
+    if (count % pageLimit != 0) {
+      const a = count % pageLimit;
+      const b = pageLimit - a;
+      count = count + b;
     }
     this.setState({ totalPageRec: count });
     const response = await axios.post("http://192.168.2.107:8080/getCat", obj);
@@ -258,9 +303,29 @@ class CategoryList extends Component {
       [name]: value
     });
   };
+  handleClose = e => {
+    this.setState({ show: false });
+  };
+
+  handleShow = e => {
+    this.setState({ show: true });
+  };
+  handleOpen = e => {
+    this.setState({ isOpen: !this.state.isOpen });
+  };
 
   render() {
-    const { cat, category, order, currentPage, skip, status } = this.state;
+    const {
+      cat,
+      category,
+      order,
+      currentPage,
+      skip,
+      status,
+      errors
+    } = this.state;
+    const { category: categoryError } = errors;
+
     console.log("userssss  ", cat);
 
     // const userList = usersData.filter((user) => user.id < 10)
@@ -268,13 +333,54 @@ class CategoryList extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Link to={"/add-category"}>
-            <Button className="header">
-              {" "}
-              <i class="fa fa-plus top" aria-hidden="true" />
-              Add Category
-            </Button>
-          </Link>
+          <Button className="header" onClick={this.handleShow}>
+            {" "}
+            <i class="fa fa-plus top" aria-hidden="true" />
+            Add Category
+          </Button>
+          <Modal
+            show={this.state.show}
+            onHide={this.handleClose}
+            className="animate"
+          >
+            <form onSubmit={this.onSubmit1} noValidate>
+              <Modal.Header closeButton>
+                <Modal.Title>Add Category</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Container>
+                  <div className="input-group">
+                    <FormGroup className="mb-3">
+                      <FormControl
+                        className="rig"
+                        type="text"
+                        placeholder="Category Name"
+                        name="category"
+                        value={this.state.category}
+                        onChange={this.onInputChange}
+                      />
+                      {categoryError ? (
+                        <p className="text-danger">{categoryError}</p>
+                      ) : null}
+                    </FormGroup>
+
+                    <div />
+                    <br />
+                  </div>
+                </Container>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="outline-success"
+                  type="submit"
+                  // className="image3"
+                >
+                  <i class="fas fa-plus top" />
+                  Add Category
+                </Button>{" "}
+              </Modal.Footer>
+            </form>
+          </Modal>
           <Col xl={12}>
             <Card>
               <CardHeader>
@@ -382,4 +488,4 @@ class CategoryList extends Component {
   }
 }
 
-export default CategoryList;
+export default withRouter(CategoryList);

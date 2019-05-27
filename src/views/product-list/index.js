@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import axios from "axios";
 import {
   Button,
-  OverlayTrigger,
-  Tooltip,
   FormGroup,
   FormControl,
   Form,
@@ -12,11 +10,8 @@ import {
 import { toast } from "react-toastify";
 import TableRow from "./TableRow.js";
 import { Link } from "react-router-dom";
-import { MDBBtn, MDBIcon, Input } from "mdbreact";
 
-import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from "reactstrap";
-import { async } from "q";
-//import "./productlist.css";
+import { Card, CardHeader, Col, Row, Table } from "reactstrap";
 
 class ProductList extends Component {
   constructor(props) {
@@ -44,7 +39,7 @@ class ProductList extends Component {
   componentDidMount = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push("/login1");
+      this.props.history.push("/login");
     }
     axios.get("http://192.168.2.107:8080/getCategory").then(res => {
       const result = res.data;
@@ -71,8 +66,10 @@ class ProductList extends Component {
         "http://192.168.2.107:8080/showproduct1"
       );
       var count = response.data.result;
-      if (count % 2 != 0) {
-        count = count + 1;
+      if (count % pageLimit != 0) {
+        const a = count % pageLimit;
+        const b = pageLimit - a;
+        count = count + b;
       }
       this.setState({
         totalPageRec: count
@@ -168,37 +165,7 @@ class ProductList extends Component {
       [name]: value
     });
   };
-  onsearchCatagory = async e => {
-    e.preventDefault();
-    this.setState({ product: "" });
-    const { category } = this.state;
 
-    const data = { category };
-    const response = await axios.post(
-      "http://192.168.2.107:8080/searchProductByCat",
-      data
-    );
-    if (response) {
-      const result = response.data.result;
-      this.setState({ product: result });
-    }
-  };
-  onSearch = async e => {
-    e.preventDefault();
-    this.setState({ user: "" });
-    const { sort } = this.state;
-
-    const data = { sort };
-
-    const response = await axios.post(
-      "http://192.168.2.107:8080/searchProductByPrice",
-      data
-    );
-    if (response) {
-      const result = response.data.result;
-      this.setState({ product: result });
-    }
-  };
   render() {
     const { product, name, sort, categoryValue, skip } = this.state;
     return (

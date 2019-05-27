@@ -21,7 +21,7 @@ class Category extends Component {
   componentDidMount = async () => {
     // const token = localStorage.getItem("token");
     // if (!token) {
-    //   this.props.history.push("/login1");
+    //   this.props.history.push("/login");
     // }
 
     //  const { user } = this.state;

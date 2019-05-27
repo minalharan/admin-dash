@@ -76,18 +76,18 @@ class Signup extends Component {
       };
       const messages = {
         name: {
-          [ValidationTypes.REQUIRED]: "Please enter name."
+          [ValidationTypes.REQUIRED]: "Please enter a name."
         },
         email: {
-          [ValidationTypes.REQUIRED]: "Please enter email.",
-          [ValidationTypes.EMAIL]: "Please enter valid email."
+          [ValidationTypes.REQUIRED]: "Please enter an email address.",
+          [ValidationTypes.EMAIL]: "Please enter a valid email address."
         },
         password: {
-          [ValidationTypes.REQUIRED]: "Please enter password.",
+          [ValidationTypes.REQUIRED]: "Please enter a password.",
           [ValidationTypes.MINLENGTH]: "Please enter at least 6 characters."
         },
         cpassword: {
-          [ValidationTypes.REQUIRED]: "Please enter confirm password.",
+          [ValidationTypes.REQUIRED]: "Please enter a confirm password.",
           [ValidationTypes.EQUAL]: "Password and confirm password didn't match"
         },
         mobile_no: {

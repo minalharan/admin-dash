@@ -62,6 +62,7 @@ class SignupComponent extends Component {
                 autoComplete="name"
                 onChange={this.props.onInputChange}
               />
+              <br />
               {nameError ? <p style={{ color: "red" }}>{nameError}</p> : null}
             </InputGroup>
 

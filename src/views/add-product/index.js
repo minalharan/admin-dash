@@ -248,12 +248,13 @@ class AddProduct extends Component {
                     <i className="fa fa-key left key" />
                   </InputGroupText>
                 </InputGroupAddon>
+
                 <Input
                   type="text"
                   name="name"
                   placeholder="Product name"
                   autoComplete="name"
-                  onChange={this.props.onInputChange}
+                  onChange={this.onInputChange}
                 />
                 {nameError ? <p style={{ color: "red" }}>{nameError}</p> : null}
               </InputGroup>
@@ -263,14 +264,16 @@ class AddProduct extends Component {
                     <i class="fas fa-tag" />
                   </InputGroupText>
                 </InputGroupAddon>
+
                 <Input
                   type="text"
                   name="price"
                   placeholder="Product price"
                   autoComplete="price"
                   value={this.state.price}
-                  onChange={this.props.onInputChange}
+                  onChange={this.onInputChange}
                 />
+
                 {priceError ? (
                   <p style={{ color: "red" }}>{priceError}</p>
                 ) : null}
@@ -281,6 +284,7 @@ class AddProduct extends Component {
                     <i class="fas fa-list" />
                   </InputGroupText>
                 </InputGroupAddon>
+
                 <FormControl
                   as="select"
                   name="category"
@@ -300,7 +304,7 @@ class AddProduct extends Component {
                   )
                 </FormControl>
                 {categoryError ? (
-                  <p className="text-danger">{categoryError}</p>
+                  <p style={{ color: "red" }}>{categoryError}</p>
                 ) : null}
               </InputGroup>
               <InputGroup className="mb-3">

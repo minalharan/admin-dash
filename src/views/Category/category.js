@@ -4,7 +4,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import Swal from "sweetalert2";
-const BASE_URL = "http://192.168.2.107:8080/";
+import Validator, { ValidationTypes } from "js-object-validation";
+const BASE_URL = "http://192.168.2.118:8080/";
 
 class Category extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class Category extends Component {
     this.state = {
       category: "",
       status: "",
+      errors: [],
       isOpen: false,
       disabled: true,
       enable: false,
@@ -19,19 +21,13 @@ class Category extends Component {
     };
   }
   componentDidMount = async () => {
-    // const token = localStorage.getItem("token");
-    // if (!token) {
-    //   this.props.history.push("/login");
-    // }
-
-    //  const { user } = this.state;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      this.props.history.push("/login");
+    }
     const response = await axios.get(
-      "http://192.168.2.107:8080/getCategory/" + this.props.match.params.id
-    ); //console.log(res.data.result);
-    // console.log("result  :-", this.props.match.params.id);
-    // const result = res.data.result1[0];
-    // this.setState({ user: result });
-    // console.log("users :-", result)
+      "http://192.168.2.118:8080/getCategory/" + this.props.match.params.id
+    );
     this.setState({
       category: response.data.result1[0].category,
       status: response.data.result1[0].status
@@ -43,34 +39,52 @@ class Category extends Component {
 
   onSubmit = async e => {
     e.preventDefault();
+    try {
+      const { category, status } = this.state;
+      const obj = { category, status };
+      const validations = {
+        category: {
+          [ValidationTypes.REQUIRED]: true
+        },
+        status: {
+          [ValidationTypes.REQUIRED]: true
+        }
+      };
+      const messages = {
+        category: {
+          [ValidationTypes.REQUIRED]: "Category is required."
+        },
+        status: {
+          [ValidationTypes.REQUIRED]: "Status is required."
+        }
+      };
+      const { isValid, errors } = Validator(obj, validations, messages);
+      if (!isValid) {
+        this.setState({
+          errors,
+          isLoading: false
+        });
+        return;
+      }
+      // const { category, status } = this.state;
 
-    const { category, status } = this.state;
-
-    const data = {
-      status,
-      category
-    };
-    // const body = new FormData();
-    // for (const i in data) {
-    //   if (data.hasOwnProperty(i)) {
-    //     const element = data[i];
-    //     body.append(i, element);
-    //   }
-    // }
-
-    const result = await axios.post(
-      "http://192.168.2.107:8080/editCategory/" + this.props.match.params.id,
-      data
-    );
-    if (result) {
-      Swal.fire({
-        type: "success",
-        title: "Success",
-        text: "Changes save!"
-      });
-      this.props.history.push("/category-list");
-      console.log(result);
-    }
+      const data = {
+        status,
+        category
+      };
+      const result = await axios.post(
+        "http://192.168.2.118:8080/editCategory/" + this.props.match.params.id,
+        data
+      );
+      if (result) {
+        Swal.fire({
+          type: "success",
+          title: "Success",
+          text: "Changes save!"
+        });
+        this.props.history.push("/category-list");
+      }
+    } catch (error) {}
   };
 
   onInputChange = e => {
@@ -80,22 +94,6 @@ class Category extends Component {
       [name]: value
     });
   };
-  //   onChangefile = e => {
-  //     let reader = new FileReader();
-  //     let file = e.target.files[0];
-  //     this.setState({
-  //       file: e.target.files[0] ? e.target.files[0] : null,
-  //       imageUpdated: true
-  //     });
-  //     reader.onloadend = () => {
-  //       this.setState({
-  //         file: file,
-  //         imagePreviewUrl: reader.result
-  //       });
-  //     };
-
-  //     reader.readAsDataURL(file);
-  //   };
   handleClose = e => {
     this.setState({ show: false });
   };
@@ -111,16 +109,8 @@ class Category extends Component {
   };
 
   render() {
-    // let { imagePreviewUrl, file } = this.state;
-    // let $imagePreview = (
-    //   <Image src={BASE_URL + this.state.file} width="150px" height="160" align="center" roundedCircle />
-    // );
-    // if (imagePreviewUrl) {
-    //   $imagePreview = (
-    //     <Image src={imagePreviewUrl} width="150px" height="160" align="center" roundedCircle />
-    //   );
-    // }
-    // const { user } = this.state;
+    const { isLoading, errors } = this.state;
+    const { category: categoryError, status: statusError } = errors;
     if (this.state.disabled === true) {
       return (
         <div className="animated fadeIn">
@@ -159,18 +149,7 @@ class Category extends Component {
                             />
                           </th>
                         </tr>
-                        {/* <tr>
-                          <th scope="row">Email</th>
-                          <th scope="row"><input type="text" name="email" value={this.state.email} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Mobile</th>
-                          <th scope="row"><input type="text" name="mobile_no" value={this.state.mobile_no} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Gender</th>
-                          <th scope="row"><input type="text" name="gender" value={this.state.gender} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
-                        </tr> */}
+
                         <tr>
                           <th scope="row">Status</th>
                           <th scope="row">
@@ -187,10 +166,7 @@ class Category extends Component {
                             </select>
                           </th>
                         </tr>
-                        {/* <tr>
-                            <th scope="row">File</th>
-                            <th scope="row"><input type="file" name="file" disabled={this.state.disabled} onChange={this.onChangefile} /></th>
-                          </tr> */}
+
                         <tr>
                           <th scope="row" colSpan="2">
                             <Button
@@ -202,6 +178,19 @@ class Category extends Component {
                             >
                               <i class="fas fa-save top" />
                               Save
+                            </Button>
+                            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                            <Button
+                              variant="danger"
+                              className="image"
+                              align="center"
+                              style={{ width: "100px", padding: "5px" }}
+                              onClick={() => {
+                                this.props.history.push("/category-list");
+                              }}
+                            >
+                              Cancel
                             </Button>
                           </th>
                         </tr>
@@ -231,9 +220,6 @@ class Category extends Component {
                   <Form onSubmit={this.onSubmit}>
                     <Table responsive striped hover>
                       <tbody>
-                        {/* <tr align="center">
-                            <th scope="row" colSpan="2">{$imagePreview}</th>
-                          </tr> */}
                         <tr>
                           <th scope="row">Name</th>
                           <th scope="row">
@@ -243,21 +229,12 @@ class Category extends Component {
                               value={this.state.category}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
-                            />
+                            />{" "}
+                            {categoryError ? (
+                              <p className="text-danger">{categoryError}</p>
+                            ) : null}
                           </th>
                         </tr>
-                        {/* <tr>
-                            <th scope="row">Email</th>
-                            <th scope="row"><input type="text" name="email" value={this.state.email} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
-                          </tr>
-                          <tr>
-                            <th scope="row">Mobile</th>
-                            <th scope="row"><input type="text" name="mobile_no" value={this.state.mobile_no} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
-                          </tr>
-                          <tr>
-                            <th scope="row">Gender</th>
-                            <th scope="row"><input type="text" name="gender" value={this.state.gender} disabled={this.state.disabled} onChange={this.onInputChange} /></th>
-                          </tr> */}
                         <tr>
                           <th scope="row">Status</th>
                           <th scope="row">
@@ -272,12 +249,11 @@ class Category extends Component {
                               <option value="Pending">Pending</option>
                               <option value="Banned">Banned</option>
                             </select>
+                            {statusError ? (
+                              <p className="text-danger">{statusError}</p>
+                            ) : null}
                           </th>
                         </tr>
-                        {/* <tr>
-                            <th scope="row">File</th>
-                            <th scope="row"><input type="file" name="file" disabled={this.state.disabled} onChange={this.onChangefile} /></th>
-                          </tr> */}
                         <tr>
                           <th scope="row" colSpan="2">
                             <Button
@@ -289,6 +265,19 @@ class Category extends Component {
                             >
                               <i class="fas fa-save top" />
                               Save
+                            </Button>
+                            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                            &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                            <Button
+                              variant="danger"
+                              className="image"
+                              align="center"
+                              style={{ width: "100px", padding: "5px" }}
+                              onClick={() => {
+                                this.props.history.push("/category-list");
+                              }}
+                            >
+                              Cancel
                             </Button>
                           </th>
                         </tr>

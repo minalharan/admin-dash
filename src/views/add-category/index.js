@@ -22,7 +22,7 @@ class AddCategory extends Component {
   componentDidMount() {
     const token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push("/login1");
+      this.props.history.push("/login");
     }
   }
   onSubmit = async e => {
@@ -44,8 +44,6 @@ class AddCategory extends Component {
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
-      console.log(errors);
-      console.log(isValid);
       if (!isValid) {
         this.setState({
           errors
@@ -55,17 +53,11 @@ class AddCategory extends Component {
       //const { category } = this.state;
       const data = { category };
       const response = await axios.post(
-        "http:///192.168.2.107:8080/category",
+        "http:///192.168.2.118:8080/category",
         data
       );
-      console.log("response");
-      console.log(response);
-      // this.setState({ category: "" });
       toast.success("Category added !");
-
-      console.log(response);
     } catch (error) {
-      console.log(error);
       toast.error(
         `${(error.response &&
           error.response.data &&
@@ -88,7 +80,6 @@ class AddCategory extends Component {
 
   render() {
     const { errors, category } = this.state;
-    console.log(errors);
     const { category: categoryError } = errors;
 
     return (

@@ -8,7 +8,7 @@ import Update from "./update.js";
 import Swal from "sweetalert2";
 import { Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.118:8080/";
 class TableRow extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +33,7 @@ class TableRow extends Component {
   componentDidMount = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.2.107:8080/getItem/" + this.props.obj._id
+        "http://192.168.2.118:8080/getItem/" + this.props.obj._id
       );
       const result1 = response.data.result;
 
@@ -41,7 +41,6 @@ class TableRow extends Component {
         value: result1
       });
     } catch (error) {
-      console.log(error);
       toast.error(`${error.message || "Unknown error"}`);
     }
   };
@@ -50,12 +49,10 @@ class TableRow extends Component {
     e.preventDefault();
     try {
       await axios.delete(
-        "http://192.168.2.107:8080/deleteItem/" + this.props.obj._id
+        "http://192.168.2.118:8080/deleteItem/" + this.props.obj._id
       );
       toast("product Deleted");
-      const result = await axios.post("http://192.168.2.107:8080/getProduct");
-      console.log("result");
-      console.log(result);
+      const result = await axios.post("http://192.168.2.118:8080/getProduct");
     } catch (error) {
       console.log(error);
     }
@@ -72,11 +69,7 @@ class TableRow extends Component {
   };
 
   render() {
-    // console.log(this.props);
     const { value } = this.state;
-    console.log("value");
-    // console.log(value);
-    console.log(this.props.index);
     return (
       <tr>
         <td>{this.props.index + this.props.skip + 1}</td>
@@ -104,7 +97,7 @@ class TableRow extends Component {
             </dialog>
           )}
         </td>
-        <td>{this.props.obj.name}</td>
+        <td className="c">{this.props.obj.name}</td>
         <td>${this.props.obj.price.toFixed(2)}</td>
         <td>{this.props.obj.quantity}</td>
         <td>
@@ -120,10 +113,10 @@ class TableRow extends Component {
           <Link to={"/gtitem/" + this.props.obj._id}>
             <OverlayTrigger
               key="top"
-              placement="bottom"
+              placement="top"
               overlay={<Tooltip id="tooltip-top">Edit</Tooltip>}
             >
-              <Button variant="outline-warning">
+              <Button variant="outline-info">
                 <i class="fas fa-pencil-alt top" />
               </Button>
             </OverlayTrigger>
@@ -131,7 +124,7 @@ class TableRow extends Component {
           &nbsp; &nbsp;
           <OverlayTrigger
             key="top"
-            placement="left"
+            placement="top"
             overlay={<Tooltip id="tooltip-top">Delete</Tooltip>}
           >
             <Button

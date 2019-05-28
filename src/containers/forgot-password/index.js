@@ -74,7 +74,7 @@ class ForgotPassword extends Component {
       }
 
       const response = await axios.post(
-        "http://192.168.2.107:8080/forgotPassword",
+        "http://192.168.2.118:8080/forgotPassword",
         obj
       );
       if (response) {
@@ -84,7 +84,6 @@ class ForgotPassword extends Component {
         this.props.history.push("/login");
       }
     } catch (error) {
-      console.log(error.response.data);
       this.setState({ isLoading: false });
 
       toast.error(

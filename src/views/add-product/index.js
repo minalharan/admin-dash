@@ -6,24 +6,14 @@ import {
   Button,
   FormControl,
   Container,
-  Row
+  Row,
+  Col
 } from "react-bootstrap";
-import {
-  Label,
-  Col,
-  Form,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText
-} from "reactstrap";
 import Validator, { ValidationTypes } from "js-object-validation";
 import { toast } from "react-toastify";
 import Dropzone from "react-dropzone";
 import { MDBBtn } from "mdbreact";
-
-//import ToggleDisplay from "react-toggle-display";
-const BASE_URL = "http://192.168.2.107:8080";
+const BASE_URL = "http://192.168.2.118:8080";
 
 class AddProduct extends Component {
   constructor(props) {
@@ -42,7 +32,9 @@ class AddProduct extends Component {
       thumbnail: "",
       otherImg: [],
       categoryValue: [],
-      files: []
+      files: [],
+      quantity: "",
+      des: ""
     };
   }
 
@@ -51,14 +43,12 @@ class AddProduct extends Component {
     if (!token) {
       this.props.history.push("/login1");
     }
-    axios.get("http://192.168.2.107:8080/getCategory").then(res => {
+    axios.get("http://192.168.2.118:8080/getCategory").then(res => {
       const result = res.data;
-      console.log(res);
       const option = [];
       if (result.result1 && result.result1.length) {
         console.log("in if");
       }
-      console.log(option);
       this.setState({
         option,
         categoryValue: result.result1
@@ -75,13 +65,17 @@ class AddProduct extends Component {
   onSubmit = async e => {
     e.preventDefault();
     try {
-      const { name, price, thumbnail, category, otherImg } = this.state;
-
-      const obj = {
+      const {
         name,
         price,
-        category
-      };
+        thumbnail,
+        category,
+        otherImg,
+        quantity,
+        des
+      } = this.state;
+
+      const obj = { name, price, category, quantity, des };
       const validations = {
         name: {
           [ValidationTypes.REQUIRED]: true
@@ -95,28 +89,38 @@ class AddProduct extends Component {
         },
         category: {
           [ValidationTypes.REQUIRED]: true
+        },
+        quantity: {
+          [ValidationTypes.REQUIRED]: true,
+          [ValidationTypes.NUMERIC]: true
+        },
+        des: {
+          [ValidationTypes.REQUIRED]: true
         }
       };
       const messages = {
         name: {
-          [ValidationTypes.REQUIRED]:
-            "Please Give the description of the product."
+          [ValidationTypes.REQUIRED]: "Please enter the name of product."
         },
         price: {
           [ValidationTypes.REQUIRED]: "Please Enter the price of product.",
           [ValidationTypes.NUMERIC]: "Must be a number."
         },
         thumbnail: {
-          [ValidationTypes.REQUIRED]:
-            "Please Enter the Selling price of product."
+          [ValidationTypes.REQUIRED]: "Please select main image."
         },
         category: {
-          [ValidationTypes.REQUIRED]: "please choose category."
+          [ValidationTypes.REQUIRED]: "Please select category."
+        },
+        quantity: {
+          [ValidationTypes.REQUIRED]: "Please enter quantity.",
+          [ValidationTypes.NUMERIC]: "Must be a number."
+        },
+        des: {
+          [ValidationTypes.REQUIRED]: "Please enter details of product."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
-      console.log(errors);
-      console.log(isValid);
       if (!isValid) {
         this.setState({
           errors
@@ -127,10 +131,11 @@ class AddProduct extends Component {
         name,
         price,
         thumbnail,
-        category
+        category,
+        otherImg,
+        quantity,
+        des
       };
-      const files = Array.from(e.target.files);
-      this.setState({ uploading: true });
 
       const body = new FormData();
       for (const i in data) {
@@ -140,20 +145,13 @@ class AddProduct extends Component {
         }
       }
 
-      const formData = new FormData();
-      for (const i in otherImg) {
-        files.forEach((file, i) => {
-          formData.append(i, file);
-        });
-      }
       const response = await axios.post(
-        " http://192.168.2.107:8080/addProduct",
+        " http://192.168.2.118:8080/addProduct",
         body
       );
       toast.info("product added successfully!");
       this.props.history.push("/product-list");
     } catch (error) {
-      console.log(error);
       toast.error(
         `${(error.response &&
           error.response.data &&
@@ -189,19 +187,39 @@ class AddProduct extends Component {
 
     reader.readAsDataURL(file);
   };
+  fileSelected = e => {
+    var n = 0;
+    var abc = [];
+    for (n = 0; n < e.target.files.length; n++) {
+      abc[n] = e.target.files[n] ? e.target.files[n] : null;
+      this.setState({
+        otherImg: abc[n]
+      });
+    }
+  };
   handleClick = e => {
     this.setState({
       show: !this.state.show
     });
   };
   render() {
-    const { errors, category, categoryValue } = this.state;
-    console.log(errors);
+    const {
+      errors,
+      category,
+      categoryValue,
+      name,
+      price,
+      otherImg,
+      quantity,
+      des
+    } = this.state;
     const {
       name: nameError,
       price: priceError,
       thumbnail: thumbnailError,
-      category: categoryError
+      category: categoryError,
+      quantity: quantityError,
+      des: desError
     } = errors;
     let { imagePreviewUrl, thumbnail } = this.state;
     let $imagePreview = (
@@ -217,74 +235,83 @@ class AddProduct extends Component {
         <img src={imagePreviewUrl} width="150px" height="150px" />
       );
     }
-    const files = this.state.files.map(file => (
-      <li key={file.name}>
-        {file.name} - {file.size} bytes
-      </li>
-    ));
     return (
       <>
-        <Row className="auth-box0">
+        <Row className="login_formSignin__27WMl auth-box0">
           <Container>
-            <h1>Add Product</h1>
+            <h3 align="center" className="bottom">
+              Add Product
+            </h3>
 
-            <p className="text-muted">Add your product </p>
-            {/* <FormGroup>
-              <FormLabel>Category</FormLabel>
-              <FormControl
-                readOnly
-                value={category}
-                className="bg auth-box c"
-              />
-            </FormGroup> */}
-            <form
-              onSubmit={this.onSubmit}
-              className="login_formSignin__27WMl"
-              noValidate
-            >
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="fa fa-key left key" />
-                  </InputGroupText>
-                </InputGroupAddon>
-
-                <Input
+            <form onSubmit={this.onSubmit} noValidate>
+              <FormGroup>
+                <FormLabel>
+                  Name<span className="required">*</span>
+                </FormLabel>
+                <FormControl
                   type="text"
+                  placeholder="Product Name"
                   name="name"
-                  placeholder="Product name"
-                  autoComplete="name"
+                  value={name.toLowerCase()}
                   onChange={this.onInputChange}
                 />
-                {nameError ? <p style={{ color: "red" }}>{nameError}</p> : null}
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i class="fas fa-tag" />
-                  </InputGroupText>
-                </InputGroupAddon>
-
-                <Input
-                  type="text"
+                {nameError ? <p className="text-danger">{nameError}</p> : null}
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>
+                  <i class="fas fa-tag top" />
+                  Price<span className="required">*</span>
+                </FormLabel>
+                <FormControl
+                  type="number"
+                  placeholder="Product Price"
                   name="price"
-                  placeholder="Product price"
-                  autoComplete="price"
-                  value={this.state.price}
+                  value={price}
                   onChange={this.onInputChange}
                 />
 
                 {priceError ? (
-                  <p style={{ color: "red" }}>{priceError}</p>
+                  <p className="text-danger">{priceError}</p>
                 ) : null}
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i class="fas fa-list" />
-                  </InputGroupText>
-                </InputGroupAddon>
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>
+                  <i class="fas fa-tag top" />
+                  Quantity<span className="required">*</span>
+                </FormLabel>
+                <FormControl
+                  type="number"
+                  placeholder="Qunatity"
+                  name="quantity"
+                  value={quantity}
+                  onChange={this.onInputChange}
+                />
 
+                {quantityError ? (
+                  <p className="text-danger">{quantityError}</p>
+                ) : null}
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>
+                  <i class="fa fa-info-circle top" aria-hidden="true" />
+                  Description<span className="required">*</span>
+                </FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="Product Details"
+                  name="des"
+                  value={des}
+                  onChange={this.onInputChange}
+                />
+
+                {desError ? <p className="text-danger">{desError}</p> : null}
+              </FormGroup>
+              <FormLabel>
+                <i class="fas fa-list-alt top" />
+                Category
+                <span className="required">*</span>
+              </FormLabel>
+              <FormGroup margin="normal">
                 <FormControl
                   as="select"
                   name="category"
@@ -304,82 +331,61 @@ class AddProduct extends Component {
                   )
                 </FormControl>
                 {categoryError ? (
-                  <p style={{ color: "red" }}>{categoryError}</p>
+                  <p className="text-danger">{categoryError}</p>
                 ) : null}
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i class="fas fa-image" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>
+                  <i class="far fa-file-image top" />
+                  Image<span className="required">*</span>
+                </FormLabel>
+                <FormControl
                   type="file"
                   placeholder="product Image"
                   name="thumbnail"
                   onChange={this.onChangefile}
-                  className="auth-box c"
+                  className="auth-box"
                 />
                 {thumbnailError ? (
                   <p className="text-danger">{thumbnailError}</p>
                 ) : null}
-              </InputGroup>
-              {/* <FormGroup>
+              </FormGroup>
+              <FormGroup>
                 <FormLabel>
                   <i class="far fa-file-image top" />
-                  Image <span className="required">*</span>
+                  Images<span className="required">*</span>
                 </FormLabel>
                 <FormControl
                   type="file"
                   placeholder="product Image"
                   name="otherImg"
-                  onChange={this.onChangefile}
-                  className="auth-box c"
+                  onChange={this.fileSelected}
+                  className="auth-box"
+                  multiple
                 />
-              </FormGroup> */}
-              <Dropzone onDrop={this.onDrop}>
-                {({ getRootProps, getInputProps }) => (
-                  <section className="container">
-                    <div {...getRootProps({ className: "dropzone" })}>
-                      <InputGroup className="mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i class="far fa-images" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <input {...getInputProps()} />
-                        <FormControl
-                          type="file"
-                          placeholder="product Image"
-                          name="otherImg"
-                          onChange={this.onChangefile}
-                          className="auth-box c"
-                        />
-                      </InputGroup>
-                    </div>
-                    <aside>
-                      <h4>Files</h4>
-                      <ul>{files}</ul>
-                    </aside>
-                  </section>
-                )}
-              </Dropzone>
+              </FormGroup>
 
               <FormGroup align="center">
                 <div className="imgPreview">{$imagePreview}</div>
               </FormGroup>
               <br />
-              <div>
-                <Button
-                  variant="outline-success"
-                  type="submit"
-                  // onClick={this.notify()}
-                  className="animate"
-                >
-                  <i class="fas fa-plus top" />
-                  Add Product
-                </Button>
-              </div>
+
+              <Button variant="success" type="submit" className="btn btn-block">
+                <i class="fas fa-plus top" />
+                Add Product
+              </Button>
+              <br />
+
+              <Button
+                variant="danger"
+                className="image"
+                className="btn btn-block"
+                onClick={() => {
+                  this.props.history.push("/product-list");
+                }}
+              >
+                Cancel
+              </Button>
               <br />
             </form>
           </Container>

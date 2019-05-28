@@ -6,18 +6,15 @@ import { Button, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Dropzone from "react-dropzone";
 import Swal from "sweetalert2";
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.118:8080/";
 class Update extends Component {
   constructor(props) {
     super(props);
-    this.onDrop = files => {
-      this.setState({ files });
-    };
     this.state = {
       name: "",
       price: "",
       thumbnail: "",
-      otherImg: "",
+      otherImg: [],
       status: "",
       imageUpdated: false,
       imagePreviewUrl: "",
@@ -27,9 +24,9 @@ class Update extends Component {
       category: "",
       categoryValue: [],
       categoryN: "",
-      files: [],
       des: "",
-      quantity: ""
+      quantity: "",
+      imageUpdated1: false
     };
   }
 
@@ -40,7 +37,7 @@ class Update extends Component {
     }
     try {
       const response = await axios.get(
-        "http://192.168.2.107:8080/getItem/" + this.props.match.params.id
+        "http://192.168.2.118:8080/getItem/" + this.props.match.params.id
       );
       console.log(response);
 
@@ -51,9 +48,10 @@ class Update extends Component {
         status: response.data.result.status,
         category: response.data.result.category,
         des: response.data.result.des,
-        quantity: response.data.result.quantity
+        quantity: response.data.result.quantity,
+        otherImg: response.data.result.otherImg
       });
-      axios.get("http://192.168.2.107:8080/getCategory").then(res => {
+      axios.get("http://192.168.2.118:8080/getCategory").then(res => {
         const result = res.data;
         console.log(res);
         const option = [];
@@ -69,7 +67,7 @@ class Update extends Component {
       const { category } = this.state;
       const data = { category };
       const result = await axios.post(
-        "http://192.168.2.107:8080/getCategory",
+        "http://192.168.2.118:8080/getCategory",
         data
       );
       console.log(result);
@@ -96,10 +94,12 @@ class Update extends Component {
         price,
         thumbnail,
         imageUpdated,
+        imageUpdated1,
         status,
         category,
         des,
-        quantity
+        quantity,
+        otherImg
       } = this.state;
 
       const data = {
@@ -107,14 +107,14 @@ class Update extends Component {
         price,
         thumbnail,
         imageUpdated,
+        imageUpdated1,
         status,
         category,
         des,
-        quantity
+        quantity,
+        otherImg
       };
-      //   console.log(file);
-      console.log("file***********");
-      console.log(data);
+
       const body = new FormData();
       for (const i in data) {
         if (data.hasOwnProperty(i)) {
@@ -124,7 +124,7 @@ class Update extends Component {
       }
       console.log(this.props.match.params.id);
       const result = await axios.post(
-        "http://192.168.2.107:8080/editItem/" + this.props.match.params.id,
+        "http://192.168.2.118:8080/editItem/" + this.props.match.params.id,
         body
       );
       console.log(result.obj);
@@ -144,7 +144,6 @@ class Update extends Component {
       );
     }
   };
-
   onInputChange = e => {
     const { target } = e;
     const { value, name } = target;
@@ -181,6 +180,17 @@ class Update extends Component {
   handleOpen = e => {
     this.setState({ isOpen: !this.state.isOpen });
   };
+  fileSelected = e => {
+    var n = 0;
+    var abc = [];
+    for (n = 0; n < e.target.files.length; n++) {
+      abc[n] = e.target.files[n] ? e.target.files[n] : null;
+      this.setState({
+        otherImg: abc[n],
+        imageUpdated1: true
+      });
+    }
+  };
 
   handleShow = e => {
     this.setState({ show: true });
@@ -190,7 +200,13 @@ class Update extends Component {
   };
 
   render() {
-    let { imagePreviewUrl, categoryValue, thumbnail, categoryN } = this.state;
+    let {
+      imagePreviewUrl,
+      categoryValue,
+      thumbnail,
+      categoryN,
+      otherImg
+    } = this.state;
     let $imagePreview = (
       <Image
         src={BASE_URL + this.state.thumbnail}
@@ -198,7 +214,7 @@ class Update extends Component {
         height="160"
         align="center"
         roundedCircle
-        className="image"
+        // className="image"
       />
     );
     if (imagePreviewUrl) {
@@ -212,17 +228,11 @@ class Update extends Component {
         />
       );
     }
-    const files = this.state.files.map(file => (
-      <li key={file.name}>
-        {file.name} - {file.size} bytes
-      </li>
-    ));
-
     if (this.state.disabled === true) {
       return (
         <div className="animated fadeIn">
           <Row>
-            <Col lg={6}>
+            <Col lg={8}>
               <Card>
                 <CardHeader>
                   <strong>
@@ -233,13 +243,14 @@ class Update extends Component {
                     <i
                       class="fas fa-user-edit top"
                       style={{ paddingLeft: 130 }}
+                      className="rig"
                     />
                     Edit
                   </Link>
                 </CardHeader>
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
-                    <Table responsive striped hover>
+                    <Table responsive>
                       <tbody>
                         <tr align="center">
                           <th scope="row" colSpan="2">
@@ -248,11 +259,12 @@ class Update extends Component {
                         </tr>
                         <tr>
                           <th scope="row">Name</th>
-                          <th scope="row">
+                          <th scope="row" align="right">
                             <input
                               type="text"
                               name="name"
-                              value={this.state.name}
+                              className="tag"
+                              value={this.state.name.toLowerCase()}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
                             />
@@ -260,9 +272,10 @@ class Update extends Component {
                         </tr>
                         <tr>
                           <th scope="row">Price</th>
-                          <th scope="row">
+                          <th scope="row" align="right">
                             <input
                               type="text"
+                              className="tag"
                               name="price"
                               value={this.state.price}
                               disabled={this.state.disabled}
@@ -272,10 +285,11 @@ class Update extends Component {
                         </tr>
                         <tr>
                           <th scope="row">Status</th>
-                          <th scope="row">
+                          <th scope="row" align="right">
                             <input
                               type="text"
                               name="status"
+                              className="tag"
                               value={this.state.status}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
@@ -284,10 +298,11 @@ class Update extends Component {
                         </tr>
                         <tr>
                           <th scope="row">category</th>
-                          <th scope="row">
+                          <th scope="row" align="right">
                             <input
                               type="text"
                               name="category"
+                              className="tag"
                               value={this.state.categoryN}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
@@ -299,6 +314,8 @@ class Update extends Component {
                           <th scope="row">
                             <input
                               type="text"
+                              align="right"
+                              className="tag"
                               name="des"
                               value={this.state.des}
                               disabled={this.state.disabled}
@@ -306,7 +323,7 @@ class Update extends Component {
                             />
                           </th>
                         </tr>
-                        {/* <tr>
+                        <tr>
                           <th scope="row">Quantity</th>
                           <th scope="row">
                             <input
@@ -316,16 +333,30 @@ class Update extends Component {
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
                             />
-                          </th> */}
-                        {/* </tr> */}
+                          </th>
+                        </tr>
                         <tr>
                           <th scope="row">thumbnail</th>
                           <th scope="row">
                             <input
                               type="file"
+                              className="tag"
                               name="thumbnail"
                               disabled={this.state.disabled}
                               onChange={this.onChangefile}
+                            />
+                          </th>
+                        </tr>
+                        <tr>
+                          <th scope="row">Other-Images</th>
+                          <th scope="row">
+                            <input
+                              type="file"
+                              className="tag"
+                              name="otherImg"
+                              disabled={this.state.disabled}
+                              onChange={this.fileSelected}
+                              multiple
                             />
                           </th>
                         </tr>
@@ -335,6 +366,7 @@ class Update extends Component {
                             <Button
                               variant="primary"
                               type="submit"
+                              className="image3"
                               align="center"
                               disabled={this.state.disabled}
                               style={{ width: "100px", padding: "5px" }}
@@ -343,7 +375,7 @@ class Update extends Component {
                               Save
                             </Button>
                             <Button
-                              variant="primary"
+                              variant="danger"
                               className="image"
                               align="center"
                               style={{ width: "100px", padding: "5px" }}
@@ -369,7 +401,7 @@ class Update extends Component {
       return (
         <div className="animated fadeIn">
           <Row>
-            <Col lg={6}>
+            <Col lg={8}>
               <Card>
                 <CardHeader>
                   <strong>
@@ -390,6 +422,7 @@ class Update extends Component {
                           <th scope="row">Name</th>
                           <th scope="row">
                             <input
+                              className="tag"
                               type="text"
                               name="name"
                               value={this.state.name}
@@ -402,6 +435,7 @@ class Update extends Component {
                           <th scope="row">Price</th>
                           <th scope="row">
                             <input
+                              className="tag"
                               type="text"
                               name="price"
                               value={this.state.price}
@@ -414,6 +448,7 @@ class Update extends Component {
                           <th scope="row">Status</th>
                           <th scope="row">
                             <select
+                              className="tag"
                               name="status"
                               value={this.state.status}
                               disabled={this.state.disabled}
@@ -430,6 +465,7 @@ class Update extends Component {
                           <th scope="row">category</th>
                           <th scope="row">
                             <select
+                              className="tag"
                               name="category"
                               value={this.state.category}
                               disabled={this.state.disabled}
@@ -454,6 +490,7 @@ class Update extends Component {
                             <input
                               type="text"
                               name="des"
+                              className="tag"
                               value={this.state.des}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
@@ -466,6 +503,7 @@ class Update extends Component {
                             <input
                               type="number"
                               name="quantity"
+                              className="tag"
                               value={this.state.quantity}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
@@ -477,9 +515,23 @@ class Update extends Component {
                           <th scope="row">
                             <input
                               type="file"
+                              className="tag"
                               name="thumbnail"
                               disabled={this.state.disabled}
                               onChange={this.onChangefile}
+                            />
+                          </th>
+                        </tr>
+                        <tr>
+                          <th scope="row">Other-Images</th>
+                          <th scope="row">
+                            <input
+                              className="tag"
+                              type="file"
+                              name="otherImg"
+                              disabled={this.state.disabled}
+                              onChange={this.fileSelected}
+                              multiple
                             />
                           </th>
                         </tr>
@@ -511,8 +563,8 @@ class Update extends Component {
                           <th scope="row" colSpan="2">
                             <Button
                               variant="primary"
+                              className="image3"
                               type="submit"
-                              align="center"
                               disabled={this.state.disabled}
                               style={{ width: "100px", padding: "5px" }}
                             >
@@ -520,7 +572,7 @@ class Update extends Component {
                               Save
                             </Button>
                             <Button
-                              variant="primary"
+                              variant="danger"
                               align="center"
                               style={{ width: "100px", padding: "5px" }}
                               onClick={() => {

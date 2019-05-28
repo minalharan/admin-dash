@@ -16,15 +16,9 @@ class Login extends Component {
       error: ""
     };
   }
-  componentDidMount() {
-    const token = localStorage.getItem("token");
-    if (token) {
-      this.props.history.push("/product-list");
-    }
-  }
+
   onLogin = async e => {
     e.preventDefault();
-    console.log("login button pressed");
     this.setState({
       isLoading: true,
       errors: {}
@@ -43,16 +37,15 @@ class Login extends Component {
       };
       const messages = {
         email: {
-          [ValidationTypes.EMAIL]: "Please enter a valid email address",
-          [ValidationTypes.REQUIRED]: "Please enter an email address"
+          [ValidationTypes.EMAIL]: "Please enter a valid email address.",
+          [ValidationTypes.REQUIRED]: "Please enter a registered email address."
         },
         password: {
-          [ValidationTypes.REQUIRED]: " Please  enter  a  password....."
+          [ValidationTypes.REQUIRED]: " Please  enter  a  password."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
       if (!isValid) {
-        console.log(errors);
         this.setState({
           errors,
           isLoading: false
@@ -61,13 +54,10 @@ class Login extends Component {
       }
 
       const response = await Axios.post(
-        "http://192.168.2.107:8080/adminLogin",
+        "http://192.168.2.118:8080/adminLogin",
         obj
       );
-
-      console.log(response);
       localStorage.setItem("token", response.data.token);
-      console.log(this.props);
       toast.success("Login Succesfully");
       localStorage.setItem("cid", response.data.result._id);
       this.props.history.push("/product-list");

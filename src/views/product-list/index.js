@@ -41,14 +41,13 @@ class ProductList extends Component {
     if (!token) {
       this.props.history.push("/login");
     }
-    axios.get("http://192.168.2.107:8080/getCategory").then(res => {
+    axios.get("http://192.168.2.118:8080/getCategory").then(res => {
       const result = res.data;
-      console.log(res);
       const option = [];
       if (result.result1 && result.result1.length) {
         console.log("in if");
       }
-      console.log(option);
+
       this.setState({
         option,
         categoryValue: result.result1
@@ -59,11 +58,15 @@ class ProductList extends Component {
   getData = async () => {
     try {
       const { currentPage, pageLimit } = this.state;
+      const { name, sort, category, status } = this.state;
       const skip = (currentPage - 1) * pageLimit;
       const limit = pageLimit;
       const obj = { skip, limit };
+      const data = { name, sort, category, status, skip, limit };
+      var res;
       const response = await axios.post(
-        "http://192.168.2.107:8080/showproduct1"
+        "http://192.168.2.118:8080/showproduct1",
+        data
       );
       var count = response.data.result;
       if (count % pageLimit != 0) {
@@ -71,28 +74,29 @@ class ProductList extends Component {
         const b = pageLimit - a;
         count = count + b;
       }
-      this.setState({
-        totalPageRec: count
-      });
-      const res = await axios.post(
-        "http://192.168.2.107:8080/showproduct",
-        obj
-      );
-      console.log(res.data.result);
-      console.log("result");
+      this.setState({ totalPageRec: count });
+      if (response) {
+        res = await axios.post(
+          "http://192.168.2.118:8080/searchProductByPrice",
+          data
+        );
+      }
+
       const result = res.data.result;
       this.setState({ product: result, skip });
-      console.log(result);
       if (!result) {
         console.log("error");
       }
     } catch (error) {
       toast.error(
-        `${(error.res && error.res.data && error.res.data.message[0].msg) ||
+        `${(error.response &&
+          error.response.data &&
+          error.response.data.message) ||
           "Unknown error"}`
       );
     }
   };
+
   onSubmit = async e => {
     e.preventDefault();
     this.setState({ product: "" });
@@ -101,7 +105,7 @@ class ProductList extends Component {
     const data = { name, sort, category, status };
 
     const response = await axios.post(
-      "http://192.168.2.107:8080/searchProductByPrice",
+      "http://192.168.2.118:8080/searchProductByPrice",
       data
     );
     if (response) {
@@ -144,14 +148,12 @@ class ProductList extends Component {
   };
 
   onPageChange = async pageNumber => {
-    console.log("Page number :-", pageNumber);
     this.setState({ currentPage: pageNumber }, this.getData);
-    // console.log("pagination data: ", res);
   };
 
   onDelete = async productId => {
     const result = await axios.delete(
-      "http://192.168.2.107:8080/deleteItem/" + productId
+      "http://192.168.2.118:8080/deleteItem/" + productId
     );
     if (result) {
       console.log("product Deleted");
@@ -164,6 +166,12 @@ class ProductList extends Component {
     this.setState({
       [name]: value
     });
+  };
+  onCall = async () => {
+    this.setState(
+      { name: "", status: "", sort: "", category: "" },
+      this.getData
+    );
   };
 
   render() {
@@ -183,12 +191,12 @@ class ProductList extends Component {
               <Card>
                 <CardHeader>
                   <FormGroup inline>
-                    <Form onSubmit={this.onSubmit} inline>
+                    <Form inline>
                       <FormControl
                         type="text"
                         name="name"
                         placeholder="search by name"
-                        value={name}
+                        value={name.toLowerCase()}
                         onChange={this.onInputChange}
                         className="mr-sm-2 filter"
                       />
@@ -200,7 +208,7 @@ class ProductList extends Component {
                         onChange={this.onInputChange}
                         className="mr-sm-2 filter"
                       >
-                        <option value={null}>---Filter---</option>
+                        <option value="">---Filter---</option>
                         <option value="assending">Price Low to High</option>
                         <option value="desending">Price High to Low</option>
                       </FormControl>
@@ -238,31 +246,23 @@ class ProductList extends Component {
                       </FormControl>
                       <Button
                         variant="outline-primary"
-                        type="submit"
                         className="filter"
-                        // style={{ width: "100px", padding: "5px" }}
+                        onClick={this.getData}
                       >
                         <i class="fas fa-search" />
                         Search
                       </Button>
                       &nbsp;&nbsp; &nbsp;&nbsp;
-                      <Button variant="outline-primary">
-                        <i
-                          class="fas fa-sync-alt"
-                          variant="primary"
-                          onClick={this.getData}
-                        />
-                      </Button>
+                      <Link to onClick={this.onCall}>
+                        <Button variant="outline-primary">
+                          <i class="fas fa-sync-alt" variant="primary" />
+                        </Button>
+                      </Link>
                     </Form>
                   </FormGroup>
                 </CardHeader>
-                {/* <CardBody> */}
-                <Table
-                  striped
-                  // bordered
-                  hover
-                  variant="dark"
-                >
+
+                <Table striped hover variant="dark">
                   <thead>
                     <tr>
                       <th text-align="center">S.No.</th>
@@ -273,7 +273,6 @@ class ProductList extends Component {
                       <th text-align="center">Status</th>
                       <th text-align="center">Created At</th>
                       <th text-align="center">Updated At</th>
-                      {/* <th>Selling Price</th> */}
 
                       <th colSpan="3">Action</th>
                     </tr>
@@ -294,8 +293,9 @@ class ProductList extends Component {
                       : null}
                   </tbody>
                 </Table>
-                {/* </CardBody> */}
-                <CardHeader>{this.getPaginator()}</CardHeader>
+                <CardHeader className="container">
+                  {this.getPaginator()}
+                </CardHeader>
               </Card>
             </Col>
           </Row>

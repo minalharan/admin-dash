@@ -1,19 +1,8 @@
 import React, { Component } from "react";
-//import axios from "axios";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
-import Validator, { ValidationTypes } from "js-object-validation";
-import { toast } from "react-toastify";
 import { InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 
-import {
-  Button,
-  FormLabel,
-  FormGroup,
-  FormControl,
-  Row,
-  Col
-} from "react-bootstrap";
+import { Button, FormGroup, FormControl } from "react-bootstrap";
 
 class ResetComponent extends Component {
   render() {
@@ -79,7 +68,6 @@ class ResetComponent extends Component {
                     placeholder="Enter Password"
                     name="password"
                     onChange={this.props.onInputChange}
-                    className="a"
                   />
                   {passwordError ? (
                     <p className=" text-danger">{passwordError}</p>
@@ -99,7 +87,6 @@ class ResetComponent extends Component {
                     placeholder="Enter Confirm Password"
                     name="cpassword"
                     onChange={this.props.onInputChange}
-                    className="a"
                   />
                   {cpasswordError ? (
                     <p className=" text-danger">{cpasswordError}</p>

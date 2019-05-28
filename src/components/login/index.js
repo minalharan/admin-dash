@@ -19,7 +19,12 @@ class LoginComponent extends Component {
   constructor(props) {
     super(props);
   }
-
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.props.history.push("/product-list");
+    }
+  }
   render() {
     const { isLoading, errors } = this.props;
     const { email: emailError, password: passwordError } = this.props.errors;
@@ -34,64 +39,50 @@ class LoginComponent extends Component {
             <Row>
               <Container>
                 <div align="center" className="login_login_header__3FYY0 ">
-                  <h1 className="left">Log In</h1>
+                  <h1 align="center" className="left1">
+                    Log In
+                  </h1>
                 </div>
                 <div className="login_subhead__e1IaE">Admin Login</div>
                 <div className="input-group">
-                  <InputGroup className="mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="icon-user" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
+                  <FormGroup>
+                    <FormControl
                       type="email"
                       name="email"
-                      placeholder="Enter email"
-                      // className="form-control email"
-                      onChange={this.props.onInputChange}
+                      placeholder="Enter Email"
                       className="a"
+                      onChange={this.props.onInputChange}
                     />
+
                     {emailError ? (
                       <p className="text-danger">{emailError}</p>
                     ) : null}
-                  </InputGroup>
+                  </FormGroup>
                 </div>
-                {/* <div className="input-group"> */}
-                <InputGroup className="mb-4">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="icon-lock" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    required="true"
-                    type="password"
-                    placeholder="Enter Password"
-                    name="password"
-                    // className="form-control email"
-                    onChange={this.props.onInputChange}
-                    className="a"
-                  />
-                  {passwordError ? (
-                    <p className="text-danger">{passwordError}</p>
-                  ) : null}
-                </InputGroup>
-                {/* </div> */}
+                <div className="input-group">
+                  <FormGroup>
+                    <FormControl
+                      required="true"
+                      type="password"
+                      placeholder="Enter Password"
+                      name="password"
+                      className="a"
+                      onChange={this.props.onInputChange}
+                    />
+                    {passwordError ? (
+                      <p className="text-danger">{passwordError}</p>
+                    ) : null}
+                  </FormGroup>
+                </div>
                 <Button
-                  variant="primary"
+                  variant="success"
                   type="submit"
-                  className="btn btn-dark btn-block "
+                  className="btn btn-block "
                 >
                   <i class="fas fa-sign-in-alt top" />
                   {isLoading ? "Please wait..." : "Sign In"}
                 </Button>
-                &nbsp; &nbsp;
-                {/* <label>
-                  <input name="Remeberme" type="checkbox" id="rememberme" />
-                  Remeber Me
-                </label>{" "} */}
-                &nbsp; &nbsp;
+                &nbsp; &nbsp; &nbsp; &nbsp;
                 <Link to="/forgot-password">
                   <p className="d">Forgot password ?</p>
                 </Link>

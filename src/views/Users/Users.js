@@ -7,20 +7,15 @@ import {
   FormControl,
   FormGroup,
   Form,
-  Pagination
+  Pagination,
+  OverlayTrigger,
+  Tooltip
 } from "react-bootstrap";
 import Swal from "sweetalert2";
 import axios from "axios";
-const BASE_URL = "http://192.168.2.107:8080/";
-//import usersData from './UsersData'
+const BASE_URL = "http://192.168.2.118:8080/";
 
 class UserRow extends Component {
-  componentDidMount() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      this.props.history.push("/login");
-    }
-  }
   getBadge = status => {
     return status === "Active"
       ? "success"
@@ -31,18 +26,6 @@ class UserRow extends Component {
       : status === "Banned"
       ? "secondary"
       : "primary";
-  };
-  onSubmit = async e => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.delete(
-        "http://192.168.2.107:8080/deleteUser/" + this.props.obj._id
-      );
-      this.props.history.push("/users");
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   render() {
@@ -84,35 +67,47 @@ class UserRow extends Component {
           <td>{this.props.user.lastLogin}</td>
           <td colSpan="2">
             <Link to={"/users/" + this.props.user._id}>
-              <Button variant="outline-primary">
-                <i class="fas fa-edit" />
-              </Button>
+              <OverlayTrigger
+                key="top"
+                placement="top"
+                overlay={<Tooltip id="tooltip-top">Edit</Tooltip>}
+              >
+                <Button variant="outline-primary">
+                  <i class="fas fa-pencil-alt top" />
+                </Button>
+              </OverlayTrigger>
             </Link>
             &nbsp;&nbsp;
-            <Button
-              variant="outline-danger"
-              onClick={e =>
-                Swal.fire({
-                  title: "Are you sure?",
-                  text: "You won't be able to delete this!",
-                  type: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Yes, delete it!"
-                }).then(result => {
-                  if (result.value) {
-                    Swal.fire(
-                      "Deleted!",
-                      "Your file has been deleted.",
-                      "success"
-                    ) && this.props.onDelete(this.props.obj._id);
-                  }
-                })
-              }
+            <OverlayTrigger
+              key="top"
+              placement="top"
+              overlay={<Tooltip id="tooltip-top">Delete</Tooltip>}
             >
-              <i class="fas fa-trash-alt" />
-            </Button>
+              <Button
+                variant="outline-danger"
+                onClick={e =>
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to delete this!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                  }).then(result => {
+                    if (result.value) {
+                      Swal.fire(
+                        "Deleted!",
+                        "Your file has been deleted.",
+                        "success"
+                      ) && this.props.onDelete(this.props.obj._id);
+                    }
+                  })
+                }
+              >
+                <i class="fas fa-trash-alt" />
+              </Button>
+            </OverlayTrigger>
           </td>
         </tr>
       </>
@@ -130,7 +125,7 @@ class Users extends Component {
       status: "",
       currentPage: 1,
       totalPageRec: 0,
-      pageLimit: 1,
+      pageLimit: 5,
       skip: 0
     };
   }
@@ -139,11 +134,14 @@ class Users extends Component {
   };
 
   getData = async () => {
+    const { name, order, status } = this.state;
     const { currentPage, pageLimit } = this.state;
     const skip = (currentPage - 1) * pageLimit;
     const limit = pageLimit;
     const obj = { skip, limit };
-    const res = await axios.post("http://192.168.2.107:8080/showUser1");
+    const data = { name, order, status, skip, limit };
+    var response;
+    const res = await axios.post("http://192.168.2.118:8080/showUser1", data);
     var count = res.data.result;
     if (count % pageLimit != 0) {
       const a = count % pageLimit;
@@ -151,18 +149,32 @@ class Users extends Component {
       count = count + b;
     }
     this.setState({ totalPageRec: count });
-    const response = await axios.post("http://192.168.2.107:8080/getuser", obj);
-
-    const result = response.data.result1;
+    if (name != "" || order != "" || status != "") {
+      response = await axios.post(
+        "http://192.168.2.118:8080/getUserByName",
+        data
+      );
+      if (!response) {
+        this.setState({ name: "", order: "", status: "" });
+      }
+    } else {
+      response = await axios.post("http://192.168.2.118:8080/getuser", obj);
+      this.setState({ name: "", order: "", status: "" });
+    }
+    var result = response.data.result1;
+    // this.setState({ name: "", order: "", status: "" });
     this.setState({ user: result, skip });
     if (!result) {
       console.log("error");
     }
   };
+  onCall = async () => {
+    this.setState({ name: "", status: "", order: "" }, this.getData);
+  };
   onDelete = async productId => {
     try {
       const response = await axios.delete(
-        "http://192.168.2.107:8080/deleteUser/" + productId
+        "http://192.168.2.118:8080/deleteUser/" + productId
       );
     } catch (error) {
       console.log(error);
@@ -216,7 +228,7 @@ class Users extends Component {
     const data = { name, order, status };
 
     const response = await axios.post(
-      "http://192.168.2.107:8080/getUserByName",
+      "http://192.168.2.118:8080/getUserByName",
       data
     );
     if (response) {
@@ -227,19 +239,19 @@ class Users extends Component {
   };
 
   // onSearch = async e => {
-  //   e.preventDefault();
-  //   this.setState({ user: "" });
-  //   const { order } = this.state;
+  // e.preventDefault();
+  // this.setState({ user: "" });
+  // const { order } = this.state;
 
-  //   const data = { order };
+  // const data = { order };
 
-  //   const response = await axios.post(
-  //     "http://192.168.2.107:8080/getUserByOrder", data
-  //   );
-  //   if (response) {
-  //     const result = response.data.result;
-  //     this.setState({ user: result });
-  //   }
+  // const response = await axios.post(
+  // "http://192.168.2.118:8080/getUserByOrder", data
+  // );
+  // if (response) {
+  // const result = response.data.result;
+  // this.setState({ user: result });
+  // }
   // };
 
   onInputChange = e => {
@@ -252,32 +264,33 @@ class Users extends Component {
 
   render() {
     const { user, name, order, currentPage, skip, status } = this.state;
-    console.log("userssss  ", user);
-
-    // const userList = usersData.filter((user) => user.id < 10)
+    console.log("userssss ", user);
 
     return (
       <div className="animated fadeIn">
         <Row>
           <Link to={"/add-user"}>
-            <Button className="header">
+            <Button
+              className="header"
+              style={{ width: "100px", padding: "5px" }}
+            >
               {" "}
               <i class="fa fa-plus top" aria-hidden="true" />
-              Add New User
+              Add User
             </Button>
           </Link>
           <Col xl={12}>
             <Card>
               <CardHeader>
                 <FormGroup inline>
-                  <Form onSubmit={this.onSubmit} inline>
+                  <Form inline>
                     <FormControl
                       type="text"
                       name="name"
                       placeholder="search by name"
                       value={name}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     />
                     &nbsp;
                     <FormControl
@@ -285,9 +298,9 @@ class Users extends Component {
                       name="order"
                       value={order}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     >
-                      <option value={null}>---Name---</option>
+                      <option value="">---Name---</option>
                       <option value="assending">Order By Name A to Z</option>
                       <option value="desending">Order By Name Z to A</option>
                     </FormControl>
@@ -297,9 +310,9 @@ class Users extends Component {
                       name="status"
                       value={status}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     >
-                      <option value={null}>---Status---</option>
+                      <option value="">---Status---</option>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
                       <option value="Pending">Pending</option>
@@ -308,45 +321,42 @@ class Users extends Component {
                     &nbsp;
                     <Button
                       variant="outline-primary"
-                      type="submit"
-                      className="filter"
+                      onClick={this.getData}
                       // style={{ width: "100px", padding: "5px" }}
                     >
                       <i class="fas fa-search" />
                       Search
                     </Button>
-                    &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-                    <Button variant="outline-primary">
-                      <i
-                        class="fas fa-sync-alt"
-                        variant="primary"
-                        onClick={this.getData}
-                      />
-                    </Button>
+                    &nbsp;&nbsp;
+                    <Link to onClick={this.onCall}>
+                      <Button variant="outline-primary">
+                        <i class="fas fa-sync-alt" variant="primary" />
+                      </Button>
+                    </Link>
                   </Form>
                 </FormGroup>
               </CardHeader>
-              {/* <CardBody> */}
-              <Table responsive hover>
-                <thead>
-                  <tr>
-                    <th scope="col">S.No.</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Mobile</th>
-                    <th scope="col">Gender</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">create Time</th>
-                    <th scope="col">Last Login</th>
-                    <th scope="col" colSpan="2">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {user && user.length
-                    ? user.map((user, index) => (
+              <CardBody>
+                <Table responsive hover>
+                  <thead>
+                    <tr>
+                      <th scope="col">S.No.</th>
+                      <th scope="col">Image</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Mobile</th>
+                      <th scope="col">Gender</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">create Time</th>
+                      <th scope="col">Last Login</th>
+                      <th scope="col" colSpan="2">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {user && user.length ? (
+                      user.map((user, index) => (
                         <UserRow
                           obj={user}
                           key={user._id}
@@ -356,10 +366,17 @@ class Users extends Component {
                           onDelete={this.onDelete}
                         />
                       ))
-                    : null}
-                </tbody>
-              </Table>
-              {/* </CardBody> */}
+                    ) : (
+                      <>
+                        {" "}
+                        <h5 text align="center" padding-left="40px">
+                          No record found
+                        </h5>
+                      </>
+                    )}
+                  </tbody>
+                </Table>
+              </CardBody>
               <CardHeader>
                 <div style={{ marginLeft: "40%", marginTop: "3%" }}>
                   {this.getPaginator()}

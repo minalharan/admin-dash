@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import Swal from "sweetalert2";
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.118:8080/";
 
 class User extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class User extends Component {
     }
     //  const { user } = this.state;
     const response = await axios.get(
-      "http://192.168.2.107:8080/getuser/" + this.props.match.params.id
+      "http://192.168.2.118:8080/getuser/" + this.props.match.params.id
     ); //console.log(res.data.result);
     // console.log("result  :-", this.props.match.params.id);
     // const result = res.data.result1[0];
@@ -79,7 +79,7 @@ class User extends Component {
     }
 
     const result = await axios.post(
-      "http://192.168.2.107:8080/profileUpdate/" + this.props.match.params.id,
+      "http://192.168.2.118:8080/profileUpdate/" + this.props.match.params.id,
       body
     );
     if (result) {
@@ -157,7 +157,7 @@ class User extends Component {
       return (
         <div className="animated fadeIn">
           <Row>
-            <Col lg={6}>
+            <Col lg={8}>
               <Card>
                 <CardHeader>
                   <strong>
@@ -186,6 +186,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="text"
+                              className="tag"
                               name="name"
                               value={this.state.name}
                               disabled={this.state.disabled}
@@ -198,6 +199,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="text"
+                              className="tag"
                               name="email"
                               value={this.state.email}
                               disabled={this.state.disabled}
@@ -210,6 +212,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="text"
+                              className="tag"
                               name="mobile_no"
                               value={this.state.mobile_no}
                               disabled={this.state.disabled}
@@ -222,6 +225,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="text"
+                              className="tag"
                               name="gender"
                               value={this.state.gender}
                               disabled={this.state.disabled}
@@ -234,6 +238,7 @@ class User extends Component {
                           <th scope="row">
                             <select
                               name="status"
+                              className="tag"
                               value={this.state.status}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
@@ -250,6 +255,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="file"
+                              className="tag"
                               name="file"
                               disabled={this.state.disabled}
                               onChange={this.onChangefile}
@@ -262,11 +268,23 @@ class User extends Component {
                               variant="primary"
                               type="submit"
                               align="center"
+                              className="image3"
                               disabled={this.state.disabled}
                               style={{ width: "100px", padding: "5px" }}
                             >
                               <i class="fas fa-save top" />
                               Save
+                            </Button>
+                            <Button
+                              variant="danger"
+                              className="image"
+                              align="center"
+                              onClick={() => {
+                                this.props.history.push("/product-list");
+                              }}
+                            >
+                              {" "}
+                              Cancel
                             </Button>
                           </th>
                         </tr>
@@ -284,7 +302,7 @@ class User extends Component {
       return (
         <div className="animated fadeIn">
           <Row>
-            <Col lg={6}>
+            <Col lg={8}>
               <Card>
                 <CardHeader>
                   <strong>
@@ -307,6 +325,7 @@ class User extends Component {
                             <input
                               type="text"
                               name="name"
+                              className="tag"
                               value={this.state.name}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
@@ -319,6 +338,7 @@ class User extends Component {
                             <input
                               type="text"
                               name="email"
+                              className="tag"
                               value={this.state.email}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
@@ -330,6 +350,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="text"
+                              className="tag"
                               name="mobile_no"
                               value={this.state.mobile_no}
                               disabled={this.state.disabled}
@@ -342,6 +363,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="text"
+                              className="tag"
                               name="gender"
                               value={this.state.gender}
                               disabled={this.state.disabled}
@@ -355,6 +377,7 @@ class User extends Component {
                             <select
                               name="status"
                               value={this.state.status}
+                              className="tag"
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
                             >
@@ -370,6 +393,7 @@ class User extends Component {
                           <th scope="row">
                             <input
                               type="file"
+                              className="tag"
                               name="file"
                               disabled={this.state.disabled}
                               onChange={this.onChangefile}
@@ -381,12 +405,25 @@ class User extends Component {
                             <Button
                               variant="primary"
                               type="submit"
+                              className="image3"
                               align="center"
                               disabled={this.state.disabled}
                               style={{ width: "100px", padding: "5px" }}
                             >
                               <i class="fas fa-save top" />
                               Save
+                            </Button>
+                            <Button
+                              variant="danger"
+                              style={{ width: "100px", padding: "5px" }}
+                              className="image"
+                              align="center"
+                              onClick={() => {
+                                this.props.history.push("/users");
+                              }}
+                            >
+                              {" "}
+                              Cancel
                             </Button>
                           </th>
                         </tr>

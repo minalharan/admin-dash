@@ -3,7 +3,7 @@ import axios from "axios";
 import Validator, { ValidationTypes } from "js-object-validation";
 import { toast } from "react-toastify";
 import SignupComponent from "../../components/sign-up";
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.118:8080/";
 
 class Signup extends Component {
   constructor(props) {
@@ -125,7 +125,7 @@ class Signup extends Component {
         }
       }
       const result1 = await axios.post(
-        "http://192.168.2.107:8080/addUser",
+        "http://192.168.2.118:8080/addUser",
         body
       );
       if (result1) {
@@ -143,7 +143,6 @@ class Signup extends Component {
         this.props.history.push("/login");
       }
     } catch (error) {
-      console.log(error);
       this.setState({ isLoading: false });
       toast.error(
         `${(error.response &&

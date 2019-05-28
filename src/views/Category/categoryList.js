@@ -11,13 +11,15 @@ import {
   Modal,
   Container,
   FormLabel,
-  ModalFooter
+  ModalFooter,
+  OverlayTrigger,
+  Tooltip
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Validator, { ValidationTypes } from "js-object-validation";
 import Swal from "sweetalert2";
 import axios from "axios";
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.118:8080/";
 //import usersData from './UsersData'
 
 class UserRow extends Component {
@@ -38,29 +40,14 @@ class UserRow extends Component {
       ? "secondary"
       : "primary";
   };
-  onSubmit = async e => {
-    e.preventDefault();
-    try {
-      const response = await axios.delete(
-        "http://192.168.2.107:8080/deleteCategory/" + this.props.obj._id
-      );
-      this.props.history.push("/cat-list");
-    } catch (error) {
-      console.log(error);
-    }
-  };
   componentDidMount = async () => {
     //  const { user } = this.state;
     const { Cid } = this.state;
     const data = { Cid };
     const response = await axios.post(
-      "http://192.168.2.107:8080/showproductCount/",
+      "http://192.168.2.118:8080/showproductCount/",
       data
     );
-    // console.log("result  :-", this.props.match.params.id);
-    // const result = res.data.result1[0];
-    // this.setState({ user: result });
-    // console.log("users :-", result)
     this.setState({
       Cid: response.data.result
     });
@@ -72,18 +59,9 @@ class UserRow extends Component {
   render() {
     return (
       <>
-        {/* key={user._id.toString()} */}
         <tr>
-          <th scope="row">
-            <Link to={"/cat-list/" + this.props.cat._id}>
-              {this.props.index + this.props.skip + 1}
-            </Link>
-          </th>
-          <td>
-            <Link to={"/cat-list/" + this.props.cat._id}>
-              {this.props.cat.category}
-            </Link>
-          </td>
+          <th scope="row">{this.props.index + this.props.skip + 1}</th>
+          <td>{this.props.cat.category}</td>
           <td>
             <Link to={"/cat-list/" + this.props.cat._id}>
               <Badge color={this.getBadge(this.props.cat.status)}>
@@ -96,35 +74,47 @@ class UserRow extends Component {
           <td>{this.props.cat.updateTime}</td>
           <td colSpan="2">
             <Link to={"/cat-list/" + this.props.cat._id}>
-              <Button variant="outline-primary">
-                <i class="fas fa-edit" />
-              </Button>
+              <OverlayTrigger
+                key="top"
+                placement="top"
+                overlay={<Tooltip id="tooltip-top">Edit</Tooltip>}
+              >
+                <Button variant="outline-primary">
+                  <i class="fas fa-pencil-alt top" />
+                </Button>
+              </OverlayTrigger>
             </Link>
             &nbsp;&nbsp;
-            <Button
-              variant="outline-danger"
-              onClick={e =>
-                Swal.fire({
-                  title: "Are you sure?",
-                  text: "You won't be able to delete this!",
-                  type: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Yes, delete it!"
-                }).then(result => {
-                  if (result.value) {
-                    Swal.fire(
-                      "Deleted!",
-                      "Your file has been deleted.",
-                      "success"
-                    ) && this.props.onDelete(this.props.obj._id);
-                  }
-                })
-              }
+            <OverlayTrigger
+              key="top"
+              placement="top"
+              overlay={<Tooltip id="tooltip-top">Delete</Tooltip>}
             >
-              <i className="fas fa-trash-alt" />
-            </Button>
+              <Button
+                variant="outline-danger"
+                onClick={e =>
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to delete this!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                  }).then(result => {
+                    if (result.value) {
+                      Swal.fire(
+                        "Deleted!",
+                        "Your file has been deleted.",
+                        "success"
+                      ) && this.props.onDelete(this.props.obj._id);
+                    }
+                  })
+                }
+              >
+                <i className="fas fa-trash-alt" />
+              </Button>
+            </OverlayTrigger>
           </td>
         </tr>
       </>
@@ -142,7 +132,7 @@ class CategoryList extends Component {
       status: "",
       currentPage: 1,
       totalPageRec: 0,
-      pageLimit: 1,
+      pageLimit: 5,
       skip: 0,
       show: false,
       value: "",
@@ -177,26 +167,19 @@ class CategoryList extends Component {
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
-      console.log(errors);
-      console.log(isValid);
       if (!isValid) {
         this.setState({
           errors
         });
         return;
       }
-      //const { category } = this.state;
+
       const data = { category };
       const response = await axios.post(
-        "http:///192.168.2.107:8080/category",
+        "http:///192.168.2.118:8080/category",
         data
       );
-      console.log("response");
-      console.log(response);
-      // this.setState({ category: "" });
       toast.success("Category added !");
-
-      console.log(response);
     } catch (error) {
       console.log(error);
       toast.error(
@@ -209,30 +192,50 @@ class CategoryList extends Component {
   };
 
   getData = async () => {
-    const { currentPage, pageLimit } = this.state;
-    const skip = (currentPage - 1) * pageLimit;
-    const limit = pageLimit;
-    const obj = { skip, limit };
-    const res = await axios.post("http://192.168.2.107:8080/showCat1");
-    var count = res.data.result;
-    if (count % pageLimit != 0) {
-      const a = count % pageLimit;
-      const b = pageLimit - a;
-      count = count + b;
-    }
-    this.setState({ totalPageRec: count });
-    const response = await axios.post("http://192.168.2.107:8080/getCat", obj);
+    try {
+      const { name, order, status } = this.state;
+      const { currentPage, pageLimit } = this.state;
+      const skip = (currentPage - 1) * pageLimit;
+      const limit = pageLimit;
+      const data = { name, order, status, skip, limit };
+      var response;
+      const res = await axios.post("http://192.168.2.118:8080/showCat1", data);
+      var count = res.data.result1;
+      if (count % pageLimit != 0) {
+        const a = count % pageLimit;
+        const b = pageLimit - a;
+        count = count + b;
+      }
+      this.setState({ totalPageRec: count });
+      if (res) {
+        response = await axios.post(
+          "http://192.168.2.118:8080/getCatByNamee",
+          data
+        );
+      }
+      console.log("ergfrdefsgh", response.data.result1);
+      const result = response.data.result1;
 
-    const result = response.data.result1;
-    this.setState({ cat: result, skip });
-    if (!result) {
-      console.log("error");
+      if (result.success == false) {
+        this.setState({ cat: "" });
+      }
+      this.setState({ cat: result, skip });
+      if (!result) {
+        console.log("error");
+      }
+    } catch (error) {
+      toast.error(
+        `${(error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+          "Unknown error"}`
+      );
     }
   };
   onDelete = async productId => {
     try {
       const response = await axios.delete(
-        "http://192.168.2.107:8080/deleteCategory/" + productId
+        "http://192.168.2.118:8080/deleteCategory/" + productId
       );
     } catch (error) {
       console.log(error);
@@ -273,27 +276,7 @@ class CategoryList extends Component {
   };
 
   onPageChange = async pageNumber => {
-    console.log("Page number :-", pageNumber);
     this.setState({ currentPage: pageNumber }, this.getData);
-    // console.log("pagination data: ", res);
-  };
-
-  onSubmit = async e => {
-    e.preventDefault();
-    this.setState({ cat: "" });
-    const { name, order, status } = this.state;
-
-    const data = { name, order, status };
-
-    const response = await axios.post(
-      "http://192.168.2.107:8080/getCatByNamee",
-      data
-    );
-    if (response) {
-      this.setState({ name: "", order: "", status: "" });
-      const result = response.data.result1;
-      this.setState({ cat: result });
-    }
   };
 
   onInputChange = e => {
@@ -313,7 +296,9 @@ class CategoryList extends Component {
   handleOpen = e => {
     this.setState({ isOpen: !this.state.isOpen });
   };
-
+  onCall = async () => {
+    this.setState({ name: "", status: "", sort: "", order: "" }, this.getData);
+  };
   render() {
     const {
       cat,
@@ -326,10 +311,6 @@ class CategoryList extends Component {
     } = this.state;
     const { category: categoryError } = errors;
 
-    console.log("userssss  ", cat);
-
-    // const userList = usersData.filter((user) => user.id < 10)
-
     return (
       <div className="animated fadeIn">
         <Row>
@@ -338,14 +319,10 @@ class CategoryList extends Component {
             <i class="fa fa-plus top" aria-hidden="true" />
             Add Category
           </Button>
-          <Modal
-            show={this.state.show}
-            onHide={this.handleClose}
-            className="animate"
-          >
-            <form onSubmit={this.onSubmit1} noValidate>
+          <Modal show={this.state.show} onHide={this.handleClose}>
+            <form onSubmit={this.onSubmit1} noValidate className="modal1">
               <Modal.Header closeButton>
-                <Modal.Title>Add Category</Modal.Title>
+                <Modal.Title color="beige">Add Category</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Container>
@@ -370,14 +347,19 @@ class CategoryList extends Component {
                 </Container>
               </Modal.Body>
               <Modal.Footer>
-                <Button
-                  variant="outline-success"
-                  type="submit"
-                  // className="image3"
-                >
+                <Button variant="success" type="submit">
                   <i class="fas fa-plus top" />
                   Add Category
                 </Button>{" "}
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    this.props.history.push("/product-list");
+                  }}
+                >
+                  {" "}
+                  Cancel
+                </Button>
               </Modal.Footer>
             </form>
           </Modal>
@@ -385,11 +367,7 @@ class CategoryList extends Component {
             <Card>
               <CardHeader>
                 <FormGroup inline>
-                  <Form onSubmit={this.onSubmit} inline>
-                    <i className="fa fa-align-justify" />
-                    &nbsp;&nbsp;
-                    <Link onClick={this.getData}> Category List </Link>
-                    &nbsp;&nbsp;
+                  <Form inline>
                     <FormControl
                       type="text"
                       name="name"
@@ -406,7 +384,7 @@ class CategoryList extends Component {
                       onChange={this.onInputChange}
                       className="mr-sm-2 filter"
                     >
-                      <option value={null}>---Name---</option>
+                      <option value="">---Name---</option>
                       <option value="assending">Order By Name A to Z</option>
                       <option value="desending">Order By Name Z to A</option>
                     </FormControl>
@@ -418,7 +396,7 @@ class CategoryList extends Component {
                       onChange={this.onInputChange}
                       className="mr-sm-2 filter"
                     >
-                      <option value={null}>---Status---</option>
+                      <option value="">---Status---</option>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
                       <option value="Pending">Pending</option>
@@ -427,20 +405,18 @@ class CategoryList extends Component {
                     &nbsp;
                     <Button
                       variant="outline-primary"
-                      type="submit"
+                      onClick={this.getData}
                       className="filter"
-                      // style={{ width: "100px", padding: "5px" }}
                     >
                       <i class="fas fa-search" />
                       Search
                     </Button>
                     &nbsp;&nbsp;
-                    <i
-                      class="fa fa-refresh"
-                      aria-hidden="true"
-                      className="filter"
-                      onClick={this.getData}
-                    />
+                    <Link to onClick={this.onCall}>
+                      <Button variant="outline-primary">
+                        <i class="fas fa-sync-alt" variant="primary" />
+                      </Button>
+                    </Link>
                   </Form>
                 </FormGroup>
               </CardHeader>

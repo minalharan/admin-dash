@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.118:8080/";
 
 class User extends Component {
   constructor(props) {
@@ -34,10 +34,9 @@ class User extends Component {
       const { Cid } = this.state;
       const obj = { Cid };
       const response = await axios.post(
-        "http://192.168.2.107:8080/profile",
+        "http://192.168.2.118:8080/profile",
         obj
       );
-      console.log(response);
 
       this.setState({
         _id: response.data.result._id,
@@ -93,18 +92,15 @@ class User extends Component {
     }
 
     const result = await axios.post(
-      "http://192.168.2.107:8080/profileUpdate",
+      "http://192.168.2.118:8080/profileUpdate",
       body
     );
-    console.log("result");
-    console.log(result);
     if (result) {
       Swal.fire({
         type: "success",
         title: "Success",
         text: "Changes save!"
       });
-      console.log(result);
     }
   };
 
@@ -304,12 +300,7 @@ class User extends Component {
           <Row>
             <Col lg={6}>
               <Card>
-                <CardHeader>
-                  <strong>
-                    <i className="icon-info pr-1" />
-                    User id: {this.props.match.params.id}
-                  </strong>
-                </CardHeader>
+                <CardHeader />
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <Table responsive striped hover>

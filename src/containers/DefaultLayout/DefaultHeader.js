@@ -18,7 +18,7 @@ import {
   AppSidebarToggler
 } from "@coreui/react";
 import axios from "axios";
-const BASE_URL = "http://192.168.2.107:8080/";
+const BASE_URL = "http://192.168.2.118:8080/";
 
 const propTypes = {
   children: PropTypes.node
@@ -44,7 +44,7 @@ class DefaultHeader extends Component {
       const { Cid } = this.state;
       const obj = { Cid };
       const response = await axios.post(
-        "http://192.168.2.107:8080/profile",
+        "http://192.168.2.118:8080/profile",
         obj
       );
 
@@ -61,7 +61,7 @@ class DefaultHeader extends Component {
     return (
       <React.Fragment>
         <AppNavbarBrand
-          full={{ width: 89, height: 25, alt: "Admin Panel" }}
+          full={{ width: 89, height: 25, alt: "Shopping Dashboard" }}
           minimized={{
             width: 30,
             height: 30,

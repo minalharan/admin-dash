@@ -1,19 +1,8 @@
 import React, { Component } from "react";
-//import Axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
-import Validator, { ValidationTypes } from "js-object-validation";
 import { InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
-import Swal from "sweetalert2";
-
-import {
-  Button,
-  FormLabel,
-  FormGroup,
-  FormControl,
-  Row,
-  Col
-} from "react-bootstrap";
+import { Button, FormControl } from "react-bootstrap";
 class ForgotComponent extends Component {
   render() {
     const { email, isLoading, errors } = this.props;
@@ -39,7 +28,7 @@ class ForgotComponent extends Component {
                 <FormControl
                   type="email"
                   name="email"
-                  placeholder="Enter email"
+                  placeholder="Enter Email"
                   value={email}
                   onChange={this.props.handleChange("email")}
                   className="a"
@@ -50,7 +39,7 @@ class ForgotComponent extends Component {
               </InputGroup>
             </div>
             <div>
-              <Button type="submit" className="btn btn-dark btn-block ">
+              <Button variant="info" type="submit" className="btn  btn-block ">
                 {" "}
                 {isLoading ? "please wait.." : "Submit"}
               </Button>

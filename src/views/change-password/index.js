@@ -1,20 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Validator, { ValidationTypes } from "js-object-validation";
-import { toast } from "react-toastify";
-import ResetComponent from "../../components/reset-password";
-
-import {
-  Button,
-  FormLabel,
-  FormGroup,
-  FormControl,
-  Row,
-  Col
-} from "react-bootstrap";
-const BASE_URL = "http://192.168.2.107:8080";
+import { Button, FormGroup, FormControl } from "react-bootstrap";
+const BASE_URL = "http://192.168.2.118:8080";
 class ChangePassword extends Component {
   constructor() {
     super();
@@ -78,11 +67,9 @@ class ChangePassword extends Component {
       const data = { cpassword, Cid, newPassword, oldPassword };
 
       const response = await axios.post(
-        "http://192.168.2.107:8080/changePassword",
+        "http://192.168.2.118:8080/changePassword",
         data
       );
-      console.log(response);
-
       if (response.data.success === "true") {
         this.setState({
           newPassword: "",
@@ -184,8 +171,19 @@ class ChangePassword extends Component {
               ) : null}
             </FormGroup>
           </div>
-          <Button type="submit" className="image">
-            Submit
+          <Button type="submit">Submit</Button>
+          &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+          &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+          &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+          &nbsp;&nbsp; &nbsp;&nbsp;
+          <Button
+            variant="danger"
+            onClick={() => {
+              this.props.history.push("/product-list");
+            }}
+          >
+            {" "}
+            Cancel
           </Button>
         </form>
       </div>

@@ -16,7 +16,12 @@ class Login extends Component {
       error: ""
     };
   }
-
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.props.history.push("/category-list");
+    }
+  }
   onLogin = async e => {
     e.preventDefault();
     this.setState({
@@ -38,7 +43,7 @@ class Login extends Component {
       const messages = {
         email: {
           [ValidationTypes.EMAIL]: "Please enter a valid email address.",
-          [ValidationTypes.REQUIRED]: "Please enter a registered email address."
+          [ValidationTypes.REQUIRED]: "Please enter an email address."
         },
         password: {
           [ValidationTypes.REQUIRED]: " Please  enter  a  password."

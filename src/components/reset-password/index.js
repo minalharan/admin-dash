@@ -102,7 +102,7 @@ class ResetComponent extends Component {
                   Update Password
                 </Button>
                 &nbsp;&nbsp;
-                <Link to={"/"}>
+                <Link to={"/login"}>
                   <Button variant="primary" className="btn btn-dark btn-block ">
                     Go Home
                   </Button>

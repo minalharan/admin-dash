@@ -97,23 +97,23 @@ class ProductList extends Component {
     }
   };
 
-  onSubmit = async e => {
-    e.preventDefault();
-    this.setState({ product: "" });
-    const { name, sort, category, status } = this.state;
+  // onSubmit = async e => {
+  //   e.preventDefault();
+  //   this.setState({ product: "" });
+  //   const { name, sort, category, status } = this.state;
 
-    const data = { name, sort, category, status };
+  //   const data = { name, sort, category, status };
 
-    const response = await axios.post(
-      "http://192.168.2.118:8080/searchProductByPrice",
-      data
-    );
-    if (response) {
-      this.setState({ name: "", status: "", sort: "", category: "" });
-      const result = response.data.result;
-      this.setState({ product: result });
-    }
-  };
+  //   const response = await axios.post(
+  //     "http://192.168.2.118:8080/searchProductByPrice",
+  //     data
+  //   );
+  //   if (response) {
+  //     this.setState({ name: "", status: "", sort: "", category: "" });
+  //     const result = response.data.result;
+  //     this.setState({ product: result });
+  //   }
+  // };
 
   handlePageChange = (page, e) => {
     this.setState({

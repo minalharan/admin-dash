@@ -84,7 +84,6 @@ class ChangePassword extends Component {
       });
       this.props.history.push("/product-list");
     } catch (error) {
-      console.log(error.response.data);
       this.setState({
         updated: false,
         isLoading: false,

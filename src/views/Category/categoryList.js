@@ -213,7 +213,6 @@ class CategoryList extends Component {
           data
         );
       }
-      console.log("ergfrdefsgh", response.data.result1);
       const result = response.data.result1;
 
       if (result.success == false) {

@@ -39,7 +39,6 @@ class Update extends Component {
       const response = await axios.get(
         "http://192.168.2.118:8080/getItem/" + this.props.match.params.id
       );
-      console.log(response);
 
       this.setState({
         name: response.data.result.name,
@@ -53,12 +52,10 @@ class Update extends Component {
       });
       axios.get("http://192.168.2.118:8080/getCategory").then(res => {
         const result = res.data;
-        console.log(res);
         const option = [];
         if (result.result1 && result.result1.length) {
           console.log("in if");
         }
-        console.log(option);
         this.setState({
           option,
           categoryValue: result.result1
@@ -235,15 +232,10 @@ class Update extends Component {
             <Col lg={8}>
               <Card>
                 <CardHeader>
-                  <strong>
-                    <i className="icon-info pr-1" />
-                    P_id: {this.props.match.params.id}
-                  </strong>
-                  <Link onClick={this.isEnable} align="right">
+                  <Link onClick={this.isEnable} className="rig">
                     <i
                       class="fas fa-user-edit top"
                       style={{ paddingLeft: 130 }}
-                      className="rig"
                     />
                     Edit
                   </Link>
@@ -329,6 +321,7 @@ class Update extends Component {
                             <input
                               type="number"
                               name="quantity"
+                              className="tag"
                               value={this.state.quantity}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}

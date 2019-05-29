@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import { InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
-import { Button, FormControl } from "react-bootstrap";
+import { Button, FormControl, FormGroup } from "react-bootstrap";
 class ForgotComponent extends Component {
   render() {
     const { email, isLoading, errors } = this.props;
@@ -19,12 +19,7 @@ class ForgotComponent extends Component {
           <ToastContainer />
           <div>
             <div className="mb-100 input-group">
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="icon-user" />
-                  </InputGroupText>
-                </InputGroupAddon>
+              <FormGroup className="mb-3">
                 <FormControl
                   type="email"
                   name="email"
@@ -36,7 +31,7 @@ class ForgotComponent extends Component {
                 {emailError ? (
                   <p className=" text-danger">{emailError}</p>
                 ) : null}
-              </InputGroup>
+              </FormGroup>
             </div>
             <div>
               <Button variant="info" type="submit" className="btn  btn-block ">

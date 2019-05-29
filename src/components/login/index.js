@@ -1,30 +1,14 @@
 import React, { Component } from "react";
-//import Axios from "axios";
-import { withRouter, Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import Validator, { ValidationTypes } from "js-object-validation";
-import { InputGroup, InputGroupAddon, InputGroupText, Input } from "reactstrap";
+import { Link } from "react-router-dom";
 
-import {
-  FormGroup,
-  FormLabel,
-  Row,
-  FormControl,
-  Container
-} from "react-bootstrap";
+import { FormGroup, Row, FormControl, Container } from "react-bootstrap";
 import { Button } from "react-bootstrap";
-import Swal from "sweetalert2";
 
 class LoginComponent extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
-    const token = localStorage.getItem("token");
-    if (token) {
-      this.props.history.push("/product-list");
-    }
-  }
+
   render() {
     const { isLoading, errors } = this.props;
     const { email: emailError, password: passwordError } = this.props.errors;

@@ -35,7 +35,7 @@ class DefaultLayout extends Component {
   render() {
     return (
       <div className="app">
-        <AppHeader fixed>
+        <AppHeader className="bg56" fixed>
           <Suspense fallback={this.loading()}>
             <DefaultHeader onLogout={e => this.signOut(e)} />
           </Suspense>
@@ -46,6 +46,7 @@ class DefaultLayout extends Component {
             <AppSidebarForm />
             <Suspense>
               <AppSidebarNav
+                // className="bg56"
                 navConfig={navigation}
                 {...this.props}
                 router={router}

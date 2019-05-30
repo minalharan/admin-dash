@@ -4,7 +4,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
-import Dropzone from "react-dropzone";
 import Swal from "sweetalert2";
 const BASE_URL = "http://192.168.2.118:8080/";
 class Update extends Component {
@@ -26,7 +25,8 @@ class Update extends Component {
       categoryN: "",
       des: "",
       quantity: "",
-      imageUpdated1: false
+      imageUpdated1: false,
+      toastId: null
     };
   }
 
@@ -67,18 +67,19 @@ class Update extends Component {
         "http://192.168.2.118:8080/getCategory",
         data
       );
-      console.log(result);
       this.setState({
         categoryN: result.data.result[0].category
       });
     } catch (error) {
       console.log(error);
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown error"}`
-      );
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
 
@@ -119,26 +120,24 @@ class Update extends Component {
           body.append(i, element);
         }
       }
-      console.log(this.props.match.params.id);
       const result = await axios.post(
         "http://192.168.2.118:8080/editItem/" + this.props.match.params.id,
         body
       );
-      console.log(result.obj);
       Swal.fire({
         type: "success",
         title: "Success",
         text: "Product updated Successfully !"
       });
-      // toast.success("product updated !");
       this.props.history.push("/product-list");
     } catch (error) {
       console.log(error);
-      console.log(error.result.data.message);
-      toast.error(
-        `${(error.result && error.result.data && error.result.data.message) ||
-          "Unknown error"}`
-      );
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.result && error.result.data && error.result.data.message) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
   onInputChange = e => {
@@ -197,13 +196,7 @@ class Update extends Component {
   };
 
   render() {
-    let {
-      imagePreviewUrl,
-      categoryValue,
-      thumbnail,
-      categoryN,
-      otherImg
-    } = this.state;
+    let { imagePreviewUrl, categoryValue } = this.state;
     let $imagePreview = (
       <Image
         src={BASE_URL + this.state.thumbnail}
@@ -211,7 +204,6 @@ class Update extends Component {
         height="160"
         align="center"
         roundedCircle
-        // className="image"
       />
     );
     if (imagePreviewUrl) {
@@ -418,7 +410,7 @@ class Update extends Component {
                               className="tag"
                               type="text"
                               name="name"
-                              value={this.state.name}
+                              value={this.state.name.toLowerCase()}
                               disabled={this.state.disabled}
                               onChange={this.onInputChange}
                             />

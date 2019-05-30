@@ -13,7 +13,8 @@ class Login extends Component {
       password: "",
       isLoading: false,
       errors: {},
-      error: ""
+      error: "",
+      toastId: null,
     };
   }
   componentDidMount() {
@@ -63,17 +64,22 @@ class Login extends Component {
         obj
       );
       localStorage.setItem("token", response.data.token);
-      toast.success("Login Succesfully");
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.success("Login Succesfully");
+      }
+
       localStorage.setItem("cid", response.data.result._id);
       this.props.history.push("/product-list");
     } catch (error) {
       this.setState({ isLoading: false });
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown Error"}`
-      );
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            "Unknown Error"}`
+        );
+      }
     }
   };
 

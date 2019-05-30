@@ -6,15 +6,6 @@ import Validator, { ValidationTypes } from "js-object-validation";
 import Swal from "sweetalert2";
 import ForgotComponent from "../../components/forgot-password";
 
-import {
-  Button,
-  FormLabel,
-  FormGroup,
-  FormControl,
-  Row,
-  Col
-} from "react-bootstrap";
-
 class ForgotPassword extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +16,8 @@ class ForgotPassword extends Component {
       messageFromServer: "",
       showNullError: false,
       isLoading: false,
-      errors: {}
+      errors: {},
+      toastId: null
     };
   }
   componentDidMount() {
@@ -78,20 +70,23 @@ class ForgotPassword extends Component {
         obj
       );
       if (response) {
-        toast.info("link has been sent on your email");
+        if (!toast.isActive(this.toastId)) {
+          this.toastId = toast.info("link has been sent on your email");
+        }
         this.setState({ email: "", isLoading: false });
 
         this.props.history.push("/login");
       }
     } catch (error) {
       this.setState({ isLoading: false });
-
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown error"}`
-      );
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
 

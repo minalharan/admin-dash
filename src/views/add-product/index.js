@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import axios from "axios";
+
 import {
-  FormGroup,
-  FormLabel,
   Button,
-  FormControl,
+  Label,
   Container,
   Row,
-  Col
-} from "react-bootstrap";
+  Form,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
+} from "reactstrap";
 import Validator, { ValidationTypes } from "js-object-validation";
 import { toast } from "react-toastify";
-import Dropzone from "react-dropzone";
-import { MDBBtn } from "mdbreact";
 const BASE_URL = "http://192.168.2.118:8080";
 
 class AddProduct extends Component {
@@ -34,7 +35,8 @@ class AddProduct extends Component {
       categoryValue: [],
       files: [],
       quantity: "",
-      des: ""
+      des: "",
+      toastId: null
     };
   }
 
@@ -78,11 +80,13 @@ class AddProduct extends Component {
       const obj = { name, price, category, quantity, des };
       const validations = {
         name: {
-          [ValidationTypes.REQUIRED]: true
+          [ValidationTypes.REQUIRED]: true,
+          [ValidationTypes.MINLENGTH]: 2
         },
         price: {
           [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.NUMERIC]: true
+          [ValidationTypes.NUMERIC]: true,
+          [ValidationTypes.MAXLENGTH]: 5
         },
         thumbnail: {
           [ValidationTypes.REQUIRED]: true
@@ -92,19 +96,25 @@ class AddProduct extends Component {
         },
         quantity: {
           [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.NUMERIC]: true
+          [ValidationTypes.NUMERIC]: true,
+          [ValidationTypes.MAXVALUE]: 200
         },
         des: {
-          [ValidationTypes.REQUIRED]: true
+          [ValidationTypes.REQUIRED]: true,
+          [ValidationTypes.MAXLENGTH]: 1000
         }
       };
       const messages = {
         name: {
-          [ValidationTypes.REQUIRED]: "Please enter the name of product."
+          [ValidationTypes.REQUIRED]: "Please enter the name of product.",
+          [ValidationTypes.MINLENGTH]:
+            "Name field should have atleast 2 charaters."
         },
         price: {
-          [ValidationTypes.REQUIRED]: "Please Enter the price of product.",
-          [ValidationTypes.NUMERIC]: "Must be a number."
+          [ValidationTypes.REQUIRED]: "Please enter the price of product.",
+          [ValidationTypes.NUMERIC]: "Must be a number.",
+          [ValidationTypes.MAXLENGTH]:
+            "You can't add product of price  more then $1000."
         },
         thumbnail: {
           [ValidationTypes.REQUIRED]: "Please select main image."
@@ -114,10 +124,13 @@ class AddProduct extends Component {
         },
         quantity: {
           [ValidationTypes.REQUIRED]: "Please enter quantity.",
-          [ValidationTypes.NUMERIC]: "Must be a number."
+          [ValidationTypes.NUMERIC]: "Must be a number.",
+          [ValidationTypes.MAXVALUE]: "Qunatity shouldn't be more then 200."
         },
         des: {
-          [ValidationTypes.REQUIRED]: "Please enter details of product."
+          [ValidationTypes.REQUIRED]: "Please enter the details of product.",
+          [ValidationTypes.MAXLENGTH]:
+            "Description shouldn't have within 1000 charaters."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
@@ -141,9 +154,15 @@ class AddProduct extends Component {
       for (const i in data) {
         if (data.hasOwnProperty(i)) {
           const element = data[i];
+          console.log(data[i]);
+          console.log("data[i]");
+          console.log(element);
+
           body.append(i, element);
         }
       }
+      console.log(body);
+      console.log("///////////////////");
 
       const response = await axios.post(
         " http://192.168.2.118:8080/addProduct",
@@ -152,12 +171,14 @@ class AddProduct extends Component {
       toast.info("product added successfully!");
       this.props.history.push("/product-list");
     } catch (error) {
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown error"}`
-      );
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
   onInputChange = e => {
@@ -244,76 +265,76 @@ class AddProduct extends Component {
             </h3>
 
             <form onSubmit={this.onSubmit} noValidate>
-              <FormGroup>
-                <FormLabel>
-                  Name<span className="required">*</span>
-                </FormLabel>
-                <FormControl
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-key" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
                   type="text"
                   placeholder="Product Name"
                   name="name"
                   value={name.toLowerCase()}
                   onChange={this.onInputChange}
                 />
-                {nameError ? <p className="text-danger">{nameError}</p> : null}
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>
-                  <i class="fas fa-tag top" />
-                  Price<span className="required">*</span>
-                </FormLabel>
-                <FormControl
+              </InputGroup>
+              {nameError ? <p className="text-danger">{nameError}</p> : null}
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i class="fas fa-tag top" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
                   type="number"
                   placeholder="Product Price"
                   name="price"
                   value={price}
                   onChange={this.onInputChange}
                 />
-
-                {priceError ? (
-                  <p className="text-danger">{priceError}</p>
-                ) : null}
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>
-                  <i class="fas fa-tag top" />
-                  Quantity<span className="required">*</span>
-                </FormLabel>
-                <FormControl
-                  type="number"
+              </InputGroup>
+              {priceError ? <p className="text-danger">{priceError}</p> : null}
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i class="fas fa-tag top" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  type="text"
                   placeholder="Qunatity"
                   name="quantity"
                   value={quantity}
                   onChange={this.onInputChange}
                 />
-
-                {quantityError ? (
-                  <p className="text-danger">{quantityError}</p>
-                ) : null}
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>
-                  <i class="fa fa-info-circle top" aria-hidden="true" />
-                  Description<span className="required">*</span>
-                </FormLabel>
-                <FormControl
-                  type="text"
+              </InputGroup>{" "}
+              {quantityError ? (
+                <p className="text-danger">{quantityError}</p>
+              ) : null}
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i class="fa fa-info-circle top" aria-hidden="true" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  type="textarea"
                   placeholder="Product Details"
                   name="des"
                   value={des}
                   onChange={this.onInputChange}
                 />
-
-                {desError ? <p className="text-danger">{desError}</p> : null}
-              </FormGroup>
-              <FormLabel>
-                <i class="fas fa-list-alt top" />
-                Category
-                <span className="required">*</span>
-              </FormLabel>
-              <FormGroup margin="normal">
-                <FormControl
-                  as="select"
+              </InputGroup>{" "}
+              {desError ? <p className="text-danger">{desError}</p> : null}{" "}
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i class="fas fa-list-alt top" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  type="select"
                   name="category"
                   value={this.state.category}
                   onChange={this.onChangeCategory}
@@ -329,55 +350,52 @@ class AddProduct extends Component {
                       })
                     : null}
                   )
-                </FormControl>
-                {categoryError ? (
-                  <p className="text-danger">{categoryError}</p>
-                ) : null}
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>
+                </Input>
+              </InputGroup>
+              {categoryError ? (
+                <p className="text-danger">{categoryError}</p>
+              ) : null}
+              <InputGroup className="mb-3">
+                <Label>
                   <i class="far fa-file-image top" />
                   Image<span className="required">*</span>
-                </FormLabel>
-                <FormControl
+                </Label>
+                <Input
                   type="file"
                   placeholder="product Image"
                   name="thumbnail"
                   onChange={this.onChangefile}
                   className="auth-box"
                 />
-                {thumbnailError ? (
-                  <p className="text-danger">{thumbnailError}</p>
-                ) : null}
-              </FormGroup>
-              <FormGroup>
-                <FormLabel>
+              </InputGroup>
+              {thumbnailError ? (
+                <p className="text-danger">{thumbnailError}</p>
+              ) : null}
+              <InputGroup>
+                <Label for="file">
                   <i class="far fa-file-image top" />
                   Images<span className="required">*</span>
-                </FormLabel>
-                <FormControl
+                </Label>
+                <Input
                   type="file"
                   placeholder="product Image"
-                  name="otherImg"
+                  name="otherImg[]"
                   onChange={this.fileSelected}
                   className="auth-box"
                   multiple
                 />
-              </FormGroup>
-
-              <FormGroup align="center">
+              </InputGroup>
+              <InputGroup align="center">
                 <div className="imgPreview">{$imagePreview}</div>
-              </FormGroup>
+              </InputGroup>
               <br />
-
-              <Button variant="success" type="submit" className="btn btn-block">
+              <Button color="success" type="submit" className="btn btn-block">
                 <i class="fas fa-plus top" />
                 Add Product
               </Button>
               <br />
-
               <Button
-                variant="danger"
+                color="danger"
                 className="image"
                 className="btn btn-block"
                 onClick={() => {

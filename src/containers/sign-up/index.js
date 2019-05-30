@@ -19,7 +19,8 @@ class Signup extends Component {
       imageUpdated: false,
       imagePreviewUrl: "",
       errors: {},
-      isLoading: false
+      isLoading: false,
+      toastId: null
     };
   }
 
@@ -50,7 +51,8 @@ class Signup extends Component {
       const obj = { name, email, password, cpassword, mobile_no, gender };
       const validations = {
         name: {
-          [ValidationTypes.REQUIRED]: true
+          [ValidationTypes.REQUIRED]: true,
+          [ValidationTypes.MINLENGTH]: 2
         },
         email: {
           [ValidationTypes.REQUIRED]: true,
@@ -76,7 +78,9 @@ class Signup extends Component {
       };
       const messages = {
         name: {
-          [ValidationTypes.REQUIRED]: "Please enter a name."
+          [ValidationTypes.REQUIRED]: "Please enter a name.",
+          [ValidationTypes.MINLENGTH]:
+            "Name field should have atleast 2 charaters."
         },
         email: {
           [ValidationTypes.REQUIRED]: "Please enter an email address.",
@@ -124,11 +128,12 @@ class Signup extends Component {
           body.append(i, element);
         }
       }
-      const result1 = await axios.post(
+      const response = await axios.post(
         "http://192.168.2.118:8080/addUser",
         body
       );
-      if (result1) {
+      console.log("response", response);
+      if (response) {
         this.setState({
           name: "",
           email: "",
@@ -139,18 +144,23 @@ class Signup extends Component {
           file: "",
           isLoading: false
         });
-        toast.success("You are Successfully signup");
-        this.props.history.push("/login");
+        if (!toast.isActive(this.toastId)) {
+          this.toastId = toast.success("You are Successfully signup");
+        }
+        this.props.history.push("/product-list");
       }
     } catch (error) {
+      console.log("user", error.response);
       this.setState({ isLoading: false });
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message[0].msg) ||
-          "Unknown error"}`
-      );
-      this.props.history.push("/signup");
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message[0].msg) ||
+            "Unknown error"}`
+        );
+      }
+      this.props.history.push("/users");
     }
   };
 

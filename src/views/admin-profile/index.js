@@ -1,8 +1,16 @@
 import React, { Component } from "react";
-import { Card, CardBody, CardHeader, Col, Row, Table, Form } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Row,
+  Table,
+  Form,
+  Button
+} from "reactstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button, Image } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 const BASE_URL = "http://192.168.2.118:8080/";
@@ -144,7 +152,7 @@ class User extends Component {
   render() {
     let { imagePreviewUrl, file } = this.state;
     let $imagePreview = (
-      <Image
+      <img
         src={BASE_URL + this.state.file}
         width="150px"
         height="160"
@@ -154,7 +162,7 @@ class User extends Component {
     );
     if (imagePreviewUrl) {
       $imagePreview = (
-        <Image
+        <img
           src={imagePreviewUrl}
           width="150px"
           height="160"
@@ -249,7 +257,7 @@ class User extends Component {
                           </th>
                         </tr>
                         <tr>
-                          <th scope="row">File</th>
+                          <th scope="row">Profile Picture</th>
                           <th scope="row">
                             <input
                               type="file"
@@ -262,7 +270,7 @@ class User extends Component {
                         <tr>
                           <th scope="row" colSpan="2">
                             <Button
-                              variant="primary"
+                              color="primary"
                               type="submit"
                               align="center"
                               disabled={this.state.disabled}
@@ -272,9 +280,10 @@ class User extends Component {
                               Save
                             </Button>
                             <Button
-                              variant="primary"
+                              color="danger"
                               className="image"
                               align="center"
+                              className="cancel"
                               style={{ width: "100px", padding: "5px" }}
                               onClick={() => {
                                 this.props.history.push("/product-list");
@@ -359,7 +368,7 @@ class User extends Component {
                           </th>
                         </tr>
                         <tr>
-                          <th scope="row">File</th>
+                          <th scope="row">Profile Picture</th>
                           <th scope="row">
                             <input
                               type="file"
@@ -372,7 +381,7 @@ class User extends Component {
                         <tr>
                           <th scope="row" colSpan="2">
                             <Button
-                              variant="primary"
+                              color="primary"
                               type="submit"
                               align="center"
                               disabled={this.state.disabled}
@@ -380,6 +389,18 @@ class User extends Component {
                             >
                               <i class="fas fa-save top" />
                               Save
+                            </Button>
+                            <Button
+                              color="danger"
+                              className="image"
+                              className="cancel"
+                              align="center"
+                              style={{ width: "100px", padding: "5px" }}
+                              onClick={() => {
+                                this.props.history.push("/product-list");
+                              }}
+                            >
+                              Cancel
                             </Button>
                           </th>
                         </tr>

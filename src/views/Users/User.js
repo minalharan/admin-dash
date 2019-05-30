@@ -361,14 +361,17 @@ class User extends Component {
                         <tr>
                           <th scope="row">Gender</th>
                           <th scope="row">
-                            <input
-                              type="text"
-                              className="tag"
+                            <select
                               name="gender"
+                              className="tag"
                               value={this.state.gender}
-                              disabled={this.state.disabled}
                               onChange={this.onInputChange}
-                            />
+                            >
+                              <option value={""}>- Gender-</option>
+                              <option value={"male"}>Male</option>
+                              <option value={"female"}>Female</option>
+                              <option value={"other"}>Other</option>
+                            </select>
                           </th>
                         </tr>
                         <tr>

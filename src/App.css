@@ -217,7 +217,7 @@
 }
 .login_formSignin__27WMl {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   padding: 10px 25px;
   margin: auto;
   border-radius: 4px;
@@ -247,6 +247,9 @@
   padding-left: 5spx;
   padding-right: 150px;
   margin-left: 5px;
+}
+.product {
+  text-align: "center";
 }
 .b {
   color: #007bff;
@@ -487,6 +490,19 @@
   background-size: cover;
   /* margin: auto; */
 }
+.login_loginContainer__2JMrT2 {
+  display: flex;
+  -ms-flex-align: center;
+  /* padding-top: 40px;
+  padding-bottom: 40px; */
+  background-color: #f5f5f5;
+  /* height: 100vh; */
+  /* background: url(./password2.png.); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-top: 100px;
+  /* margin: auto; */
+}
 .login_formSignin__27WMl {
   width: 100%;
   max-width: 400px;
@@ -582,7 +598,7 @@
 }
 .header {
   margin-left: 940px;
-  margin-bottom: 12px;
+  margin-bottom: 2px;
 }
 .filter {
   margin-left: 10px;
@@ -610,8 +626,12 @@
 .tag {
   margin-left: 250px;
 }
-.container {
-  justify-content: flex-end;
+.container1 {
+  display: -ms-flexbox;
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 0.25rem;
 }
 
 /* .modal1 {
@@ -619,4 +639,24 @@
 } */
 .bottom {
   margin-bottom: 30px;
+}
+.cancel {
+  margin-left: 200px;
+}
+/* .bg56 {
+  background: ;
+} */
+.bg55 {
+  background: #48504d;
+  padding-bottom: 2px;
+}
+.background-btn {
+  color: #f1f6f8;
+  border-color: #f1f5f6;
+}
+.bttn {
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }

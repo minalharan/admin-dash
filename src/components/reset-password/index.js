@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
-
-import { Button, FormGroup, FormControl } from "react-bootstrap";
-
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Button,
+  Input
+} from "reactstrap";
 class ResetComponent extends Component {
   render() {
     const { password, updated } = this.props;
@@ -62,17 +65,17 @@ class ResetComponent extends Component {
                       <i className="icon-lock" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <FormControl
+                  <Input
                     required="true"
                     type="password"
                     placeholder="Enter Password"
                     name="password"
                     onChange={this.props.onInputChange}
                   />
-                  {passwordError ? (
-                    <p className=" text-danger">{passwordError}</p>
-                  ) : null}
                 </InputGroup>
+                {passwordError ? (
+                  <p className=" text-danger">{passwordError}</p>
+                ) : null}
               </div>
               <div className="input-group">
                 <InputGroup className="mb-4">
@@ -81,33 +84,33 @@ class ResetComponent extends Component {
                       <i className="icon-lock" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <FormControl
+                  <Input
                     required="true"
                     type="password"
                     placeholder="Enter Confirm Password"
                     name="cpassword"
                     onChange={this.props.onInputChange}
                   />
-                  {cpasswordError ? (
-                    <p className=" text-danger">{cpasswordError}</p>
-                  ) : null}
-                </InputGroup>
+                </InputGroup>{" "}
+                {cpasswordError ? (
+                  <p className=" text-danger">{cpasswordError}</p>
+                ) : null}
               </div>
-              <FormGroup>
+              <InputGroup>
                 <Button
                   type="submit"
-                  variant="success"
+                  color="success"
                   className="btn btn-dark btn-block "
                 >
                   Update Password
                 </Button>
                 &nbsp;&nbsp;
                 <Link to={"/login"}>
-                  <Button variant="primary" className="btn btn-dark btn-block ">
+                  <Button color="primary" className="btn btn-dark btn-block ">
                     Go Home
                   </Button>
                 </Link>
-              </FormGroup>
+              </InputGroup>
             </form>
           </div>
         </>

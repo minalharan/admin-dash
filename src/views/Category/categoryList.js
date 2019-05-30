@@ -61,15 +61,13 @@ class UserRow extends Component {
       <>
         <tr>
           <th scope="row">{this.props.index + this.props.skip + 1}</th>
-          <td>{this.props.cat.category}</td>
+          <td className="c">{this.props.cat.category}</td>
           <td>
-            <Link to={"/cat-list/" + this.props.cat._id}>
-              <Badge color={this.getBadge(this.props.cat.status)}>
-                {this.props.cat.status}
-              </Badge>
-            </Link>
+            <Badge color={this.getBadge(this.props.cat.status)}>
+              {this.props.cat.status}
+            </Badge>
           </td>
-          <td>{this.state.Cid}</td>
+          <td className="product">{this.state.Cid}</td>
           <td>{this.props.cat.createTime}</td>
           <td>{this.props.cat.updateTime}</td>
           <td colSpan="2">
@@ -137,7 +135,9 @@ class CategoryList extends Component {
       show: false,
       value: "",
       isOpen: false,
-      errors: {}
+      errors: {},
+      category: "",
+      toastId: null
     };
   }
   componentDidMount = async () => {
@@ -158,12 +158,15 @@ class CategoryList extends Component {
       };
       const validations = {
         category: {
-          [ValidationTypes.REQUIRED]: true
+          [ValidationTypes.REQUIRED]: true,
+          [ValidationTypes.MINLENGTH]: 3
         }
       };
       const messages = {
         category: {
-          [ValidationTypes.REQUIRED]: "Please enter the name of category."
+          [ValidationTypes.REQUIRED]: "Please enter the name of category.",
+          [ValidationTypes.MINLENGTH]:
+            "Name field should have atleast 3 characters."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
@@ -179,7 +182,11 @@ class CategoryList extends Component {
         "http:///192.168.2.118:8080/category",
         data
       );
-      toast.success("Category added !");
+      if (!toast.isActive(this.toastId)) {
+        this.toastId =
+          toast.success("Category added !");
+      }
+      this.props.history.goBack("/category-list");
     } catch (error) {
       console.log(error);
       toast.error(
@@ -206,6 +213,13 @@ class CategoryList extends Component {
         const b = pageLimit - a;
         count = count + b;
       }
+      console.log("res");
+      console.log(res);
+      if (res.data.success == false) {
+        this.setState({
+          cat: ""
+        });
+      }
       this.setState({ totalPageRec: count });
       if (res) {
         response = await axios.post(
@@ -214,10 +228,6 @@ class CategoryList extends Component {
         );
       }
       const result = response.data.result1;
-
-      if (result.success == false) {
-        this.setState({ cat: "" });
-      }
       this.setState({ cat: result, skip });
       if (!result) {
         console.log("error");
@@ -253,16 +263,18 @@ class CategoryList extends Component {
     let active = currentPage;
     let items = [];
     let totalPages = Math.floor(totalPageRec / pageLimit);
-    for (let number = 1; number <= totalPages; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === active}
-          onClick={() => this.onPageChange(number)}
-        >
-          {number}
-        </Pagination.Item>
-      );
+    if (totalPages > 1) {
+      for (let number = 1; number <= totalPages; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            active={number === active}
+            onClick={() => this.onPageChange(number)}
+          >
+            {number}
+          </Pagination.Item>
+        );
+      }
     }
 
     const paginationBasic = (
@@ -286,7 +298,7 @@ class CategoryList extends Component {
     });
   };
   handleClose = e => {
-    this.setState({ show: false });
+    this.setState({ show: false, category: "" });
   };
 
   handleShow = e => {
@@ -313,9 +325,8 @@ class CategoryList extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Button className="header" onClick={this.handleShow}>
-            {" "}
-            <i class="fa fa-plus top" aria-hidden="true" />
+          <Button className="header bttn" onClick={this.handleShow}>
+            <i class="fa fa-plus top" />
             Add Category
           </Button>
           <Modal show={this.state.show} onHide={this.handleClose}>
@@ -351,6 +362,7 @@ class CategoryList extends Component {
                   Add Category
                 </Button>{" "}
                 <Button
+                  onClick={this.handleShow}
                   variant="danger"
                   onClick={() => {
                     this.props.history.push("/product-list");
@@ -364,14 +376,14 @@ class CategoryList extends Component {
           </Modal>
           <Col xl={12}>
             <Card>
-              <CardHeader>
+              <CardHeader className="bg55">
                 <FormGroup inline>
                   <Form inline>
                     <FormControl
                       type="text"
                       name="name"
                       placeholder="Search by name"
-                      value={category}
+                      value={this.state.name}
                       onChange={this.onInputChange}
                       className="mr-sm-2 filter"
                     />
@@ -383,7 +395,7 @@ class CategoryList extends Component {
                       onChange={this.onInputChange}
                       className="mr-sm-2 filter"
                     >
-                      <option value="">---Name---</option>
+                      <option value="">---Sort by name---</option>
                       <option value="assending">Order By Name A to Z</option>
                       <option value="desending">Order By Name Z to A</option>
                     </FormControl>
@@ -402,58 +414,81 @@ class CategoryList extends Component {
                       <option value="Banned">Banned</option>
                     </FormControl>
                     &nbsp;
-                    <Button
-                      variant="outline-primary"
-                      onClick={this.getData}
-                      className="filter"
+                    <OverlayTrigger
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">Click here to search</Tooltip>
+                      }
                     >
-                      <i class="fas fa-search" />
-                      Search
-                    </Button>
-                    &nbsp;&nbsp;
-                    <Link to onClick={this.onCall}>
-                      <Button variant="outline-primary">
-                        <i class="fas fa-sync-alt" variant="primary" />
+                      <Button
+                        variant="outline-light"
+                        onClick={this.getData}
+                        className="filter background-btn"
+                        // style={{ width: "100px", padding: "5px" }}
+                      >
+                        <i class="fas fa-search" />
                       </Button>
-                    </Link>
+                    </OverlayTrigger>
+                    &nbsp;&nbsp;
+                    <OverlayTrigger
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">
+                          Click here to refresh
+                        </Tooltip>
+                      }
+                    >
+                      <Link to onClick={this.onCall}>
+                        <Button
+                          variant="outline-light"
+                          className="background-btn"
+                        >
+                          <i class="fas fa-sync-alt" variant="primary" />
+                        </Button>
+                      </Link>
+                    </OverlayTrigger>
                   </Form>
                 </FormGroup>
               </CardHeader>
-              <CardBody>
-                <Table responsive hover>
-                  <thead>
-                    <tr>
-                      <th scope="col">S.No.</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Total Product</th>
-                      <th scope="col">Create Time</th>
-                      <th scope="col">Update Time</th>
-                      <th scope="col" colSpan="2">
-                        Actions
-                      </th>
+              {/* <CardBody> */}
+              <Table responsive hover>
+                <thead>
+                  <tr>
+                    <th scope="col">S.No.</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Total Product</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Updated At</th>
+                    <th scope="col" colSpan="2">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cat && cat.length ? (
+                    cat.map((cat, index) => (
+                      <UserRow
+                        obj={cat}
+                        key={cat._id}
+                        cat={cat}
+                        index={index}
+                        skip={this.state.skip}
+                        onDelete={this.onDelete}
+                      />
+                    ))
+                  ) : (
+                    <tr align="center">
+                      <th colSpan="11">No record found</th>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {cat && cat.length
-                      ? cat.map((cat, index) => (
-                          <UserRow
-                            obj={cat}
-                            key={cat._id}
-                            cat={cat}
-                            index={index}
-                            skip={this.state.skip}
-                            onDelete={this.onDelete}
-                          />
-                        ))
-                      : null}
-                  </tbody>
-                </Table>
-              </CardBody>
+                  )}
+                </tbody>
+              </Table>
+              {/* </CardBody> */}
               <CardHeader>
-                <div style={{ marginLeft: "40%", marginTop: "3%" }}>
-                  {this.getPaginator()}
-                </div>
+                <div>{this.getPaginator()}</div>
               </CardHeader>
             </Card>
           </Col>

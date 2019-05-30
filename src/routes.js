@@ -14,11 +14,16 @@ import UserRow from "./views/Category/categoryList";
 import Signup from "./containers/sign-up/index";
 
 const routes = [
-  { path: "/category-list", name: "UserRow", component: UserRow },
+  { path: "/category-list", name: "Catrgory-List", component: UserRow },
   { path: "/cat-list/:id", name: "Category", component: Category },
-  { path: "/add-product", name: "AddProduct", component: AddProduct },
+  { path: "/add-product", name: "Add-Product", component: AddProduct },
 
-  { path: "/product-list", exact: true, name: "Product", component: Product },
+  {
+    path: "/product-list",
+    exact: true,
+    name: "Product-List",
+    component: Product
+  },
 
   { path: "/add-user", exact: true, name: "Signup", component: Signup },
   {

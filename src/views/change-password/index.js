@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Validator, { ValidationTypes } from "js-object-validation";
-import { Button, FormGroup, FormControl } from "react-bootstrap";
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
+} from "reactstrap";
+import { toast } from "react-toastify";
 const BASE_URL = "http://192.168.2.118:8080";
 class ChangePassword extends Component {
   constructor() {
@@ -89,6 +96,14 @@ class ChangePassword extends Component {
         isLoading: false,
         error: true
       });
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            "Unknown Error"}`
+        );
+      }
     }
   };
 
@@ -113,7 +128,7 @@ class ChangePassword extends Component {
     } = errors;
 
     return (
-      <div className="login_loginContainer__2JMrT">
+      <div className="login_loginContainer__2JMrT2  auth-box0">
         <form
           className="password-form"
           onSubmit={this.onSubmit}
@@ -126,57 +141,71 @@ class ChangePassword extends Component {
             </h1>
           </div>
           <div className="input-group">
-            <FormGroup>
-              <FormControl
+            <InputGroup className="mb-3">
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>
+                  <i className="fa fa-key" />
+                </InputGroupText>
+              </InputGroupAddon>
+              <Input
                 required="true"
                 type="password"
                 placeholder="Enter old password"
                 name="oldPassword"
                 onChange={this.onInputChange}
-                className="a"
               />
-              {oldPasswordError ? (
-                <p className=" text-danger">{oldPasswordError}</p>
-              ) : null}
-            </FormGroup>
+            </InputGroup>
+            {oldPasswordError ? (
+              <p className=" text-danger">{oldPasswordError}</p>
+            ) : null}
           </div>
           <div className="input-group">
-            <FormGroup>
-              <FormControl
+            <InputGroup className="mb-3">
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>
+                  <i className="fa fa-key" />
+                </InputGroupText>
+              </InputGroupAddon>
+              <Input
                 required="true"
                 type="password"
                 placeholder="Enter new password"
                 name="newPassword"
                 onChange={this.onInputChange}
-                className="a"
               />
-              {newPasswordError ? (
-                <p className=" text-danger">{newPasswordError}</p>
-              ) : null}
-            </FormGroup>
+            </InputGroup>{" "}
+            {newPasswordError ? (
+              <p className=" text-danger">{newPasswordError}</p>
+            ) : null}
           </div>
           <div className="input-group">
-            <FormGroup>
-              <FormControl
+            <InputGroup className="mb-3">
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>
+                  <i className="fa fa-key" />
+                </InputGroupText>
+              </InputGroupAddon>
+              <Input
                 required="true"
                 type="password"
                 placeholder="Enter confirm password"
                 name="cpassword"
                 onChange={this.onInputChange}
-                className="a"
               />
-              {cpasswordError ? (
-                <p className=" text-danger">{cpasswordError}</p>
-              ) : null}
-            </FormGroup>
+            </InputGroup>{" "}
+            {cpasswordError ? (
+              <p className=" text-danger">{cpasswordError}</p>
+            ) : null}
           </div>
-          <Button type="submit">Submit</Button>
+          <Button color="info" type="submit">
+            Submit
+          </Button>
           &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
           &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
           &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
           &nbsp;&nbsp; &nbsp;&nbsp;
           <Button
-            variant="danger"
+            color="danger"
             onClick={() => {
               this.props.history.push("/product-list");
             }}

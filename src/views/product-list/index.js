@@ -5,7 +5,9 @@ import {
   FormGroup,
   FormControl,
   Form,
-  Pagination
+  Pagination,
+  OverlayTrigger,
+  Tooltip
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import TableRow from "./TableRow.js";
@@ -74,6 +76,11 @@ class ProductList extends Component {
         const b = pageLimit - a;
         count = count + b;
       }
+      if (response.data.success == false) {
+        this.setState({
+          product: ""
+        });
+      }
       this.setState({ totalPageRec: count });
       if (response) {
         res = await axios.post(
@@ -97,24 +104,6 @@ class ProductList extends Component {
     }
   };
 
-  // onSubmit = async e => {
-  //   e.preventDefault();
-  //   this.setState({ product: "" });
-  //   const { name, sort, category, status } = this.state;
-
-  //   const data = { name, sort, category, status };
-
-  //   const response = await axios.post(
-  //     "http://192.168.2.118:8080/searchProductByPrice",
-  //     data
-  //   );
-  //   if (response) {
-  //     this.setState({ name: "", status: "", sort: "", category: "" });
-  //     const result = response.data.result;
-  //     this.setState({ product: result });
-  //   }
-  // };
-
   handlePageChange = (page, e) => {
     this.setState({
       currentPage: page
@@ -126,16 +115,18 @@ class ProductList extends Component {
     let active = currentPage;
     let items = [];
     let totalPages = Math.floor(totalPageRec / pageLimit);
-    for (let number = 1; number <= totalPages; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === active}
-          onClick={() => this.onPageChange(number)}
-        >
-          {number}
-        </Pagination.Item>
-      );
+    if (totalPages > 1) {
+      for (let number = 1; number <= totalPages; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            active={number === active}
+            onClick={() => this.onPageChange(number)}
+          >
+            {number}
+          </Pagination.Item>
+        );
+      }
     }
 
     const paginationBasic = (
@@ -189,7 +180,7 @@ class ProductList extends Component {
             </Link>
             <Col xl={12}>
               <Card>
-                <CardHeader>
+                <CardHeader className="bg55">
                   <FormGroup inline>
                     <Form inline>
                       <FormControl
@@ -244,20 +235,43 @@ class ProductList extends Component {
                         <option value="Pending">Pending</option>
                         <option value="Banned">Banned</option>
                       </FormControl>
-                      <Button
-                        variant="outline-primary"
-                        className="filter"
-                        onClick={this.getData}
+                      <OverlayTrigger
+                        key="top"
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-top">
+                            Click here to search
+                          </Tooltip>
+                        }
                       >
-                        <i class="fas fa-search" />
-                        Search
-                      </Button>
-                      &nbsp;&nbsp; &nbsp;&nbsp;
-                      <Link to onClick={this.onCall}>
-                        <Button variant="outline-primary">
-                          <i class="fas fa-sync-alt" variant="primary" />
+                        <Button
+                          variant="outline-light"
+                          onClick={this.getData}
+                          className="filter background-btn"
+                          // style={{ width: "100px", padding: "5px" }}
+                        >
+                          <i class="fas fa-search" />
                         </Button>
-                      </Link>
+                      </OverlayTrigger>
+                      &nbsp;&nbsp; &nbsp;&nbsp;
+                      <OverlayTrigger
+                        key="top"
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-top">
+                            Click here to refresh
+                          </Tooltip>
+                        }
+                      >
+                        <Link to onClick={this.onCall}>
+                          <Button
+                            variant="outline-light"
+                            className="background-btn"
+                          >
+                            <i class="fas fa-sync-alt" variant="primary" />
+                          </Button>
+                        </Link>
+                      </OverlayTrigger>
                     </Form>
                   </FormGroup>
                 </CardHeader>
@@ -278,24 +292,26 @@ class ProductList extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {product && product.length
-                      ? product.map((product, index) => {
-                          return (
-                            <TableRow
-                              obj={product}
-                              key={product._id}
-                              index={index}
-                              skip={skip}
-                              onDelete={this.onDelete}
-                            />
-                          );
-                        })
-                      : null}
+                    {product && product.length ? (
+                      product.map((product, index) => {
+                        return (
+                          <TableRow
+                            obj={product}
+                            key={product._id}
+                            index={index}
+                            skip={skip}
+                            onDelete={this.onDelete}
+                          />
+                        );
+                      })
+                    ) : (
+                      <tr align="center">
+                        <th colSpan="11">No record found</th>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
-                <CardHeader className="container">
-                  {this.getPaginator()}
-                </CardHeader>
+                <CardHeader>{this.getPaginator()}</CardHeader>
               </Card>
             </Col>
           </Row>

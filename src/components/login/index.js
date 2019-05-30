@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-
-import { FormGroup, Row, FormControl, Container } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import {
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Row,
+  Container,
+  Button
+} from "reactstrap";
 
 class LoginComponent extends Component {
   constructor(props) {
@@ -28,24 +34,32 @@ class LoginComponent extends Component {
                   </h1>
                 </div>
                 <div className="login_subhead__e1IaE">Admin Login</div>
-                <div className="input-group">
-                  <FormGroup>
-                    <FormControl
+                <div className="mb-100 input-group">
+                  <InputGroup className="mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-envelope" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
                       type="email"
                       name="email"
                       placeholder="Enter Email"
-                      className="a"
                       onChange={this.props.onInputChange}
                     />
-
-                    {emailError ? (
-                      <p className="text-danger">{emailError}</p>
-                    ) : null}
-                  </FormGroup>
+                  </InputGroup>{" "}
+                  {emailError ? (
+                    <p className="text-danger">{emailError}</p>
+                  ) : null}
                 </div>
-                <div className="input-group">
-                  <FormGroup>
-                    <FormControl
+                <div className="mb-100 input-group">
+                  <InputGroup className="mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-key" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
                       required="true"
                       type="password"
                       placeholder="Enter Password"
@@ -53,18 +67,18 @@ class LoginComponent extends Component {
                       className="a"
                       onChange={this.props.onInputChange}
                     />
-                    {passwordError ? (
-                      <p className="text-danger">{passwordError}</p>
-                    ) : null}
-                  </FormGroup>
+                  </InputGroup>
+                  {passwordError ? (
+                    <p className="text-danger">{passwordError}</p>
+                  ) : null}
                 </div>
                 <Button
-                  variant="success"
+                  color="success"
                   type="submit"
                   className="btn btn-block "
                 >
                   <i class="fas fa-sign-in-alt top" />
-                  {isLoading ? "Please wait..." : "Sign In"}
+                  {isLoading ? "Please wait..." : "Log In"}
                 </Button>
                 &nbsp; &nbsp; &nbsp; &nbsp;
                 <Link to="/forgot-password">

@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import axios from "axios";
 import {
-  FormGroup,
-  FormLabel,
-  Button,
-  FormControl,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Row,
   Container,
-  Row
-} from "react-bootstrap";
+  Button
+} from "reactstrap";
 import Validator, { ValidationTypes } from "js-object-validation";
 import { toast } from "react-toastify";
-import { MDBBtn } from "mdbreact";
 class AddCategory extends Component {
   constructor(props) {
     super(props);
@@ -35,12 +35,15 @@ class AddCategory extends Component {
       };
       const validations = {
         category: {
-          [ValidationTypes.REQUIRED]: true
+          [ValidationTypes.REQUIRED]: true,
+          [ValidationTypes.MINLENGTH]: 3
         }
       };
       const messages = {
         category: {
-          [ValidationTypes.REQUIRED]: "Please enter the name of the category."
+          [ValidationTypes.REQUIRED]: "Please enter the name of the category.",
+          [ValidationTypes.MINLENGTH]:
+            "Name field should have atleast 3 characters."
         }
       };
       const { isValid, errors } = Validator(obj, validations, messages);
@@ -88,27 +91,24 @@ class AddCategory extends Component {
           <Container>
             <h3 align="center">Add Category</h3>
             <form onSubmit={this.onSubmit} noValidate>
-              <FormGroup>
-                <FormLabel>
-                  Name <span className="required">*</span>
-                </FormLabel>
-                <FormControl
+              <InputGroup className="mb-3">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-key left key" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
                   type="text"
                   placeholder="category name"
                   name="category"
                   value={this.state.category}
                   onChange={this.onInputChange}
                 />
-                {categoryError ? (
-                  <p className="text-danger">{categoryError}</p>
-                ) : null}
-              </FormGroup>
-
-              <Button
-                variant="outline-success"
-                type="submit"
-                className="animate"
-              >
+              </InputGroup>{" "}
+              {categoryError ? (
+                <p className="text-danger">{categoryError}</p>
+              ) : null}
+              <Button color="outline-success" type="submit" className="animate">
                 <i class="fas fa-plus top" />
                 Add Category
               </Button>

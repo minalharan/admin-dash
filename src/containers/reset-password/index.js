@@ -127,18 +127,20 @@ class ResetPassword extends Component {
       }
     } catch (error) {
       this.setState({ isLoading: false });
-      Swal.fire({
-        type: "error",
-        title: "Oops...",
-        text: "Something went wrong!"
-        // footer: '<a href>Why do I have this issue?</a>'
-      });
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown error"}`
-      );
+      // Swal.fire({
+      //   type: "error",
+      //   title: "Oops...",
+      //   text: "Something went wrong!"
+      //   // footer: '<a href>Why do I have this issue?</a>'
+      // });
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
 

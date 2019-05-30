@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Card, CardBody, CardHeader, Col, Row, Table, Form } from "reactstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button, Image } from "react-bootstrap";
+import { Button } from "reactstrap";
 import Swal from "sweetalert2";
 import Validator, { ValidationTypes } from "js-object-validation";
 const BASE_URL = "http://192.168.2.118:8080/";
@@ -170,7 +170,7 @@ class Category extends Component {
                         <tr>
                           <th scope="row" colSpan="2">
                             <Button
-                              variant="primary"
+                              color="primary"
                               type="submit"
                               align="center"
                               disabled={this.state.disabled}
@@ -182,7 +182,7 @@ class Category extends Component {
                             &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
                             &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
                             <Button
-                              variant="danger"
+                              color="danger"
                               className="image"
                               align="center"
                               style={{ width: "100px", padding: "5px" }}
@@ -257,7 +257,7 @@ class Category extends Component {
                         <tr>
                           <th scope="row" colSpan="2">
                             <Button
-                              variant="primary"
+                              color="primary"
                               type="submit"
                               align="center"
                               disabled={this.state.disabled}
@@ -269,7 +269,7 @@ class Category extends Component {
                             &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
                             &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
                             <Button
-                              variant="danger"
+                              color="danger"
                               className="image"
                               align="center"
                               style={{ width: "100px", padding: "5px" }}

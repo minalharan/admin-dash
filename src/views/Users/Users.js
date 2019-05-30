@@ -12,6 +12,7 @@ import {
   Tooltip
 } from "react-bootstrap";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import axios from "axios";
 const BASE_URL = "http://192.168.2.118:8080/";
 
@@ -29,18 +30,11 @@ class UserRow extends Component {
   };
 
   render() {
-    console.log("indexxxx", this.props.index);
-    console.log("skippppp", this.props.skip);
-
     return (
       <>
         {/* key={user._id.toString()} */}
         <tr>
-          <th scope="row">
-            <Link to={"/users/" + this.props.user._id}>
-              {this.props.index + this.props.skip + 1}
-            </Link>
-          </th>
+          <th scope="row">{this.props.index + this.props.skip + 1}</th>
           <th>
             <Image
               src={BASE_URL + this.props.user.file}
@@ -48,11 +42,7 @@ class UserRow extends Component {
               height="80px"
             />
           </th>
-          <td>
-            <Link to={"/users/" + this.props.user._id}>
-              {this.props.user.name}
-            </Link>
-          </td>
+          <td className="c">{this.props.user.name}</td>
           <td>{this.props.user.email}</td>
           <td>{this.props.user.mobile_no}</td>
           <td>{this.props.user.gender}</td>
@@ -125,8 +115,9 @@ class Users extends Component {
       status: "",
       currentPage: 1,
       totalPageRec: 0,
-      pageLimit: 5,
-      skip: 0
+      pageLimit: 6,
+      skip: 0,
+      gender: ""
     };
   }
   componentDidMount = async () => {
@@ -134,12 +125,12 @@ class Users extends Component {
   };
 
   getData = async () => {
-    const { name, order, status } = this.state;
+    const { name, order, status, gender } = this.state;
     const { currentPage, pageLimit } = this.state;
     const skip = (currentPage - 1) * pageLimit;
     const limit = pageLimit;
     const obj = { skip, limit };
-    const data = { name, order, status, skip, limit };
+    const data = { name, order, status, skip, limit, gender };
     var response;
     const res = await axios.post("http://192.168.2.118:8080/showUser1", data);
     var count = res.data.result;
@@ -148,28 +139,31 @@ class Users extends Component {
       const b = pageLimit - a;
       count = count + b;
     }
+    if (res.data.sucess == false) {
+      this.setState({
+        user: ""
+      });
+    }
     this.setState({ totalPageRec: count });
-    if (name != "" || order != "" || status != "") {
-      response = await axios.post(
-        "http://192.168.2.118:8080/getUserByName",
-        data
-      );
-      if (!response) {
-        this.setState({ name: "", order: "", status: "" });
-      }
-    } else {
-      response = await axios.post("http://192.168.2.118:8080/getuser", obj);
-      this.setState({ name: "", order: "", status: "" });
+
+    response = await axios.post(
+      "http://192.168.2.118:8080/getUserByName",
+      data
+    );
+    if (!response) {
+      this.setState({ name: "", order: "", status: "", gender: "" });
     }
     var result = response.data.result1;
-    // this.setState({ name: "", order: "", status: "" });
     this.setState({ user: result, skip });
     if (!result) {
       console.log("error");
     }
   };
   onCall = async () => {
-    this.setState({ name: "", status: "", order: "" }, this.getData);
+    this.setState(
+      { name: "", status: "", order: "", gender: "" },
+      this.getData
+    );
   };
   onDelete = async productId => {
     try {
@@ -193,16 +187,18 @@ class Users extends Component {
     let active = currentPage;
     let items = [];
     let totalPages = Math.floor(totalPageRec / pageLimit);
-    for (let number = 1; number <= totalPages; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === active}
-          onClick={() => this.onPageChange(number)}
-        >
-          {number}
-        </Pagination.Item>
-      );
+    if (totalPages > 1) {
+      for (let number = 1; number <= totalPages; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            active={number === active}
+            onClick={() => this.onPageChange(number)}
+          >
+            {number}
+          </Pagination.Item>
+        );
+      }
     }
 
     const paginationBasic = (
@@ -217,42 +213,7 @@ class Users extends Component {
   onPageChange = async pageNumber => {
     console.log("Page number :-", pageNumber);
     this.setState({ currentPage: pageNumber }, this.getData);
-    // console.log("pagination data: ", res);
   };
-
-  onSubmit = async e => {
-    e.preventDefault();
-    this.setState({ user: "" });
-    const { name, order, status } = this.state;
-
-    const data = { name, order, status };
-
-    const response = await axios.post(
-      "http://192.168.2.118:8080/getUserByName",
-      data
-    );
-    if (response) {
-      this.setState({ name: "", order: "", status: "" });
-      const result = response.data.result1;
-      this.setState({ user: result });
-    }
-  };
-
-  // onSearch = async e => {
-  // e.preventDefault();
-  // this.setState({ user: "" });
-  // const { order } = this.state;
-
-  // const data = { order };
-
-  // const response = await axios.post(
-  // "http://192.168.2.118:8080/getUserByOrder", data
-  // );
-  // if (response) {
-  // const result = response.data.result;
-  // this.setState({ user: result });
-  // }
-  // };
 
   onInputChange = e => {
     const { target } = e;
@@ -263,7 +224,7 @@ class Users extends Component {
   };
 
   render() {
-    const { user, name, order, currentPage, skip, status } = this.state;
+    const { user, name, order, currentPage, skip, status, gender } = this.state;
     console.log("userssss ", user);
 
     return (
@@ -281,13 +242,13 @@ class Users extends Component {
           </Link>
           <Col xl={12}>
             <Card>
-              <CardHeader>
+              <CardHeader className="bg55">
                 <FormGroup inline>
                   <Form inline>
                     <FormControl
                       type="text"
                       name="name"
-                      placeholder="search by name"
+                      placeholder="Search by name"
                       value={name}
                       onChange={this.onInputChange}
                       className="mr-sm-2"
@@ -300,7 +261,7 @@ class Users extends Component {
                       onChange={this.onInputChange}
                       className="mr-sm-2"
                     >
-                      <option value="">---Name---</option>
+                      <option value="">---Sort by name---</option>
                       <option value="assending">Order By Name A to Z</option>
                       <option value="desending">Order By Name Z to A</option>
                     </FormControl>
@@ -319,68 +280,97 @@ class Users extends Component {
                       <option value="Banned">Banned</option>
                     </FormControl>
                     &nbsp;
-                    <Button
-                      variant="outline-primary"
-                      onClick={this.getData}
-                      // style={{ width: "100px", padding: "5px" }}
+                    <FormControl
+                      as="select"
+                      name="gender"
+                      value={gender}
+                      onChange={this.onInputChange}
+                      className="mr-sm-2"
                     >
-                      <i class="fas fa-search" />
-                      Search
-                    </Button>
-                    &nbsp;&nbsp;
-                    <Link to onClick={this.onCall}>
-                      <Button variant="outline-primary">
-                        <i class="fas fa-sync-alt" variant="primary" />
+                      <option value="">---Gender---</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="others">Others</option>
+                    </FormControl>
+                    &nbsp;
+                    <OverlayTrigger
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">Click here to search</Tooltip>
+                      }
+                    >
+                      <Button
+                        variant="outline-light"
+                        onClick={this.getData}
+                        className="filter background-btn"
+                        // style={{ width: "100px", padding: "5px" }}
+                      >
+                        <i class="fas fa-search" />
                       </Button>
-                    </Link>
+                    </OverlayTrigger>
+                    &nbsp;&nbsp;
+                    <OverlayTrigger
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">
+                          Click here to refresh
+                        </Tooltip>
+                      }
+                    >
+                      <Link to onClick={this.onCall}>
+                        <Button
+                          variant="outline-light"
+                          className="background-btn"
+                        >
+                          <i class="fas fa-sync-alt" variant="primary" />
+                        </Button>
+                      </Link>
+                    </OverlayTrigger>
                   </Form>
                 </FormGroup>
               </CardHeader>
-              <CardBody>
-                <Table responsive hover>
-                  <thead>
-                    <tr>
-                      <th scope="col">S.No.</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Mobile</th>
-                      <th scope="col">Gender</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">create Time</th>
-                      <th scope="col">Last Login</th>
-                      <th scope="col" colSpan="2">
-                        Actions
-                      </th>
+              {/* <CardBody> */}
+              <Table responsive hover>
+                <thead>
+                  <tr>
+                    <th scope="col">S.No.</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Updated At</th>
+                    <th scope="col" colSpan="2">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {user && user.length ? (
+                    user.map((user, index) => (
+                      <UserRow
+                        obj={user}
+                        key={user._id}
+                        user={user}
+                        index={index}
+                        skip={this.state.skip}
+                        onDelete={this.onDelete}
+                      />
+                    ))
+                  ) : (
+                    <tr align="center">
+                      <th colSpan="11">No record found</th>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {user && user.length ? (
-                      user.map((user, index) => (
-                        <UserRow
-                          obj={user}
-                          key={user._id}
-                          user={user}
-                          index={index}
-                          skip={this.state.skip}
-                          onDelete={this.onDelete}
-                        />
-                      ))
-                    ) : (
-                      <>
-                        {" "}
-                        <h5 text align="center" padding-left="40px">
-                          No record found
-                        </h5>
-                      </>
-                    )}
-                  </tbody>
-                </Table>
-              </CardBody>
+                  )}
+                </tbody>
+              </Table>
+              {/* </CardBody> */}
               <CardHeader>
-                <div style={{ marginLeft: "40%", marginTop: "3%" }}>
-                  {this.getPaginator()}
-                </div>
+                <div>{this.getPaginator()}</div>
               </CardHeader>
             </Card>
           </Col>

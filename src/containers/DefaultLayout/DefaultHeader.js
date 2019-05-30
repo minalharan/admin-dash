@@ -65,7 +65,7 @@ class DefaultHeader extends Component {
           minimized={{
             width: 30,
             height: 30,
-            alt: "Admin Panel Logo"
+            alt: "Shopping Dashboard"
           }}
         />
 
@@ -82,12 +82,14 @@ class DefaultHeader extends Component {
             <DropdownMenu right style={{ right: "auto" }}>
               <Link to={"/admin-profile"}>
                 <DropdownItem>
-                  <i className="fa fa-user" /> Profile
+                  <i class="fas fa-user" />
+                  Profile
                 </DropdownItem>
               </Link>
               <Link to={"/check-password"}>
                 <DropdownItem>
-                  <i className="fa fa-user" /> Change Password
+                  <i className="fa fa-key" />
+                  Change Password
                 </DropdownItem>
               </Link>
               <Link to={"/logout"}>

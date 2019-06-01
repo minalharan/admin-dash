@@ -12,11 +12,13 @@ import ChangePassword from "./views/change-password/index";
 import Category from "./views/Category/category";
 import UserRow from "./views/Category/categoryList";
 import Signup from "./containers/sign-up/index";
+import NewsLetterList from "./views/newsLetter/newsletter";
 
 const routes = [
   { path: "/category-list", name: "Catrgory-List", component: UserRow },
   { path: "/cat-list/:id", name: "Category", component: Category },
   { path: "/add-product", name: "Add-Product", component: AddProduct },
+  { path: "/news-letter", name: "NewsLetterList", component: NewsLetterList },
 
   {
     path: "/product-list",
@@ -25,7 +27,7 @@ const routes = [
     component: Product
   },
 
-  { path: "/add-user", exact: true, name: "Signup", component: Signup },
+  { path: "/add-user", exact: true, name: "Add-User", component: Signup },
   {
     path: "/add-category",
     exact: true,

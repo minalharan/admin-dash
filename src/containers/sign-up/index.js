@@ -80,7 +80,8 @@ class Signup extends Component {
         name: {
           [ValidationTypes.REQUIRED]: "Please enter a name.",
           [ValidationTypes.MINLENGTH]:
-            "Name field should have atleast 2 charaters."
+            "Name field should have atleast 2 charaters.",
+          [ValidationTypes.MAXLENGTH]: "The length must be at max 50 characters"
         },
         email: {
           [ValidationTypes.REQUIRED]: "Please enter an email address.",

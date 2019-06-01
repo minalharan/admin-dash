@@ -365,7 +365,7 @@ class Update extends Component {
                               align="center"
                               style={{ width: "100px", padding: "5px" }}
                               onClick={() => {
-                                this.props.history.push("/product-list");
+                                this.props.history.goBack();
                               }}
                             >
                               Cancel
@@ -561,7 +561,7 @@ class Update extends Component {
                               align="center"
                               style={{ width: "100px", padding: "5px" }}
                               onClick={() => {
-                                this.props.history.push("/product-list");
+                                this.props.history.goBack();
                               }}
                               className="image"
                             >

@@ -76,8 +76,8 @@ class TableRow extends Component {
         <td>
           <img
             src={BASE_URL + this.props.obj.thumbnail}
-            width="150px"
-            height="150px"
+            width="100px"
+            height="100px"
             alt={"logo"}
             onClick={this.handleOpen}
           />
@@ -98,18 +98,24 @@ class TableRow extends Component {
           )}
         </td>
         <td className="c">{this.props.obj.name}</td>
-        <td>${this.props.obj.price.toFixed(2)}</td>
-        <td>{this.props.obj.quantity}</td>
-        <td>
+        <td width="110px">${this.props.obj.price.toFixed(2)}</td>
+        <td text-align="center" width="110px">
+          {this.props.obj.quantity}
+        </td>
+
+        <td>{this.props.obj.createTime}</td>
+        <td>{this.props.obj.updateTime}</td>
+        <td width="110px">
           {" "}
-          <Badge color={this.getBadge(this.props.obj.status)}>
+          <Badge
+            style={{ fontSize: "90%" }}
+            color={this.getBadge(this.props.obj.status)}
+          >
             {this.props.obj.status}
           </Badge>
         </td>
-        <td>{this.props.obj.createTime}</td>
-        <td>{this.props.obj.updateTime}</td>
 
-        <td>
+        <td width="130px">
           <Link to={"/gtitem/" + this.props.obj._id}>
             <OverlayTrigger
               key="top"
@@ -121,7 +127,7 @@ class TableRow extends Component {
               </Button>
             </OverlayTrigger>
           </Link>{" "}
-          &nbsp; &nbsp;
+          &nbsp;
           <OverlayTrigger
             key="top"
             placement="top"

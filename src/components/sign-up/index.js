@@ -37,7 +37,7 @@ class SignupComponent extends Component {
             className="login_formSignin__27WMl"
           >
             <h1>Register</h1>
-            <p className="text-muted">Create your account</p>
+            <p className="text-muted">Add new user</p>
             <InputGroup className="mb-3">
               <InputGroupAddon addonType="prepend">
                 <InputGroupText>

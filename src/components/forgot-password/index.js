@@ -24,7 +24,7 @@ class ForgotComponent extends Component {
           <ToastContainer />
           <div>
             <div className="mb-100 input-group">
-              <InputGroup className="mb-3">
+              <InputGroup>
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
                     <i class="fas fa-envelope" />
@@ -41,7 +41,11 @@ class ForgotComponent extends Component {
               {emailError ? <p className=" text-danger">{emailError}</p> : null}
             </div>
             <div>
-              <Button color="info" type="submit" className="btn  btn-block ">
+              <Button
+                color="info"
+                type="submit"
+                className="btn  btn-block bttn text-white link"
+              >
                 {" "}
                 {isLoading ? "please wait.." : "Submit"}
               </Button>
@@ -49,9 +53,12 @@ class ForgotComponent extends Component {
           </div>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           &nbsp; &nbsp;
-          <Link to={"/login"} align="center">
-            <Button className="btn btn-dark btn-block">Cancel</Button>
-          </Link>
+          <div>
+            <p className="forgot22">
+              Remember Password ? | <Link to={"/login"}>Login</Link>
+            </p>{" "}
+            &nbsp;
+          </div>
         </form>
       </div>
     );

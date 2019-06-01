@@ -55,8 +55,8 @@ class ResetComponent extends Component {
               noValidate
               className="login_formSignin__27WMl"
             >
-              <div className="login_login_header__3FYY0 ">
-                <h1 className="left">Forgot Password</h1>
+              <div>
+                <h1 className="forgot">Forgot Password</h1>
               </div>
               <div className="input-group">
                 <InputGroup className="mb-4">
@@ -106,8 +106,8 @@ class ResetComponent extends Component {
                 </Button>
                 &nbsp;&nbsp;
                 <Link to={"/login"}>
-                  <Button color="primary" className="btn btn-dark btn-block ">
-                    Go Home
+                  <Button color="primary" className="btn btn-block goBack">
+                    Log In
                   </Button>
                 </Link>
               </InputGroup>

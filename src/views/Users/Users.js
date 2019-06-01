@@ -43,19 +43,23 @@ class UserRow extends Component {
             />
           </th>
           <td className="c">{this.props.user.name}</td>
-          <td>{this.props.user.email}</td>
-          <td>{this.props.user.mobile_no}</td>
-          <td>{this.props.user.gender}</td>
-          <td>
+          <td max-width="40px">{this.props.user.email}</td>
+          <td max-width="90px">{this.props.user.mobile_no}</td>
+          <td max-width="90px">{this.props.user.gender}</td>
+          <td width="40px">{this.props.user.lastLogin}</td>
+          <td max-width="40px">{this.props.user.createTime}</td>
+          <td max-width="40px">{this.props.user.updateTime}</td>
+          <td max-width="110px">
             <Link to={"/users/" + this.props.user._id}>
-              <Badge color={this.getBadge(this.props.user.status)}>
+              <Badge
+                style={{ fontSize: "90%" }}
+                color={this.getBadge(this.props.user.status)}
+              >
                 {this.props.user.status}
               </Badge>
             </Link>
           </td>
-          <td>{this.props.user.createTime}</td>
-          <td>{this.props.user.lastLogin}</td>
-          <td colSpan="2">
+          <td width="110px" colSpan="2">
             <Link to={"/users/" + this.props.user._id}>
               <OverlayTrigger
                 key="top"
@@ -122,6 +126,11 @@ class Users extends Component {
   }
   componentDidMount = async () => {
     this.getData();
+  };
+  onSubmit = async e => {
+    e.preventDefault();
+    this.getData();
+    return;
   };
 
   getData = async () => {
@@ -230,21 +239,11 @@ class Users extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Link to={"/add-user"}>
-            <Button
-              className="header"
-              style={{ width: "100px", padding: "5px" }}
-            >
-              {" "}
-              <i class="fa fa-plus top" aria-hidden="true" />
-              Add User
-            </Button>
-          </Link>
           <Col xl={12}>
             <Card>
               <CardHeader className="bg55">
                 <FormGroup inline>
-                  <Form inline>
+                  <Form inline onSubmit={this.onSubmit}>
                     <FormControl
                       type="text"
                       name="name"
@@ -276,8 +275,6 @@ class Users extends Component {
                       <option value="">---Status---</option>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Banned">Banned</option>
                     </FormControl>
                     &nbsp;
                     <FormControl
@@ -302,7 +299,7 @@ class Users extends Component {
                     >
                       <Button
                         variant="outline-light"
-                        onClick={this.getData}
+                        type="submit"
                         className="filter background-btn"
                         // style={{ width: "100px", padding: "5px" }}
                       >
@@ -328,11 +325,30 @@ class Users extends Component {
                         </Button>
                       </Link>
                     </OverlayTrigger>
+                    <OverlayTrigger
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">
+                          Click here to add new user
+                        </Tooltip>
+                      }
+                    >
+                      <Link to={"/add-user"}>
+                        <Button
+                          className="header"
+                          className="mr-sm-2 filter"
+                          variant="outline-light"
+                        >
+                          <i class="fa fa-plus top" aria-hidden="true" />
+                        </Button>
+                      </Link>
+                    </OverlayTrigger>
                   </Form>
                 </FormGroup>
               </CardHeader>
               {/* <CardBody> */}
-              <Table responsive hover>
+              <Table responsive hover bordered>
                 <thead>
                   <tr>
                     <th scope="col">S.No.</th>
@@ -341,9 +357,10 @@ class Users extends Component {
                     <th scope="col">Email</th>
                     <th scope="col">Mobile</th>
                     <th scope="col">Gender</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Last Login </th>
                     <th scope="col">Created At</th>
                     <th scope="col">Updated At</th>
+                    <th scope="col">Status</th>
                     <th scope="col" colSpan="2">
                       Actions
                     </th>

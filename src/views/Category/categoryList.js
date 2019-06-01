@@ -62,14 +62,18 @@ class UserRow extends Component {
         <tr>
           <th scope="row">{this.props.index + this.props.skip + 1}</th>
           <td className="c">{this.props.cat.category}</td>
-          <td>
-            <Badge color={this.getBadge(this.props.cat.status)}>
-              {this.props.cat.status}
-            </Badge>
-          </td>
+
           <td className="product">{this.state.Cid}</td>
           <td>{this.props.cat.createTime}</td>
           <td>{this.props.cat.updateTime}</td>
+          <td>
+            <Badge
+              style={{ fontSize: "90%" }}
+              color={this.getBadge(this.props.cat.status)}
+            >
+              {this.props.cat.status}
+            </Badge>
+          </td>
           <td colSpan="2">
             <Link to={"/cat-list/" + this.props.cat._id}>
               <OverlayTrigger
@@ -140,13 +144,19 @@ class CategoryList extends Component {
       toastId: null
     };
   }
-  componentDidMount = async () => {
+  componentDidMount = async e => {
+    //  e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) {
       this.props.history.push("/login1");
     }
 
     this.getData();
+  };
+  onSubmit = e => {
+    e.preventDefault();
+    this.getData();
+    return;
   };
   onSubmit1 = async e => {
     e.preventDefault();
@@ -182,11 +192,18 @@ class CategoryList extends Component {
         "http:///192.168.2.118:8080/category",
         data
       );
-      if (!toast.isActive(this.toastId)) {
-        this.toastId =
-          toast.success("Category added !");
+      if (response) {
+        this.setState(
+          {
+            category: ""
+          },
+          this.getData
+        );
       }
-      this.props.history.goBack("/category-list");
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.success("Category added !");
+      }
+      // this.props.history.goBack("/category-list");
     } catch (error) {
       console.log(error);
       toast.error(
@@ -325,60 +342,11 @@ class CategoryList extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Button className="header bttn" onClick={this.handleShow}>
-            <i class="fa fa-plus top" />
-            Add Category
-          </Button>
-          <Modal show={this.state.show} onHide={this.handleClose}>
-            <form onSubmit={this.onSubmit1} noValidate className="modal1">
-              <Modal.Header closeButton>
-                <Modal.Title color="beige">Add Category</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Container>
-                  <div className="input-group">
-                    <FormGroup className="mb-3">
-                      <FormControl
-                        className="rig"
-                        type="text"
-                        placeholder="Category Name"
-                        name="category"
-                        value={this.state.category}
-                        onChange={this.onInputChange}
-                      />
-                      {categoryError ? (
-                        <p className="text-danger">{categoryError}</p>
-                      ) : null}
-                    </FormGroup>
-
-                    <div />
-                    <br />
-                  </div>
-                </Container>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="success" type="submit">
-                  <i class="fas fa-plus top" />
-                  Add Category
-                </Button>{" "}
-                <Button
-                  onClick={this.handleShow}
-                  variant="danger"
-                  onClick={() => {
-                    this.props.history.push("/product-list");
-                  }}
-                >
-                  {" "}
-                  Cancel
-                </Button>
-              </Modal.Footer>
-            </form>
-          </Modal>
           <Col xl={12}>
             <Card>
               <CardHeader className="bg55">
                 <FormGroup inline>
-                  <Form inline>
+                  <Form inline onSubmit={this.onSubmit}>
                     <FormControl
                       type="text"
                       name="name"
@@ -410,8 +378,6 @@ class CategoryList extends Component {
                       <option value="">---Status---</option>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Banned">Banned</option>
                     </FormControl>
                     &nbsp;
                     <OverlayTrigger
@@ -423,7 +389,6 @@ class CategoryList extends Component {
                     >
                       <Button
                         variant="outline-light"
-                        onClick={this.getData}
                         className="filter background-btn"
                         // style={{ width: "100px", padding: "5px" }}
                       >
@@ -449,19 +414,50 @@ class CategoryList extends Component {
                         </Button>
                       </Link>
                     </OverlayTrigger>
+                    <Form>
+                      <FormControl
+                        type="text"
+                        placeholder="Category Name"
+                        name="category"
+                        value={this.state.category.toLowerCase()}
+                        onChange={this.onInputChange}
+                        className="mr-sm-2 filter"
+                      />{" "}
+                      {/* {categoryError ? (
+                        <p className="text-danger">{categoryError}</p>
+                      ) : null} */}
+                      <OverlayTrigger
+                        key="top"
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-top">
+                            Click here to add category
+                          </Tooltip>
+                        }
+                      >
+                        <Button
+                          variant="outline-light"
+                          onClick={this.onSubmit1}
+                        >
+                          <i class="fas fa-plus top" />
+                        </Button>
+                      </OverlayTrigger>
+                    </Form>
                   </Form>
+                  <Form inline />
                 </FormGroup>
               </CardHeader>
               {/* <CardBody> */}
-              <Table responsive hover>
+              <Table responsive hover bordered>
                 <thead>
                   <tr>
                     <th scope="col">S.No.</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Status</th>
+
                     <th scope="col">Total Product</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Updated At</th>
+                    <th scope="col">Status</th>
                     <th scope="col" colSpan="2">
                       Actions
                     </th>

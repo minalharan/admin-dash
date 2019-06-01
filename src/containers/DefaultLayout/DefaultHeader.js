@@ -36,10 +36,10 @@ class DefaultHeader extends Component {
   }
   componentDidMount = async () => {
     const { file } = this.state;
-    const token = localStorage.getItem("token");
-    if (!token) {
-      this.props.history.push("/login");
-    }
+    // const token = localStorage.getItem("token");
+    // if (!token) {
+    //   this.props.history.push("/login");
+    // }
     try {
       const { Cid } = this.state;
       const obj = { Cid };

@@ -57,6 +57,11 @@ class ProductList extends Component {
     });
     this.getData();
   };
+  onSubmit = e => {
+    e.preventDefault();
+    this.getData();
+    return;
+  };
   getData = async () => {
     try {
       const { currentPage, pageLimit } = this.state;
@@ -171,18 +176,11 @@ class ProductList extends Component {
       <>
         <div className="animated fadeIn">
           <Row>
-            <Link to={"/add-product"}>
-              <Button className="header">
-                {" "}
-                <i class="fa fa-plus top" aria-hidden="true" />
-                Add Product
-              </Button>
-            </Link>
             <Col xl={12}>
               <Card>
                 <CardHeader className="bg55">
                   <FormGroup inline>
-                    <Form inline>
+                    <Form inline onSubmit={this.onSubmit}>
                       <FormControl
                         type="text"
                         name="name"
@@ -232,8 +230,7 @@ class ProductList extends Component {
                         <option value={null}>Status</option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Banned">Banned</option>
+                   
                       </FormControl>
                       <OverlayTrigger
                         key="top"
@@ -246,7 +243,7 @@ class ProductList extends Component {
                       >
                         <Button
                           variant="outline-light"
-                          onClick={this.getData}
+                          type="submit"
                           className="filter background-btn"
                           // style={{ width: "100px", padding: "5px" }}
                         >
@@ -272,11 +269,30 @@ class ProductList extends Component {
                           </Button>
                         </Link>
                       </OverlayTrigger>
+                      <OverlayTrigger
+                        key="top"
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-top">
+                            Click here to add new product
+                          </Tooltip>
+                        }
+                      >
+                        <Button
+                          variant="outline-light"
+                          className="mr-sm-2 filter"
+                          onClick={() => {
+                            this.props.history.push("/add-product");
+                          }}
+                        >
+                          <i class="fa fa-plus top" aria-hidden="true" />
+                        </Button>
+                      </OverlayTrigger>
                     </Form>
                   </FormGroup>
                 </CardHeader>
 
-                <Table striped hover variant="dark">
+                <Table striped hover variant="dark" bordered>
                   <thead>
                     <tr>
                       <th text-align="center">S.No.</th>
@@ -284,9 +300,10 @@ class ProductList extends Component {
                       <th text-align="center">Name</th>
                       <th text-align="center">Price</th>
                       <th text-align="center">Quantity</th>
-                      <th text-align="center">Status</th>
-                      <th text-align="center">Created At</th>
+
+                      <th>Created At</th>
                       <th text-align="center">Updated At</th>
+                      <th text-align="center">Status</th>
 
                       <th colSpan="3">Action</th>
                     </tr>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from "reactstrap";
 import {
   Image,
@@ -8,25 +8,18 @@ import {
   FormGroup,
   Form,
   Pagination,
-  Modal,
-  Container,
-  FormLabel,
-  ModalFooter,
   OverlayTrigger,
   Tooltip
 } from "react-bootstrap";
-import { toast } from "react-toastify";
-import Validator, { ValidationTypes } from "js-object-validation";
 import Swal from "sweetalert2";
 import axios from "axios";
 const BASE_URL = "http://192.168.2.118:8080/";
+//import usersData from './UsersData'
 
-class NewsLetter extends Component {
+class UserRow extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      Cid: this.props.cat._id
-    };
+    this.state = {};
   }
   getBadge = status => {
     return status === "Active"
@@ -39,140 +32,122 @@ class NewsLetter extends Component {
       ? "secondary"
       : "primary";
   };
-  componentDidMount = async () => {
-    const response = await axios.get("http://192.168.2.118:8080/getNewsLetter");
-    this.setState({
-      cat: response.data.result
-    });
-    if (!response) {
-      console.log("error");
-    }
-  };
+
   render() {
     return (
       <>
+        {/* key={user._id.toString()} */}
         <tr>
           <th scope="row">{this.props.index + this.props.skip + 1}</th>
-          <td>{this.props.cat.email}</td>
+          <td>{this.props.news.email}</td>
+
+          <td>{this.props.news.createTime}</td>
+          <td>{this.props.news.updateTime}</td>
           <td>
-            <Link to={"/cat-list/" + this.props.cat._id}>
-              <Badge color={this.getBadge(this.props.cat.status)}>
-                {this.props.cat.status}
-              </Badge>
-            </Link>
+            <Badge color={this.getBadge(this.props.news.status)}>
+              {this.props.news.status}
+            </Badge>
           </td>
-          <td>{this.props.cat.createTime}</td>
-          <td>{this.props.cat.updateTime}</td>
-          <td colSpan="1">
-            <OverlayTrigger
-              key="top"
-              placement="top"
-              overlay={<Tooltip id="tooltip-top">Delete</Tooltip>}
+          <td colSpan="2">
+            &nbsp;&nbsp;
+            <Button
+              variant="outline-danger"
+              onClick={e =>
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to delete this!",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, delete it!"
+                }).then(result => {
+                  if (result.value) {
+                    Swal.fire(
+                      "Deleted!",
+                      "Your file has been deleted.",
+                      "success"
+                    ) && this.props.onDelete(this.props.obj._id);
+                  }
+                })
+              }
             >
-              <Button
-                variant="outline-danger"
-                onClick={e =>
-                  Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to delete this!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!"
-                  }).then(result => {
-                    if (result.value) {
-                      Swal.fire(
-                        "Deleted!",
-                        "Your file has been deleted.",
-                        "success"
-                      ) && this.props.onDelete(this.props.obj._id);
-                    }
-                  })
-                }
-              >
-                <i className="fas fa-trash-alt" />
-              </Button>
-            </OverlayTrigger>
+              <i class="fas fa-trash-alt" />
+            </Button>
           </td>
         </tr>
       </>
     );
   }
 }
-class News extends Component {
+
+class NewsLetterList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cat: [],
-      email: "",
-      createTime: "",
+      news: [],
+      order: "",
       status: "",
-      updatetime: "",
+      email: "",
       currentPage: 1,
       totalPageRec: 0,
       pageLimit: 5,
-      skip: 0,
-      value: ""
+      skip: 0
     };
   }
   componentDidMount = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      this.props.history.push("/login");
-    }
+    this.getData();
   };
-  getData = async () => {
-    try {
-      const { name, order, status } = this.state;
-      const { currentPage, pageLimit } = this.state;
-      const skip = (currentPage - 1) * pageLimit;
-      const limit = pageLimit;
-      const data = { name, order, status, skip, limit };
-      var response;
-      const res = await axios.post("http://192.168.2.118:8080/showCat1", data);
-      var count = res.data.result1;
-      if (count % pageLimit != 0) {
-        const a = count % pageLimit;
-        const b = pageLimit - a;
-        count = count + b;
-      }
-      const result = response.data.result1;
-      console.log(res.data.success);
-      if (res.data.success == false) {
-        this.setState({ cat: "" });
-      }
-      this.setState({ totalPageRec: count });
-      if (res) {
-        response = await axios.post(
-          "http://192.168.2.118:8080/getCatByNamee",
-          data
-        );
-      }
+  onSubmit = async e => {
+    e.preventDefault();
+    this.getData();
+    return;
+  };
 
-      this.setState({ cat: result, skip });
-      if (!result) {
-        console.log("error");
-      }
-    } catch (error) {
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown error"}`
+  getData = async () => {
+    const { email, order, status } = this.state;
+    const { currentPage, pageLimit } = this.state;
+    const skip = (currentPage - 1) * pageLimit;
+    const limit = pageLimit;
+    const data = { email, order, status, skip, limit };
+    var response;
+    const res = await axios.post(
+      "http://192.168.2.118:8080/newsletterCount",
+      data
+    );
+    var count = res.data.result1;
+    if (count % pageLimit != 0) {
+      const a = count % pageLimit;
+      const b = pageLimit - a;
+      count = count + b;
+    }
+    this.setState({ totalPageRec: count });
+    if (res) {
+      response = await axios.post(
+        "http://192.168.2.118:8080/getNewsLetter",
+        data
       );
+    }
+
+    const result1 = response.data.result;
+    console.log(result1);
+
+    this.setState({ news: result1, skip });
+    if (!result1) {
+      console.log("error");
     }
   };
   onDelete = async productId => {
     try {
       const response = await axios.delete(
-        "http://192.168.2.118:8080/deleteCategory/" + productId
+        "http://192.168.2.118:8080/deleteNewsLetter/" + productId
       );
     } catch (error) {
       console.log(error);
     }
     this.getData();
   };
+
   handlePageChange = (page, e) => {
     this.setState({
       currentPage: page
@@ -206,7 +181,9 @@ class News extends Component {
   };
 
   onPageChange = async pageNumber => {
+    console.log("Page number :-", pageNumber);
     this.setState({ currentPage: pageNumber }, this.getData);
+    // console.log("pagination data: ", res);
   };
 
   onInputChange = e => {
@@ -216,32 +193,31 @@ class News extends Component {
       [name]: value
     });
   };
+  onCall = async () => {
+    this.setState({ email: "", status: "", order: "" }, this.getData);
+  };
+
   render() {
-    const {
-      cat,
-      category,
-      order,
-      currentPage,
-      skip,
-      status,
-      errors
-    } = this.state;
-    const { category: categoryError } = errors;
+    const { news, order, currentPage, skip, status, email } = this.state;
+    console.log("userssss  ", news);
+
+    // const userList = usersData.filter((user) => user.id < 10)
+
     return (
       <div className="animated fadeIn">
         <Row>
           <Col xl={12}>
             <Card>
-              <CardHeader>
+              <CardHeader className="bg55">
                 <FormGroup inline>
-                  <Form inline>
+                  <Form inline onSubmit={this.onSubmit}>
                     <FormControl
                       type="text"
-                      name="name"
+                      name="email"
                       placeholder="Search by email"
-                      value={category}
+                      value={email}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     />
                     &nbsp;
                     <FormControl
@@ -249,11 +225,11 @@ class News extends Component {
                       name="order"
                       value={order}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     >
                       <option value="">---Email---</option>
-                      <option value="assending">Order By Name A to Z</option>
-                      <option value="desending">Order By Name Z to A</option>
+                      <option value="assending">Order By Email A to Z</option>
+                      <option value="desending">Order By Email Z to A</option>
                     </FormControl>
                     &nbsp;
                     <FormControl
@@ -261,7 +237,7 @@ class News extends Component {
                       name="status"
                       value={status}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     >
                       <option value="">---Status---</option>
                       <option value="Active">Active</option>
@@ -270,44 +246,65 @@ class News extends Component {
                       <option value="Banned">Banned</option>
                     </FormControl>
                     &nbsp;
-                    <Button
-                      variant="outline-primary"
-                      onClick={this.getData}
-                      className="filter"
+                    <OverlayTrigger
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">Click here to search</Tooltip>
+                      }
                     >
-                      <i class="fas fa-search" />
-                      Search
-                    </Button>
-                    &nbsp;&nbsp;
-                    <Link to onClick={this.onCall}>
-                      <Button variant="outline-primary">
-                        <i class="fas fa-sync-alt" variant="primary" />
+                      <Button
+                        variant="outline-light"
+
+                        // style={{ width: "100px", padding: "5px" }}
+                      >
+                        <i class="fas fa-search" />
                       </Button>
-                    </Link>
+                    </OverlayTrigger>
+                    &nbsp;&nbsp;
+                    <OverlayTrigger
+                      key="top"
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">
+                          Click here to refresh
+                        </Tooltip>
+                      }
+                    >
+                      <Link to onClick={this.onCall}>
+                        <Button
+                          variant="outline-light"
+                          className="background-btn"
+                        >
+                          <i class="fas fa-sync-alt" variant="primary" />
+                        </Button>
+                      </Link>
+                    </OverlayTrigger>
                   </Form>
                 </FormGroup>
               </CardHeader>
               <CardBody>
-                <Table responsive hover>
+                <Table responsive hover bordered>
                   <thead>
                     <tr>
                       <th scope="col">S.No.</th>
                       <th scope="col">Email</th>
-                      <th scope="col">Status</th>
+
                       <th scope="col">Create Time</th>
                       <th scope="col">Update Time</th>
-                      <th scope="col" colSpan="1">
+                      <th scope="col">Status</th>
+                      <th scope="col" colSpan="2">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {cat && cat.length
-                      ? cat.map((cat, index) => (
-                          <NewsLetter
-                            obj={cat}
-                            key={cat._id}
-                            cat={cat}
+                    {news && news.length
+                      ? news.map((news, index) => (
+                          <UserRow
+                            obj={news}
+                            key={news._id}
+                            news={news}
                             index={index}
                             skip={this.state.skip}
                             onDelete={this.onDelete}
@@ -329,4 +326,5 @@ class News extends Component {
     );
   }
 }
-export default News;
+
+export default NewsLetterList;

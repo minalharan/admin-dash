@@ -9,6 +9,7 @@ import {
   Container,
   Button
 } from "reactstrap";
+import { FormGroup, Col } from "react-bootstrap";
 
 class LoginComponent extends Component {
   constructor(props) {
@@ -34,56 +35,61 @@ class LoginComponent extends Component {
                   </h1>
                 </div>
                 <div className="login_subhead__e1IaE">Admin Login</div>
-                <div className="mb-100 input-group">
-                  <InputGroup className="mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i class="fas fa-envelope" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      type="email"
-                      name="email"
-                      placeholder="Enter Email"
-                      onChange={this.props.onInputChange}
-                    />
-                  </InputGroup>{" "}
-                  {emailError ? (
-                    <p className="text-danger">{emailError}</p>
-                  ) : null}
+                <div>
+                  <div className="mb-100 input-group">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i class="fas fa-envelope" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        type="email"
+                        name="email"
+                        placeholder="Enter Email"
+                        //className="a"
+                        onChange={this.props.onInputChange}
+                      />
+                    </InputGroup>{" "}
+                    {emailError ? (
+                      <p className="text-danger">{emailError}</p>
+                    ) : null}
+                  </div>
+                  <div className="mb-100 input-group">
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="fa fa-key" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        required="true"
+                        type="password"
+                        placeholder="Enter Password"
+                        name="password"
+                        className="a"
+                        onChange={this.props.onInputChange}
+                      />
+                    </InputGroup>{" "}
+                    {passwordError ? (
+                      <p className="text-danger">{passwordError}</p>
+                    ) : null}
+                  </div>
                 </div>
-                <div className="mb-100 input-group">
-                  <InputGroup className="mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="fa fa-key" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      required="true"
-                      type="password"
-                      placeholder="Enter Password"
-                      name="password"
-                      className="a"
-                      onChange={this.props.onInputChange}
-                    />
-                  </InputGroup>
-                  {passwordError ? (
-                    <p className="text-danger">{passwordError}</p>
-                  ) : null}
-                </div>
-                <Button
-                  color="success"
-                  type="submit"
-                  className="btn btn-block "
-                >
-                  <i class="fas fa-sign-in-alt top" />
-                  {isLoading ? "Please wait..." : "Log In"}
-                </Button>
-                &nbsp; &nbsp; &nbsp; &nbsp;
-                <Link to="/forgot-password">
-                  <p className="d">Forgot password ?</p>
-                </Link>
+                <Row>
+                  <Button
+                    color="info"
+                    type="submit"
+                    className="btn btttn text-white"
+                  >
+                    <i class="fas fa-sign-in-alt top" />
+                    {isLoading ? "Please wait..." : "Log In"}
+                  </Button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <Link to="/forgot-password">
+                    <p className="d link1">Forgot password ?</p>
+                  </Link>
+                </Row>
               </Container>
             </Row>
           </form>

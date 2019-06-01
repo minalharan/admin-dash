@@ -575,6 +575,7 @@
 }
 .image {
   margin-left: 120px;
+  float: right;
 }
 .add-product-css {
   display: flex;
@@ -702,4 +703,12 @@
 .forgot22 {
   margin-left: 9px;
   margin-top: 0px;
+}
+.user12 {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.forgot221 {
+  margin-top: 12px;
+  margin-bottom: 0px;
 }

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-
+import { Card, CardBody, Col, Button } from "reactstrap";
 import {
-  Button,
   Label,
   Container,
   Row,
@@ -258,155 +257,166 @@ class AddProduct extends Component {
     }
     return (
       <>
-        <Row className="login_formSignin__27WMl auth-box0">
-          <Container>
-            <h3 align="center" className="bottom">
-              Add Product
-            </h3>
-
-            <form onSubmit={this.onSubmit} noValidate>
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="fa fa-key" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  type="text"
-                  placeholder="Product Name"
-                  name="name"
-                  value={name.toLowerCase()}
-                  onChange={this.onInputChange}
-                />
-              </InputGroup>
-              {nameError ? <p className="text-danger">{nameError}</p> : null}
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i class="fas fa-tag top" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  type="number"
-                  placeholder="Product Price"
-                  name="price"
-                  value={price}
-                  onChange={this.onInputChange}
-                />
-              </InputGroup>
-              {priceError ? <p className="text-danger">{priceError}</p> : null}
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i class="fas fa-tag top" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  type="text"
-                  placeholder="Qunatity"
-                  name="quantity"
-                  value={quantity}
-                  onChange={this.onInputChange}
-                />
-              </InputGroup>{" "}
-              {quantityError ? (
-                <p className="text-danger">{quantityError}</p>
-              ) : null}
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i class="fa fa-info-circle top" aria-hidden="true" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  type="textarea"
-                  placeholder="Product Details"
-                  name="des"
-                  value={des}
-                  onChange={this.onInputChange}
-                />
-              </InputGroup>{" "}
-              {desError ? <p className="text-danger">{desError}</p> : null}{" "}
-              <InputGroup className="mb-3">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i class="fas fa-list-alt top" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  type="select"
-                  name="category"
-                  value={this.state.category}
-                  onChange={this.onChangeCategory}
-                >
-                  <option value="">Select Category</option>
-                  {categoryValue && categoryValue.length
-                    ? categoryValue.map(Category => {
-                        return (
-                          <option value={Category._id}>
-                            {Category.category}
-                          </option>
-                        );
-                      })
-                    : null}
-                  )
-                </Input>
-              </InputGroup>
-              {categoryError ? (
-                <p className="text-danger">{categoryError}</p>
-              ) : null}
-              <InputGroup className="mb-3">
-                <Label>
-                  <i class="far fa-file-image top" />
-                  Image<span className="required">*</span>
-                </Label>
-                <Input
-                  type="file"
-                  placeholder="product Image"
-                  name="thumbnail"
-                  onChange={this.onChangefile}
-                  className="auth-box"
-                />
-              </InputGroup>
-              {thumbnailError ? (
-                <p className="text-danger">{thumbnailError}</p>
-              ) : null}
-              <InputGroup>
-                <Label for="file">
-                  <i class="far fa-file-image top" />
-                  Images<span className="required">*</span>
-                </Label>
-                <Input
-                  type="file"
-                  placeholder="product Image"
-                  name="otherImg[]"
-                  onChange={this.fileSelected}
-                  className="auth-box"
-                  multiple
-                />
-              </InputGroup>
-              <InputGroup align="center">
-                <div className="imgPreview">{$imagePreview}</div>
-              </InputGroup>
-              <br />
-              <Button color="success" type="submit" className="btn btn-block">
-                <i class="fas fa-plus top" />
-                Add Product
-              </Button>
-              <br />
-              <Button
-                color="danger"
-                className="image"
-                className="btn btn-block"
-                onClick={() => {
-                  this.props.history.push("/product-list");
-                }}
-              >
-                Cancel
-              </Button>
-              <br />
-            </form>
-          </Container>
+        <Row>
+          <Col lg={8} className="user-updated">
+            <Card>
+              <CardBody>
+                <form onSubmit={this.onSubmit} noValidate>
+                  <h1>Add Product</h1>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-key" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="text"
+                      placeholder="Product Name"
+                      name="name"
+                      value={name.toLowerCase()}
+                      onChange={this.onInputChange}
+                    />
+                  </InputGroup>
+                  {nameError ? (
+                    <p className="text-danger">{nameError}</p>
+                  ) : null}
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-tag top" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="number"
+                      placeholder="Product Price"
+                      name="price"
+                      value={price}
+                      onChange={this.onInputChange}
+                    />
+                  </InputGroup>
+                  {priceError ? (
+                    <p className="text-danger">{priceError}</p>
+                  ) : null}
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-tag top" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="text"
+                      placeholder="Qunatity"
+                      name="quantity"
+                      value={quantity}
+                      onChange={this.onInputChange}
+                    />
+                  </InputGroup>{" "}
+                  {quantityError ? (
+                    <p className="text-danger">{quantityError}</p>
+                  ) : null}
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fa fa-info-circle top" aria-hidden="true" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="textarea"
+                      placeholder="Product Details"
+                      name="des"
+                      value={des}
+                      onChange={this.onInputChange}
+                    />
+                  </InputGroup>{" "}
+                  {desError ? <p className="text-danger">{desError}</p> : null}{" "}
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-list-alt top" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="select"
+                      name="category"
+                      value={this.state.category}
+                      onChange={this.onChangeCategory}
+                    >
+                      <option value="">Select Category</option>
+                      {categoryValue && categoryValue.length
+                        ? categoryValue.map(Category => {
+                            return (
+                              <option value={Category._id}>
+                                {Category.category}
+                              </option>
+                            );
+                          })
+                        : null}
+                      )
+                    </Input>
+                  </InputGroup>
+                  {categoryError ? (
+                    <p className="text-danger">{categoryError}</p>
+                  ) : null}
+                  <InputGroup>
+                    <Label>
+                      <i class="far fa-file-image top" />
+                      Image<span className="required">*</span>
+                    </Label>
+                    <Input
+                      alt=" "
+                      type="file"
+                      placeholder="product Image"
+                      name="thumbnail"
+                      onChange={this.onChangefile}
+                      className="auth-box"
+                    />
+                  </InputGroup>
+                  {thumbnailError ? (
+                    <p className="text-danger">{thumbnailError}</p>
+                  ) : null}
+                  <InputGroup align="center">
+                    <div className="imgPreview">{$imagePreview}</div>
+                  </InputGroup>
+                  <InputGroup>
+                    <Label for="file">
+                      <i class="far fa-file-image top" />
+                      Images<span className="required">*</span>
+                    </Label>
+                    <Input
+                      type="file"
+                      alt=" "
+                      placeholder="product Image"
+                      name="otherImg[]"
+                      onChange={this.fileSelected}
+                      className="auth-box"
+                      multiple
+                    />
+                  </InputGroup>
+                  <br />
+                  <Button
+                    color="primary"
+                    className="image3"
+                    type="submit"
+                    style={{ width: "100px", padding: "5px" }}
+                  >
+                    <i class="fas fa-save top" />
+                    Save
+                  </Button>
+                  <Button
+                    color="danger"
+                    align="center"
+                    style={{ width: "100px", padding: "5px" }}
+                    onClick={() => {
+                      this.props.history.push("/product-list");
+                    }}
+                    className="image"
+                  >
+                    Cancel
+                  </Button>
+                </form>
+              </CardBody>
+            </Card>
+          </Col>
         </Row>
       </>
     );

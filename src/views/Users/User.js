@@ -4,6 +4,14 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button, Image, FormControl } from "react-bootstrap";
 import Validator, { ValidationTypes } from "js-object-validation";
+import {
+  Label,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
+} from "reactstrap";
+import { toast } from "react-toastify";
 import { FormGroup, FormLabel } from "react-bootstrap";
 import Swal from "sweetalert2";
 const BASE_URL = "http://192.168.2.118:8080/";
@@ -22,22 +30,17 @@ class User extends Component {
       disabled: true,
       enable: false,
       imageUpdated: false,
-      errors: []
+      errors: {}
     };
   }
-  componentDidMount = async () => {
+  componentDidMount = async e => {
     const token = localStorage.getItem("token");
     if (!token) {
       this.props.history.push("/login");
     }
-    //  const { user } = this.state;
     const response = await axios.get(
       "http://192.168.2.118:8080/getuser/" + this.props.match.params.id
-    ); //console.log(res.data.result);
-    // console.log("result  :-", this.props.match.params.id);
-    // const result = res.data.result1[0];
-    // this.setState({ user: result });
-    // console.log("users :-", result)
+    );
     this.setState({
       name: response.data.result1[0].name,
       email: response.data.result1[0].email,
@@ -52,13 +55,9 @@ class User extends Component {
   };
 
   onSubmit = async e => {
-    console.log("dfjishfoi");
     e.preventDefault();
 
-    this.setState({
-      isLoading: true,
-      errors: {}
-    });
+    console.log("dfjishfoi");
     try {
       const {
         name,
@@ -71,70 +70,6 @@ class User extends Component {
         file,
         imageUpdated
       } = this.state;
-      const obj = { name, email, password, cpassword, mobile_no, gender };
-      const validations = {
-        name: {
-          [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.MINLENGTH]: 2
-        },
-        email: {
-          [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.EMAIL]: true
-        },
-        password: {
-          [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.MINLENGTH]: 6
-        },
-        cpassword: {
-          [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.EQUAL]: "password"
-        },
-        mobile_no: {
-          [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.NUMERIC]: true,
-          [ValidationTypes.MINLENGTH]: 7,
-          [ValidationTypes.MAXLENGTH]: 14
-        },
-        gender: {
-          [ValidationTypes.REQUIRED]: true
-        }
-      };
-      const messages = {
-        name: {
-          [ValidationTypes.REQUIRED]: "Please enter a name.",
-          [ValidationTypes.MINLENGTH]:
-            "Name field should have atleast 2 charaters."
-        },
-        email: {
-          [ValidationTypes.REQUIRED]: "Please enter an email address.",
-          [ValidationTypes.EMAIL]: "Please enter a valid email address."
-        },
-        password: {
-          [ValidationTypes.REQUIRED]: "Please enter a password.",
-          [ValidationTypes.MINLENGTH]: "Please enter at least 6 characters."
-        },
-        cpassword: {
-          [ValidationTypes.REQUIRED]: "Please enter a confirm password.",
-          [ValidationTypes.EQUAL]: "Password and confirm password didn't match"
-        },
-        mobile_no: {
-          [ValidationTypes.REQUIRED]: "Please enter mobile no.",
-          [ValidationTypes.NUMERIC]: "Please enter in number",
-          [ValidationTypes.MINLENGTH]: "Please enter atleast 7 digits",
-          [ValidationTypes.MAXLENGTH]: "Please enter upto 14 digits"
-        },
-        gender: {
-          [ValidationTypes.REQUIRED]: "Please select gender"
-        }
-      };
-      const { isValid, errors } = Validator(obj, validations, messages);
-      console.log(isValid);
-      if (!isValid) {
-        this.setState({
-          errors,
-          isLoading: false
-        });
-      }
 
       const data = {
         name,
@@ -158,6 +93,7 @@ class User extends Component {
         body
       );
       if (result) {
+        this.setState({ isLoading: false });
         Swal.fire({
           type: "success",
           title: "Success",
@@ -168,6 +104,14 @@ class User extends Component {
       }
     } catch (error) {
       console.log(error);
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message[0].msg) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
   onInputChange = e => {
@@ -208,16 +152,6 @@ class User extends Component {
   };
 
   render() {
-    const { errors } = this.state;
-    const {
-      name: nameError,
-      email: emailError,
-      password: passwordError,
-      cpassword: cpasswordError,
-      mobile_no: mobile_noError,
-      gender: genderError
-    } = errors;
-
     let { imagePreviewUrl, file } = this.state;
     let $imagePreview = (
       <Image
@@ -246,49 +180,44 @@ class User extends Component {
           <Col lg={8} className="user-updated">
             <Card>
               <CardBody>
-                <Form onSubmit={this.onSubmit}>
+                <Form onSubmit={this.onSubmit} noValidate>
                   <FormGroup align="center">{$imagePreview}</FormGroup>
-                  <FormGroup>
-                    <FormLabel> Name</FormLabel>
-                    <FormControl
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-user" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
                       type="text"
                       name="name"
                       className="tag"
-                      value={this.state.name.toLowerCase()}
+                      value={this.state.name}
                       onChange={this.onInputChange}
                     />
-                    {nameError ? (
-                      <p className={"text-danger"}>{nameError}</p>
-                    ) : null}
-                  </FormGroup>
-                  <FormGroup>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl
-                      type="text"
-                      name="email"
-                      className="tag"
-                      value={this.state.email}
-                      onChange={this.onInputChange}
-                    />
-                    {emailError ? (
-                      <p className={"text-danger"}>{emailError}</p>
-                    ) : null}
-                  </FormGroup>
-                  <FormGroup>
-                    <FormLabel>Mobile</FormLabel>
-                    <FormControl
+                  </InputGroup>
+
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-phone-square" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
                       type="text"
                       className="tag"
                       name="mobile_no"
                       value={this.state.mobile_no}
                       onChange={this.onInputChange}
                     />
-                    {mobile_noError ? (
-                      <p className={"text-danger"}>{mobile_noError}</p>
-                    ) : null}
-                  </FormGroup>
-                  <FormGroup>
-                    <FormLabel>Gender</FormLabel>
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-user-alt" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Label for="gender" />
                     <FormControl
                       as="select"
                       name="gender"
@@ -301,10 +230,14 @@ class User extends Component {
                       <option value={"female"}>Female</option>
                       <option value={"other"}>Other</option>
                     </FormControl>
-                  </FormGroup>
+                  </InputGroup>
 
-                  <FormGroup>
-                    <FormLabel>Status</FormLabel>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fas fa-female" />
+                      </InputGroupText>
+                    </InputGroupAddon>
                     <FormControl
                       as="select"
                       name="status"
@@ -315,7 +248,7 @@ class User extends Component {
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
                     </FormControl>
-                  </FormGroup>
+                  </InputGroup>
 
                   <FormGroup>
                     <FormLabel>Profile Picture</FormLabel>
@@ -335,7 +268,7 @@ class User extends Component {
                     style={{ width: "100px", padding: "5px" }}
                   >
                     <i class="fas fa-save top" />
-                    Save
+                    Submit
                   </Button>
                   <Button
                     variant="danger"

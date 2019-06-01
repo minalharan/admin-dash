@@ -255,6 +255,7 @@ class NewsLetterList extends Component {
                     >
                       <Button
                         variant="outline-light"
+                        type="submit"
 
                         // style={{ width: "100px", padding: "5px" }}
                       >

@@ -1,9 +1,25 @@
 import React, { Component } from "react";
-import { Card, CardBody, CardHeader, Col, Row, Table, Form } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Row,
+  Table,
+  Form,
+  FormGroup
+} from "reactstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button, Image } from "react-bootstrap";
+import { Button, Image, FormControl } from "react-bootstrap";
 import { toast } from "react-toastify";
+import {
+  Label,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
+} from "reactstrap";
 import Swal from "sweetalert2";
 const BASE_URL = "http://192.168.2.118:8080/";
 class Update extends Component {
@@ -72,14 +88,6 @@ class Update extends Component {
       });
     } catch (error) {
       console.log(error);
-      if (!toast.isActive(this.toastId)) {
-        this.toastId = toast.error(
-          `${(error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-            "Unknown error"}`
-        );
-      }
     }
   };
 
@@ -120,7 +128,7 @@ class Update extends Component {
           body.append(i, element);
         }
       }
-      const result = await axios.post(
+      const response = await axios.post(
         "http://192.168.2.118:8080/editItem/" + this.props.match.params.id,
         body
       );
@@ -134,7 +142,9 @@ class Update extends Component {
       console.log(error);
       if (!toast.isActive(this.toastId)) {
         this.toastId = toast.error(
-          `${(error.result && error.result.data && error.result.data.message) ||
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message[0].msg) ||
             "Unknown error"}`
         );
       }
@@ -217,368 +227,166 @@ class Update extends Component {
         />
       );
     }
-    if (this.state.disabled === true) {
-      return (
-        <div className="animated fadeIn">
-          <Row>
-            <Col lg={8}>
-              <Card>
-                <CardHeader>
-                  <Link onClick={this.isEnable} className="rig">
-                    <i
-                      class="fas fa-user-edit top"
-                      style={{ paddingLeft: 130 }}
+    return (
+      <div className="animated fadeIn">
+        <Row>
+          <Col lg={8} className="user-updated">
+            <Card>
+              <CardBody>
+                <Form onSubmit={this.onSubmit}>
+                  <FormGroup align="center">{$imagePreview}</FormGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-key" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      className="tag"
+                      type="text"
+                      name="name"
+                      value={this.state.name}
+                      onChange={this.onInputChange}
                     />
-                    Edit
-                  </Link>
-                </CardHeader>
-                <CardBody>
-                  <Form onSubmit={this.onSubmit}>
-                    <Table responsive>
-                      <tbody>
-                        <tr align="center">
-                          <th scope="row" colSpan="2">
-                            {$imagePreview}
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Name</th>
-                          <th scope="row" align="right">
-                            <input
-                              type="text"
-                              name="name"
-                              className="tag"
-                              value={this.state.name.toLowerCase()}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Price</th>
-                          <th scope="row" align="right">
-                            <input
-                              type="text"
-                              className="tag"
-                              name="price"
-                              value={this.state.price}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Status</th>
-                          <th scope="row" align="right">
-                            <input
-                              type="text"
-                              name="status"
-                              className="tag"
-                              value={this.state.status}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">category</th>
-                          <th scope="row" align="right">
-                            <input
-                              type="text"
-                              name="category"
-                              className="tag"
-                              value={this.state.categoryN}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Description</th>
-                          <th scope="row">
-                            <input
-                              type="text"
-                              align="right"
-                              className="tag"
-                              name="des"
-                              value={this.state.des}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Quantity</th>
-                          <th scope="row">
-                            <input
-                              type="number"
-                              name="quantity"
-                              className="tag"
-                              value={this.state.quantity}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">thumbnail</th>
-                          <th scope="row">
-                            <input
-                              type="file"
-                              className="tag"
-                              name="thumbnail"
-                              disabled={this.state.disabled}
-                              onChange={this.onChangefile}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Other-Images</th>
-                          <th scope="row">
-                            <input
-                              type="file"
-                              className="tag"
-                              name="otherImg"
-                              disabled={this.state.disabled}
-                              onChange={this.fileSelected}
-                              multiple
-                            />
-                          </th>
-                        </tr>
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fa fa-tag" aria-hidden="true" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      className="tag"
+                      type="text"
+                      name="price"
+                      value={this.state.price}
+                      onChange={this.onInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fa fa-circle" aria-hidden="true" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormControl
+                      as="select"
+                      className="tag"
+                      name="status"
+                      value={this.state.status}
+                      onChange={this.onInputChange}
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </FormControl>
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-list" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <FormControl
+                      as="select"
+                      className="tag"
+                      name="category"
+                      value={this.state.category}
+                      onChange={this.onInputChange}
+                    >
+                      {categoryValue && categoryValue.length
+                        ? categoryValue.map(Category => {
+                            return (
+                              <option value={Category._id}>
+                                {Category.category}
+                              </option>
+                            );
+                          })
+                        : null}
+                    </FormControl>
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-info-circle" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="text"
+                      name="des"
+                      className="tag"
+                      value={this.state.des}
+                      onChange={this.onInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fa fa-tag" aria-hidden="true" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="number"
+                      name="quantity"
+                      className="tag"
+                      value={this.state.quantity}
+                      onChange={this.onInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="far fa-image" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      type="file"
+                      className="tag"
+                      name="thumbnail"
+                      onChange={this.onChangefile}
+                    />
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-images" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      className="tag"
+                      type="file"
+                      name="otherImg"
+                      onChange={this.fileSelected}
+                      multiple
+                    />
+                  </InputGroup>
 
-                        <tr>
-                          <th scope="row" colSpan="2">
-                            <Button
-                              variant="primary"
-                              type="submit"
-                              className="image3"
-                              align="center"
-                              disabled={this.state.disabled}
-                              style={{ width: "100px", padding: "5px" }}
-                            >
-                              <i class="fas fa-save top" />
-                              Save
-                            </Button>
-                            <Button
-                              variant="danger"
-                              className="image"
-                              align="center"
-                              style={{ width: "100px", padding: "5px" }}
-                              onClick={() => {
-                                this.props.history.goBack();
-                              }}
-                            >
-                              Cancel
-                            </Button>
-                          </th>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </Form>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      );
-    }
-    if (this.state.disabled === false) {
-      return (
-        <div className="animated fadeIn">
-          <Row>
-            <Col lg={8}>
-              <Card>
-                <CardHeader>
-                  <strong>
-                    <i className="icon-info pr-1" />
-                    Product id: {this.props.match.params.id}
-                  </strong>
-                </CardHeader>
-                <CardBody>
-                  <Form onSubmit={this.onSubmit}>
-                    <Table responsive striped hover>
-                      <tbody>
-                        <tr align="center">
-                          <th scope="row" colSpan="2">
-                            {$imagePreview}
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Name</th>
-                          <th scope="row">
-                            <input
-                              className="tag"
-                              type="text"
-                              name="name"
-                              value={this.state.name.toLowerCase()}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Price</th>
-                          <th scope="row">
-                            <input
-                              className="tag"
-                              type="text"
-                              name="price"
-                              value={this.state.price}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Status</th>
-                          <th scope="row">
-                            <select
-                              className="tag"
-                              name="status"
-                              value={this.state.status}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            >
-                              <option value="Active">Active</option>
-                              <option value="Inactive">Inactive</option>
-                              <option value="Pending">Pending</option>
-                              <option value="Banned">Banned</option>
-                            </select>
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">category</th>
-                          <th scope="row">
-                            <select
-                              className="tag"
-                              name="category"
-                              value={this.state.category}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            >
-                              <option value="">Select Category</option>
-                              {categoryValue && categoryValue.length
-                                ? categoryValue.map(Category => {
-                                    return (
-                                      <option value={Category._id}>
-                                        {Category.category}
-                                      </option>
-                                    );
-                                  })
-                                : null}
-                            </select>
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Description</th>
-                          <th scope="row">
-                            <input
-                              type="text"
-                              name="des"
-                              className="tag"
-                              value={this.state.des}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Quantity</th>
-                          <th scope="row">
-                            <input
-                              type="number"
-                              name="quantity"
-                              className="tag"
-                              value={this.state.quantity}
-                              disabled={this.state.disabled}
-                              onChange={this.onInputChange}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">thumbnail</th>
-                          <th scope="row">
-                            <input
-                              type="file"
-                              className="tag"
-                              name="thumbnail"
-                              disabled={this.state.disabled}
-                              onChange={this.onChangefile}
-                            />
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="row">Other-Images</th>
-                          <th scope="row">
-                            <input
-                              className="tag"
-                              type="file"
-                              name="otherImg"
-                              disabled={this.state.disabled}
-                              onChange={this.fileSelected}
-                              multiple
-                            />
-                          </th>
-                        </tr>
-                        {/* <Dropzone onDrop={this.onDrop}>
-                          {({ getRootProps, getInputProps }) => (
-                            <section className="container">
-                              <div {...getRootProps({ className: "dropzone" })}>
-                                <th scope="row">otherImages</th>
-                                <th scope="row">
-                                  <input {...getInputProps()} />
-                                  <input
-                                    type="file"
-                                    placeholder="product Image"
-                                    name="otherImg"
-                                    onChange={this.onChangefile}
-                                    disabled={this.state.disabled}
-                                    className="auth-box c"
-                                  />
-                                </th>
-                              </div>
-                              <aside>
-                                <h4>Files</h4>
-                                <ul>{files}</ul>
-                              </aside>
-                            </section>
-                          )}
-                        </Dropzone> */}
-                        <tr>
-                          <th scope="row" colSpan="2">
-                            <Button
-                              variant="primary"
-                              className="image3"
-                              type="submit"
-                              disabled={this.state.disabled}
-                              style={{ width: "100px", padding: "5px" }}
-                            >
-                              <i class="fas fa-save top" />
-                              Save
-                            </Button>
-                            <Button
-                              variant="danger"
-                              align="center"
-                              style={{ width: "100px", padding: "5px" }}
-                              onClick={() => {
-                                this.props.history.goBack();
-                              }}
-                              className="image"
-                            >
-                              Cancel
-                            </Button>
-                          </th>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </Form>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      );
-    }
+                  <Button
+                    variant="primary"
+                    className="image3"
+                    type="submit"
+                    style={{ width: "100px", padding: "5px" }}
+                  >
+                    <i class="fas fa-save top" />
+                    Save
+                  </Button>
+                  <Button
+                    variant="danger"
+                    align="center"
+                    style={{ width: "100px", padding: "5px" }}
+                    onClick={() => {
+                      this.props.history.goBack();
+                    }}
+                    className="image"
+                  >
+                    Cancel
+                  </Button>
+                </Form>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    );
   }
 }
 

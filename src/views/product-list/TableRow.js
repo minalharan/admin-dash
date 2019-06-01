@@ -98,7 +98,10 @@ class TableRow extends Component {
           )}
         </td>
         <td className="c">{this.props.obj.name}</td>
-        <td width="110px">${this.props.obj.price.toFixed(2)}</td>
+
+        <td width="110px">
+          ${this.props.obj.price ? this.props.obj.price.toFixed(2) : 0.0}
+        </td>
         <td text-align="center" width="110px">
           {this.props.obj.quantity}
         </td>

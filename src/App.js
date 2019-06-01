@@ -6,6 +6,7 @@ import DefaultLayout from "./containers/DefaultLayout";
 import Login1 from "./containers/login";
 import ForgotPassword from "./containers/forgot-password";
 import ResetPassword from "./containers/reset-password";
+import NoMatch from "./views/NoMatch";
 
 const loading = () => (
   <div className="animated fadeIn pt-3 text-center">Loading...</div>
@@ -24,6 +25,7 @@ class App extends Component {
             name="Home"
             render={props => <DefaultLayout {...props} />}
           />
+          <Route component={NoMatch} />
         </Switch>
         {/* </React.Suspense> */}
       </BrowserRouter>

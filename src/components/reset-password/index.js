@@ -29,11 +29,15 @@ class ResetComponent extends Component {
             <div className="login_formSignin__27WMl">
               <p>Problem resetting password. Please send another reset link.</p>
               <Link to={"/"}>
-                <Button>Go Home</Button>
+                <Button style={{ float: "left" }} color="primary">
+                  Go Home
+                </Button>
               </Link>
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               <Link to={"/forgot-password"}>
-                <Button>Forgot Password</Button>
+                <Button style={{ float: "right" }} color="primary">
+                  Forgot Password
+                </Button>
               </Link>
             </div>
           </div>
@@ -59,7 +63,7 @@ class ResetComponent extends Component {
                 <h1 className="forgot">Forgot Password</h1>
               </div>
               <div className="input-group">
-                <InputGroup className="mb-4">
+                <InputGroup>
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
                       <i className="icon-lock" />
@@ -78,7 +82,7 @@ class ResetComponent extends Component {
                 ) : null}
               </div>
               <div className="input-group">
-                <InputGroup className="mb-4">
+                <InputGroup>
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
                       <i className="icon-lock" />
@@ -99,17 +103,18 @@ class ResetComponent extends Component {
               <InputGroup>
                 <Button
                   type="submit"
-                  color="success"
-                  className="btn btn-dark btn-block "
+                  color="info"
+                  className="btn btn-block text-white"
                 >
                   Update Password
                 </Button>
                 &nbsp;&nbsp;
-                <Link to={"/login"}>
-                  <Button color="primary" className="btn btn-block goBack">
-                    Log In
-                  </Button>
-                </Link>
+                <div>
+                  <p className="forgot221">
+                    Remember Password ? | <Link to={"/login"}>Login</Link>
+                  </p>{" "}
+                  &nbsp;
+                </div>
               </InputGroup>
             </form>
           </div>

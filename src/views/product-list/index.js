@@ -185,7 +185,7 @@ class ProductList extends Component {
                         type="text"
                         name="name"
                         placeholder="search by name"
-                        value={name.toLowerCase()}
+                        value={name}
                         onChange={this.onInputChange}
                         className="mr-sm-2 filter"
                       />
@@ -230,7 +230,6 @@ class ProductList extends Component {
                         <option value={null}>Status</option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
-                   
                       </FormControl>
                       <OverlayTrigger
                         key="top"
@@ -269,6 +268,7 @@ class ProductList extends Component {
                           </Button>
                         </Link>
                       </OverlayTrigger>
+                      &nbsp;&nbsp;
                       <OverlayTrigger
                         key="top"
                         placement="top"

@@ -71,44 +71,55 @@ class User extends Component {
 
   onSubmit = async e => {
     e.preventDefault();
+    try {
+      const {
+        name,
+        email,
+        mobile_no,
+        file,
+        gender,
+        imageUpdated,
+        Cid
+      } = this.state;
 
-    const {
-      name,
-      email,
-      mobile_no,
-      file,
-      gender,
-      imageUpdated,
-      Cid
-    } = this.state;
-
-    const data = {
-      name,
-      email,
-      mobile_no,
-      file,
-      gender,
-      imageUpdated,
-      Cid
-    };
-    const body = new FormData();
-    for (const i in data) {
-      if (data.hasOwnProperty(i)) {
-        const element = data[i];
-        body.append(i, element);
+      const data = {
+        name,
+        email,
+        mobile_no,
+        file,
+        gender,
+        imageUpdated,
+        Cid
+      };
+      const body = new FormData();
+      for (const i in data) {
+        if (data.hasOwnProperty(i)) {
+          const element = data[i];
+          body.append(i, element);
+        }
       }
-    }
 
-    const result = await axios.post(
-      "http://192.168.2.118:8080/profileUpdate",
-      body
-    );
-    if (result) {
-      Swal.fire({
-        type: "success",
-        title: "Success",
-        text: "Changes save!"
-      });
+      const result = await axios.post(
+        "http://192.168.2.118:8080/profileUpdate",
+        body
+      );
+      if (result) {
+        Swal.fire({
+          type: "success",
+          title: "Success",
+          text: "Changes save!"
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.result &&
+            error.result.data &&
+            error.result.data.message[0].msg) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
 
@@ -176,7 +187,7 @@ class User extends Component {
       return (
         <div className="animated fadeIn">
           <Row>
-            <Col lg={6}>
+            <Col lg={6} className="user-updated">
               <Card>
                 <CardHeader>
                   <Link onClick={this.isEnable}>
@@ -282,8 +293,9 @@ class User extends Component {
                             <Button
                               color="danger"
                               className="image"
-                              align="center"
                               className="cancel"
+                              float="right"
+                              align="center"
                               style={{ width: "100px", padding: "5px" }}
                               onClick={() => {
                                 this.props.history.push("/product-list");
@@ -307,7 +319,7 @@ class User extends Component {
       return (
         <div className="animated fadeIn">
           <Row>
-            <Col lg={6}>
+            <Col lg={6} className="user-updated">
               <Card>
                 <CardHeader />
                 <CardBody>
@@ -395,6 +407,7 @@ class User extends Component {
                               className="image"
                               className="cancel"
                               align="center"
+                              float="right"
                               style={{ width: "100px", padding: "5px" }}
                               onClick={() => {
                                 this.props.history.push("/product-list");

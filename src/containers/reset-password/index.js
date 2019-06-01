@@ -46,7 +46,7 @@ class ResetPassword extends Component {
       Swal.fire({
         type: "error",
         title: "Oops...",
-        text: "Something went wrong! in link"
+        text: "your link has been expired ! please try again with another link."
       });
       this.setState({
         updated: false,
@@ -67,7 +67,7 @@ class ResetPassword extends Component {
         },
         password: {
           [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.MINLENGTH]: 4
+          [ValidationTypes.MINLENGTH]: 6
         },
         cpassword: {
           [ValidationTypes.REQUIRED]: true,
@@ -81,7 +81,7 @@ class ResetPassword extends Component {
         },
         password: {
           [ValidationTypes.REQUIRED]: "Please enter password.",
-          [ValidationTypes.MINLENGTH]: "Please enter at least 4 characters."
+          [ValidationTypes.MINLENGTH]: "Please enter at least 6 characters."
         },
         cpassword: {
           [ValidationTypes.REQUIRED]: "Please enter confirm password.",

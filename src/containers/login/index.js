@@ -14,13 +14,13 @@ class Login extends Component {
       isLoading: false,
       errors: {},
       error: "",
-      toastId: null,
+      toastId: null
     };
   }
   componentDidMount() {
     const token = localStorage.getItem("token");
     if (token) {
-      this.props.history.push("/category-list");
+      this.props.history.push("/product-list");
     }
   }
   onLogin = async e => {

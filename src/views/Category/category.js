@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { Card, CardBody, CardHeader, Col, Row, Table, Form } from "reactstrap";
 import axios from "axios";
+import {
+  Label,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
+} from "reactstrap";
 import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
 import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
@@ -120,9 +127,13 @@ class Category extends Component {
             <Card>
               <CardBody>
                 <Form onSubmit={this.onSubmit}>
-                  <FormGroup>
-                    <FormLabel> Name</FormLabel>
-                    <FormControl
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-key" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
                       id="name"
                       name="category"
                       value={this.state.category}
@@ -132,9 +143,13 @@ class Category extends Component {
                     {categoryError ? (
                       <p className={"text-danger"}>{categoryError}</p>
                     ) : null}
-                  </FormGroup>
-                  <FormGroup margin="normal">
-                    <FormLabel>Select Category</FormLabel>
+                  </InputGroup>
+                  <InputGroup className="user12">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i class="fas fa-list" />
+                      </InputGroupText>
+                    </InputGroupAddon>
                     <FormControl
                       as="select"
                       name="status"
@@ -147,7 +162,7 @@ class Category extends Component {
                     {statusError ? (
                       <p className="text-danger">{statusError}</p>
                     ) : null}
-                  </FormGroup>
+                  </InputGroup>
                   <Button
                     color="primary"
                     type="submit"

@@ -353,7 +353,7 @@ class CategoryList extends Component {
                       placeholder="Search by name"
                       value={this.state.name}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     />
                     &nbsp;
                     <FormControl
@@ -361,7 +361,7 @@ class CategoryList extends Component {
                       name="order"
                       value={order}
                       onChange={this.onInputChange}
-                      className="mr-sm-2 filter"
+                      className="mr-sm-2"
                     >
                       <option value="">---Sort by name---</option>
                       <option value="assending">Order By Name A to Z</option>
@@ -409,6 +409,7 @@ class CategoryList extends Component {
                         <Button
                           variant="outline-light"
                           className="background-btn"
+                          className="mr-sm-2 filter"
                         >
                           <i class="fas fa-sync-alt" variant="primary" />
                         </Button>
@@ -419,10 +420,10 @@ class CategoryList extends Component {
                         type="text"
                         placeholder="Category Name"
                         name="category"
-                        value={this.state.category.toLowerCase()}
+                        value={this.state.category}
                         onChange={this.onInputChange}
                         className="mr-sm-2 filter"
-                      />{" "}
+                      />
                       {/* {categoryError ? (
                         <p className="text-danger">{categoryError}</p>
                       ) : null} */}
@@ -438,6 +439,7 @@ class CategoryList extends Component {
                         <Button
                           variant="outline-light"
                           onClick={this.onSubmit1}
+                          className="mr-sm-2 filter"
                         >
                           <i class="fas fa-plus top" />
                         </Button>

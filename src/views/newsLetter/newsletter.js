@@ -21,6 +21,7 @@ class UserRow extends Component {
     super(props);
     this.state = {};
   }
+
   getBadge = status => {
     return status === "Active"
       ? "success"
@@ -44,7 +45,31 @@ class UserRow extends Component {
           <td>{this.props.news.createTime}</td>
           <td>{this.props.news.updateTime}</td>
           <td>
-            <Badge color={this.getBadge(this.props.news.status)}>
+            <Badge
+              color={this.getBadge(this.props.news.status)}
+              onClick={e =>
+                Swal.fire({
+                  title: "Are you sure you want to change the status?",
+
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes !"
+                }).then(result => {
+                  if (result.value) {
+                    Swal.fire(
+                      "Status has been changed successfully !",
+                      "Success"
+                    ) &&
+                      this.props.onChangeCat(
+                        this.props.obj._id,
+                        this.props.obj.status
+                      );
+                  }
+                })
+              }
+            >
               {this.props.news.status}
             </Badge>
           </td>
@@ -103,6 +128,19 @@ class NewsLetterList extends Component {
     this.getData();
     return;
   };
+  onChangeCat = async (productId, abc) => {
+    try {
+      const response = await axios.post(
+        "http://192.168.2.118:8080/UpdateNewsLetter/" + productId + "/" + abc
+      );
+
+      const result1 = response.data.result;
+      console.log("response", result1);
+      this.getData();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   getData = async () => {
     const { email, order, status } = this.state;
@@ -137,6 +175,7 @@ class NewsLetterList extends Component {
       console.log("error");
     }
   };
+
   onDelete = async productId => {
     try {
       const response = await axios.delete(
@@ -307,6 +346,7 @@ class NewsLetterList extends Component {
                             index={index}
                             skip={this.state.skip}
                             onDelete={this.onDelete}
+                            onChangeCat={this.onChangeCat}
                           />
                         ))
                       : null}

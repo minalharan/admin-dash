@@ -15,14 +15,15 @@ class TableRow extends Component {
     this.state = {
       show: false,
       value: "",
-      isOpen: false
+      isOpen: false,
+      category: this.props.obj.category
     };
   }
   getBadge = status => {
     return status === "Active"
       ? "success"
       : status === "Inactive"
-      ? "secondary"
+      ? "danger"
       : status === "Pending"
       ? "warning"
       : status === "Banned"
@@ -40,6 +41,22 @@ class TableRow extends Component {
       this.setState({
         value: result1
       });
+
+      const { category } = this.state;
+      const obj = { category };
+
+      // const obj = { category };
+      const res = await axios.post(
+        "http://192.168.2.118:8080/showCategoryName",
+        obj
+      );
+      const result = res.data.result[0].category;
+
+      if (response) {
+        this.setState({
+          category: result
+        });
+      }
     } catch (error) {
       toast.error(`${error.message || "Unknown error"}`);
     }
@@ -105,7 +122,7 @@ class TableRow extends Component {
         <td text-align="center" width="110px">
           {this.props.obj.quantity}
         </td>
-        {/* <td>{this.props.obj.category}</td> */}
+        <td>{this.state.category}</td>
         <td>{this.props.obj.createTime}</td>
         <td>{this.props.obj.updateTime}</td>
         <td width="110px">
@@ -113,6 +130,28 @@ class TableRow extends Component {
           <Badge
             style={{ fontSize: "90%" }}
             color={this.getBadge(this.props.obj.status)}
+            onClick={e =>
+              Swal.fire({
+                title: "Are you sure you want to change the status?",
+
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes !"
+              }).then(result => {
+                if (result.value) {
+                  Swal.fire(
+                    "Status has been changed successfully !",
+                    "Success"
+                  ) &&
+                    this.props.onChangeCat(
+                      this.props.obj._id,
+                      this.props.obj.status
+                    );
+                }
+              })
+            }
           >
             {this.props.obj.status}
           </Badge>

@@ -34,7 +34,8 @@ class ProductList extends Component {
       pageLimit: 5,
       skip: 0,
       quantity: "",
-      status: ""
+      status: "",
+      toastId: null
     };
   }
 
@@ -55,8 +56,10 @@ class ProductList extends Component {
         categoryValue: result.result1
       });
     });
+
     this.getData();
   };
+
   onSubmit = e => {
     e.preventDefault();
     this.getData();
@@ -100,12 +103,14 @@ class ProductList extends Component {
         console.log("error");
       }
     } catch (error) {
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown error"}`
-      );
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
 
@@ -142,7 +147,19 @@ class ProductList extends Component {
 
     return paginationBasic;
   };
+  onChangeCat = async (productId, abc) => {
+    try {
+      const response = await axios.post(
+        "http://192.168.2.118:8080/editProduct/" + productId + "/" + abc
+      );
 
+      const result1 = response.data.result;
+      console.log("response", result1);
+      this.getData();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   onPageChange = async pageNumber => {
     this.setState({ currentPage: pageNumber }, this.getData);
   };
@@ -300,7 +317,7 @@ class ProductList extends Component {
                       <th text-align="center">Name</th>
                       <th text-align="center">Price</th>
                       <th text-align="center">Quantity</th>
-                      {/* <th text-align="center">Category</th> */}
+                      <th text-align="center">Category</th>
                       <th>Created At</th>
                       <th text-align="center">Updated At</th>
                       <th text-align="center">Status</th>
@@ -318,6 +335,8 @@ class ProductList extends Component {
                             index={index}
                             skip={skip}
                             onDelete={this.onDelete}
+                            categoryN={this.categoryN}
+                            onChangeCat={this.onChangeCat}
                           />
                         );
                       })

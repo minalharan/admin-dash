@@ -161,7 +161,6 @@ class Signup extends Component {
             "Unknown error"}`
         );
       }
-      this.props.history.push("/users");
     }
   };
 

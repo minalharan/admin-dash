@@ -380,7 +380,7 @@ class AddProduct extends Component {
                   <InputGroup>
                     <Label for="file">
                       <i class="far fa-file-image top" />
-                      Images<span className="required">*</span>
+                      Other Images<span className="required">*</span>
                     </Label>
                     <Input
                       type="file"

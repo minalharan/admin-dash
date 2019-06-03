@@ -100,7 +100,7 @@ class SignupComponent extends Component {
                       <Input
                         type="password"
                         name="cpassword"
-                        placeholder="Re-type password"
+                        placeholder="Confirm Password"
                         autoComplete="password"
                         onChange={this.props.onInputChange}
                       />

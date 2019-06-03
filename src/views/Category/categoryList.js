@@ -70,6 +70,28 @@ class UserRow extends Component {
             <Badge
               style={{ fontSize: "90%" }}
               color={this.getBadge(this.props.cat.status)}
+              onClick={e =>
+                Swal.fire({
+                  title: "Are you sure you want to change the status?",
+
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes"
+                }).then(result => {
+                  if (result.value) {
+                    Swal.fire(
+                      "Status has been changed successfully !",
+                      "Success"
+                    ) &&
+                      this.props.onChangeCat(
+                        this.props.cat._id,
+                        this.props.cat.status
+                      );
+                  }
+                })
+              }
             >
               {this.props.cat.status}
             </Badge>
@@ -160,35 +182,7 @@ class CategoryList extends Component {
   };
   onSubmit1 = async e => {
     e.preventDefault();
-    // this.setState({
-    //   error: {}
-    // });
-    // try {
-    //   const { category } = this.state;
 
-    //   const obj = {
-    //     category
-    //   };
-    //   const validations = {
-    //     category: {
-    //       [ValidationTypes.REQUIRED]: true,
-    //       [ValidationTypes.MINLENGTH]: 3
-    //     }
-    //   };
-    //   const messages = {
-    //     category: {
-    //       [ValidationTypes.REQUIRED]: "Please enter the name of category.",
-    //       [ValidationTypes.MINLENGTH]:
-    //         "Name field should have atleast 3 characters."
-    //     }
-    //   };
-    //   const { isValid, errors } = Validator(obj, validations, messages);
-    //   if (!isValid) {
-    //     this.setState({
-    //       errors
-    //     });
-    //     return;
-    //   }
     try {
       const { category } = this.state;
 
@@ -219,6 +213,19 @@ class CategoryList extends Component {
             "Unknown error"}`
         );
       }
+    }
+  };
+  onChangeCat = async (productId, abc) => {
+    try {
+      const response = await axios.post(
+        "http://192.168.2.118:8080/editCategory/" + productId + "/" + abc
+      );
+
+      const result1 = response.data.result;
+      console.log("response", result1);
+      this.getData();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -485,11 +492,18 @@ class CategoryList extends Component {
                         index={index}
                         skip={this.state.skip}
                         onDelete={this.onDelete}
+                        onChangeCat={this.onChangeCat}
                       />
                     ))
                   ) : (
                     <tr align="center">
-                      <th colSpan="11">No record found</th>
+                      <th colSpan="11">
+                        <i
+                          class="fa fa-exclamation-circle top"
+                          aria-hidden="true"
+                        />
+                        No record found
+                      </th>
                     </tr>
                   )}
                 </tbody>

@@ -61,13 +61,15 @@ class DefaultHeader extends Component {
     return (
       <React.Fragment>
         <AppNavbarBrand
-          full={{ width: 89, height: 25, alt: "Shopping Dashboard" }}
-          minimized={{
-            width: 30,
-            height: 30,
-            alt: "Shopping Dashboard"
-          }}
-        />
+        // full={{ width: 89, height: 25, alt: "Shopping Dashboard" }}
+        // minimized={{
+        //   width: 30,
+        //   height: 30,
+        //   alt: "Shopping Dashboard"
+        // }}
+        >
+          <p style={{ width: 89, height: 25 }}>Shopping Dashboard</p>
+        </AppNavbarBrand>
 
         <Nav className="d-md-down-none" navbar>
           <AppHeaderDropdown direction="down">

@@ -50,15 +50,34 @@ class UserRow extends Component {
           <td max-width="40px">{this.props.user.createTime}</td>
           <td max-width="40px">{this.props.user.updateTime}</td>
           <td max-width="110px">
-            <Link to={"/users/" + this.props.user._id}>
-            
-              <Badge
-                style={{ fontSize: "90%" }}
-                color={this.getBadge(this.props.user.status)}
-              >
-                {this.props.user.status}
-              </Badge>
-            </Link>
+            <Badge
+              style={{ fontSize: "90%" }}
+              color={this.getBadge(this.props.user.status)}
+              onClick={e =>
+                Swal.fire({
+                  title: "Are you sure you want to change the status?",
+
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes"
+                }).then(result => {
+                  if (result.value) {
+                    Swal.fire(
+                      "Status has been changed successfully !",
+                      "Success"
+                    ) &&
+                      this.props.onChangeCat(
+                        this.props.user._id,
+                        this.props.user.status
+                      );
+                  }
+                })
+              }
+            >
+              {this.props.user.status}
+            </Badge>
           </td>
           <td width="110px" colSpan="2">
             <Link to={"/users/" + this.props.user._id}>
@@ -132,6 +151,19 @@ class Users extends Component {
     e.preventDefault();
     this.getData();
     return;
+  };
+  onChangeCat = async (productId, abc) => {
+    try {
+      const response = await axios.post(
+        "http://192.168.2.118:8080/ProfileUpdate1/" + productId + "/" + abc
+      );
+
+      const result1 = response.data.result;
+      console.log("response", result1);
+      this.getData();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   getData = async () => {
@@ -377,6 +409,7 @@ class Users extends Component {
                         index={index}
                         skip={this.state.skip}
                         onDelete={this.onDelete}
+                        onChangeCat={this.onChangeCat}
                       />
                     ))
                   ) : (

@@ -242,8 +242,6 @@ class NewsLetterList extends Component {
                       <option value="">---Status---</option>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Banned">Banned</option>
                     </FormControl>
                     &nbsp;
                     <OverlayTrigger

@@ -273,7 +273,7 @@ class AddProduct extends Component {
                       type="text"
                       placeholder="Product Name"
                       name="name"
-                      value={name.toLowerCase()}
+                      value={name}
                       onChange={this.onInputChange}
                     />
                   </InputGroup>

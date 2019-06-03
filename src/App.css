@@ -604,6 +604,7 @@
 .filter {
   margin-left: 10px;
 }
+
 .key {
   padding-left: 0px;
 }
@@ -650,8 +651,10 @@
 } */
 .bg55 {
   background: #48504d;
-  padding-bottom: 2px;
+  /* padding-bottom: 2px; */
+  padding-bottom: 13px;
 }
+
 .background-btn {
   color: #f1f6f8;
   border-color: #f1f5f6;

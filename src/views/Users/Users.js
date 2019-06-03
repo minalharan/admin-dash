@@ -51,6 +51,7 @@ class UserRow extends Component {
           <td max-width="40px">{this.props.user.updateTime}</td>
           <td max-width="110px">
             <Link to={"/users/" + this.props.user._id}>
+            
               <Badge
                 style={{ fontSize: "90%" }}
                 color={this.getBadge(this.props.user.status)}
@@ -67,7 +68,7 @@ class UserRow extends Component {
                 overlay={<Tooltip id="tooltip-top">Edit</Tooltip>}
               >
                 <Button variant="outline-primary">
-                  <i class="fas fa-pencil-alt top" />
+                  <i class="fas fa-pencil-alt" />
                 </Button>
               </OverlayTrigger>
             </Link>

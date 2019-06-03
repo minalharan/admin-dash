@@ -105,7 +105,7 @@ class TableRow extends Component {
         <td text-align="center" width="110px">
           {this.props.obj.quantity}
         </td>
-
+        {/* <td>{this.props.obj.category}</td> */}
         <td>{this.props.obj.createTime}</td>
         <td>{this.props.obj.updateTime}</td>
         <td width="110px">

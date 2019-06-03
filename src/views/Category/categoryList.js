@@ -139,7 +139,7 @@ class CategoryList extends Component {
       show: false,
       value: "",
       isOpen: false,
-      errors: {},
+      errors: [],
       category: "",
       toastId: null
     };
@@ -148,7 +148,7 @@ class CategoryList extends Component {
     //  e.preventDefault();
     const token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push("/login1");
+      this.props.history.push("/login");
     }
 
     this.getData();
@@ -160,32 +160,37 @@ class CategoryList extends Component {
   };
   onSubmit1 = async e => {
     e.preventDefault();
+    // this.setState({
+    //   error: {}
+    // });
+    // try {
+    //   const { category } = this.state;
+
+    //   const obj = {
+    //     category
+    //   };
+    //   const validations = {
+    //     category: {
+    //       [ValidationTypes.REQUIRED]: true,
+    //       [ValidationTypes.MINLENGTH]: 3
+    //     }
+    //   };
+    //   const messages = {
+    //     category: {
+    //       [ValidationTypes.REQUIRED]: "Please enter the name of category.",
+    //       [ValidationTypes.MINLENGTH]:
+    //         "Name field should have atleast 3 characters."
+    //     }
+    //   };
+    //   const { isValid, errors } = Validator(obj, validations, messages);
+    //   if (!isValid) {
+    //     this.setState({
+    //       errors
+    //     });
+    //     return;
+    //   }
     try {
       const { category } = this.state;
-
-      const obj = {
-        category
-      };
-      const validations = {
-        category: {
-          [ValidationTypes.REQUIRED]: true,
-          [ValidationTypes.MINLENGTH]: 3
-        }
-      };
-      const messages = {
-        category: {
-          [ValidationTypes.REQUIRED]: "Please enter the name of category.",
-          [ValidationTypes.MINLENGTH]:
-            "Name field should have atleast 3 characters."
-        }
-      };
-      const { isValid, errors } = Validator(obj, validations, messages);
-      if (!isValid) {
-        this.setState({
-          errors
-        });
-        return;
-      }
 
       const data = { category };
       const response = await axios.post(
@@ -199,19 +204,21 @@ class CategoryList extends Component {
           },
           this.getData
         );
+        if (!toast.isActive(this.toastId)) {
+          this.toastId = toast.success("Category added !");
+        }
       }
-      if (!toast.isActive(this.toastId)) {
-        this.toastId = toast.success("Category added !");
-      }
-      // this.props.history.goBack("/category-list");
     } catch (error) {
-      console.log(error);
-      toast.error(
-        `${(error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-          "Unknown error"}`
-      );
+      // this.props.history.goBack("/category-list");
+      console.log(error.response);
+      if (!toast.isActive(this.toastId)) {
+        this.toastId = toast.error(
+          `${(error.response &&
+            error.response.data &&
+            error.response.data.message[0].msg) ||
+            "Unknown error"}`
+        );
+      }
     }
   };
 
@@ -389,6 +396,7 @@ class CategoryList extends Component {
                     >
                       <Button
                         variant="outline-light"
+                        type="submit"
                         className="filter background-btn"
                         // style={{ width: "100px", padding: "5px" }}
                       >
@@ -422,11 +430,9 @@ class CategoryList extends Component {
                         name="category"
                         value={this.state.category}
                         onChange={this.onInputChange}
-                        className="mr-sm-2 filter"
+                        className="mr-sm-2 filter1"
                       />
-                      {/* {categoryError ? (
-                        <p className="text-danger">{categoryError}</p>
-                      ) : null} */}
+
                       <OverlayTrigger
                         key="top"
                         placement="top"
@@ -439,11 +445,15 @@ class CategoryList extends Component {
                         <Button
                           variant="outline-light"
                           onClick={this.onSubmit1}
-                          className="mr-sm-2 filter"
+                          className="mr-sm-2 filter1"
                         >
                           <i class="fas fa-plus top" />
                         </Button>
                       </OverlayTrigger>
+                      <br />
+                      {/* {categoryError ? (
+                        <p className="text-danger">{categoryError}</p>
+                      ) : null} */}
                     </Form>
                   </Form>
                   <Form inline />

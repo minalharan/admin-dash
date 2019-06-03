@@ -300,7 +300,7 @@ class ProductList extends Component {
                       <th text-align="center">Name</th>
                       <th text-align="center">Price</th>
                       <th text-align="center">Quantity</th>
-
+                      {/* <th text-align="center">Category</th> */}
                       <th>Created At</th>
                       <th text-align="center">Updated At</th>
                       <th text-align="center">Status</th>

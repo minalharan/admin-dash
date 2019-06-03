@@ -235,7 +235,7 @@ class User extends Component {
                   <InputGroup className="user12">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
-                        <i className="fas fa-female" />
+                        <i class="fa fa-circle" aria-hidden="true" />
                       </InputGroupText>
                     </InputGroupAddon>
                     <FormControl

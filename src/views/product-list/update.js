@@ -245,6 +245,7 @@ class Update extends Component {
                       className="tag"
                       type="text"
                       name="name"
+                      placeholder="Enter Name"
                       value={this.state.name}
                       onChange={this.onInputChange}
                     />
@@ -258,6 +259,7 @@ class Update extends Component {
                     <Input
                       className="tag"
                       type="text"
+                      placeholder="Enter Price"
                       name="price"
                       value={this.state.price}
                       onChange={this.onInputChange}
@@ -289,6 +291,7 @@ class Update extends Component {
                     <FormControl
                       as="select"
                       className="tag"
+                      placeholder="Select Category"
                       name="category"
                       value={this.state.category}
                       onChange={this.onInputChange}
@@ -313,6 +316,7 @@ class Update extends Component {
                     <Input
                       type="text"
                       name="des"
+                      placeholder="Enter Details"
                       className="tag"
                       value={this.state.des}
                       onChange={this.onInputChange}

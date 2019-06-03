@@ -13,12 +13,14 @@ import Category from "./views/Category/category";
 import UserRow from "./views/Category/categoryList";
 import Signup from "./containers/sign-up/index";
 import NewsLetterList from "./views/newsLetter/newsletter";
+import OrderList from "./views/Users/orderhistory.js";
 
 const routes = [
   { path: "/category-list", name: "Catrgory-List", component: UserRow },
   { path: "/cat-list/:id", name: "Category", component: Category },
   { path: "/add-product", name: "Add-Product", component: AddProduct },
   { path: "/news-letter", name: "NewsLetterList", component: NewsLetterList },
+  { path: "/order-history/:id", name: "Order-history", component: OrderList },
 
   {
     path: "/product-list",

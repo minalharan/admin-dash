@@ -79,7 +79,7 @@ class UserRow extends Component {
               {this.props.user.status}
             </Badge>
           </td>
-          <td width="110px" colSpan="2">
+          <td width="110px" colSpan="3">
             <Link to={"/users/" + this.props.user._id}>
               <OverlayTrigger
                 key="top"
@@ -122,6 +122,22 @@ class UserRow extends Component {
                 <i class="fas fa-trash-alt" />
               </Button>
             </OverlayTrigger>
+            <Link to={"/order-history/" + this.props.user._id}>
+              <OverlayTrigger
+                key="top"
+                placement="top"
+                overlay={
+                  <Tooltip id="tooltip-top">
+                    Click here to see order history
+                  </Tooltip>
+                }
+              >
+                <Button variant="outline-info">
+                  <i class="far fa-eye" />
+                </Button>
+              </OverlayTrigger>
+            </Link>
+            &nbsp;&nbsp;
           </td>
         </tr>
       </>
@@ -414,7 +430,14 @@ class Users extends Component {
                     ))
                   ) : (
                     <tr align="center">
-                      <th colSpan="11">No record found</th>
+                      <th colSpan="11">
+                        {" "}
+                        <i
+                          class="fa fa-exclamation-circle top"
+                          aria-hidden="true"
+                        />
+                        No record found
+                      </th>
                     </tr>
                   )}
                 </tbody>

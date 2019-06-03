@@ -342,7 +342,14 @@ class ProductList extends Component {
                       })
                     ) : (
                       <tr align="center">
-                        <th colSpan="11">No record found</th>
+                        <th colSpan="11">
+                          {" "}
+                          <i
+                            class="fa fa-exclamation-circle top"
+                            aria-hidden="true"
+                          />
+                          No record found
+                        </th>
                       </tr>
                     )}
                   </tbody>
